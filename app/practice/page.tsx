@@ -23,7 +23,10 @@ import {
   Zap,
   Play,
   Eye,
-  Printer
+  Printer,
+  Clock,
+  Award,
+  TrendingUp
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -117,6 +120,8 @@ export default function PracticePage() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [analysisResults, setAnalysisResults] = useState<any[]>([]);
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
@@ -129,6 +134,7 @@ export default function PracticePage() {
         setUser(user);
         await fetchProfile(user.id);
         await fetchProgress(user.id);
+        await fetchSubmissions(user.id);
       }
       setLoading(false);
     };
@@ -173,6 +179,34 @@ export default function PracticePage() {
       }
     } catch (error) {
       console.error('Error fetching progress:', error);
+    }
+  };
+
+  const fetchSubmissions = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('submissions')
+        .select(`
+          *,
+          exercises (
+            title,
+            description,
+            level
+          ),
+          analysis_results (
+            *
+          )
+        `)
+        .eq('user_id', userId)
+        .order('submitted_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching submissions:', error);
+      } else {
+        setSubmissions(data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching submissions:', error);
     }
   };
 
@@ -248,6 +282,9 @@ export default function PracticePage() {
       // Mark current step as completed
       setCompletedSteps(prev => new Set([...prev, firstWorkbookSteps[currentStep].id]));
       
+      // Refresh submissions to show the new one
+      await fetchSubmissions(user.id);
+      
       // Auto-advance to next step after a delay
       setTimeout(() => {
         if (currentStep < firstWorkbookSteps.length - 1) {
@@ -266,6 +303,32 @@ export default function PracticePage() {
 
   const openWorksheet = (worksheetUrl: string) => {
     window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'complete':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+      case 'processing':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+      case 'error':
+        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+      default:
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'complete':
+        return <CheckCircle className="h-4 w-4" />;
+      case 'processing':
+        return <Clock className="h-4 w-4 animate-spin" />;
+      case 'error':
+        return <AlertCircle className="h-4 w-4" />;
+      default:
+        return <Upload className="h-4 w-4" />;
+    }
   };
 
   const isKidsMode = profile?.display_mode === 'kid';
@@ -515,6 +578,62 @@ export default function PracticePage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Recent Submissions */}
+            {submissions.length > 0 && (
+              <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-primary" />
+                    {isKidsMode ? '📊 My Recent Work!' : 'Recent Submissions'}
+                  </CardTitle>
+                  <CardDescription>
+                    {isKidsMode 
+                      ? 'Check out your latest uploads and see how you\'re doing! 🌟'
+                      : 'View your recent worksheet submissions and analysis results'
+                    }
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4 max-h-64 overflow-y-auto">
+                    {submissions.slice(0, 5).map((submission) => (
+                      <div key={submission.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <Badge className={getStatusColor(submission.status)}>
+                              {getStatusIcon(submission.status)}
+                              <span className="ml-1 capitalize">{submission.status}</span>
+                            </Badge>
+                            <span className="text-sm text-muted-foreground">
+                              {new Date(submission.submitted_at).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <p className="text-sm font-medium mt-1">
+                            {submission.exercises?.title || 'Practice Exercise'}
+                          </p>
+                          {submission.analysis_results && submission.analysis_results.length > 0 && (
+                            <div className="flex items-center gap-2 mt-1">
+                              <Award className="h-4 w-4 text-yellow-500" />
+                              <span className="text-sm text-muted-foreground">
+                                Score: {Math.round(submission.analysis_results[0].overall_score || 0)}%
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        {submission.status === 'complete' && submission.analysis_results && submission.analysis_results.length > 0 && (
+                          <Link href={`/submission/${submission.id}/results`}>
+                            <Button size="sm" variant="outline">
+                              <Eye className="h-4 w-4 mr-1" />
+                              {isKidsMode ? 'See Results! 🎯' : 'View Results'}
+                            </Button>
+                          </Link>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Sidebar */}
@@ -591,6 +710,7 @@ export default function PracticePage() {
                   <li>• {isKidsMode ? '⏰ Take breaks when you need them!' : 'Take breaks every 10-15 minutes'}</li>
                   <li>• {isKidsMode ? '🎯 Focus on doing it right, not fast!' : 'Focus on accuracy over speed'}</li>
                   <li>• {isKidsMode ? '🌟 Practice a little bit every day!' : 'Practice regularly for best results'}</li>
+                  <li>• {isKidsMode ? '📸 Upload your work to get feedback!' : 'Upload your completed worksheets for AI analysis'}</li>
                 </ul>
               </CardContent>
             </Card>
