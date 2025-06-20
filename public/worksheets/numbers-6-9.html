@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 4.2: Numbers 6-9</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .no-print {
+                display: none;
+            }
+            .printable-area {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: 1px solid #e2e8f0;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .worksheet-container {
+            max-width: 800px;
+            min-height: 100vh;
+        }
+        .instruction-font {
+            font-family: 'Comic Neue', cursive;
+        }
+        .number-container {
+            position: relative;
+            width: 120px;
+            height: 140px;
+            margin: 10px;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .number-guide {
+            stroke: #d1d5db;
+            stroke-width: 4;
+            stroke-dasharray: 8, 4;
+            fill: none;
+        }
+        .start-dot {
+            fill: #22c55e;
+        }
+        .stroke-number {
+            font-size: 12px;
+            font-weight: bold;
+            fill: #6b7280;
+        }
+        .practice-box {
+            width: 80px;
+            height: 100px;
+            border: 1px solid #e5e7eb;
+            margin: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-start p-4 sm:p-8">
+
+    <div id="worksheet" class="worksheet-container bg-white p-8 sm:p-12 shadow-lg rounded-lg border border-gray-200">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-teal-600">Worksheet 4.2: Numbers 6-9</h1>
+            <p class="text-xl text-gray-600 mt-4 instruction-font">
+                "Practice the more complex numbers: 6, 7, 8, and 9. Follow the green dot!"
+            </p>
+        </header>
+
+        <main class="space-y-12">
+            <!-- Number 6 -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-teal-600">Number 6 (Six)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="number-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 50 20 Q 30 15 20 30 Q 10 45 20 60 Q 30 75 45 75 Q 60 75 60 60 Q 60 45 45 45 Q 30 45 20 60" class="number-guide"/>
+                            <circle cx="50" cy="20" r="4" class="start-dot"/>
+                            <text x="55" y="25" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Number 7 -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-teal-600">Number 7 (Seven)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="number-container">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="20" y1="20" x2="60" y2="20" class="number-guide"/>
+                            <line x1="60" y1="20" x2="30" y2="85" class="number-guide"/>
+                            <circle cx="20" cy="20" r="4" class="start-dot"/>
+                            <text x="35" y="15" class="stroke-number">1</text>
+                            <text x="40" y="35" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Number 8 -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-teal-600">Number 8 (Eight)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="number-container">
+                        <svg width="80" height="100" class="absolute">
+                            <ellipse cx="40" cy="30" rx="18" ry="15" class="number-guide"/>
+                            <ellipse cx="40" cy="65" rx="20" ry="18" class="number-guide"/>
+                            <circle cx="40" cy="15" r="4" class="start-dot"/>
+                            <text x="45" y="20" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Number 9 -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-teal-600">Number 9 (Nine)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="number-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 20 40 Q 20 25 35 25 Q 50 25 50 40 Q 50 55 35 55 Q 20 55 20 40 M 50 40 Q 60 55 50 70 Q 40 85 30 80" class="number-guide"/>
+                            <circle cx="20" cy="40" r="4" class="start-dot"/>
+                            <text x="10" y="45" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenge: Write Your Age -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-teal-600 text-center">Challenge: Write Your Age!</h2>
+                <div class="flex justify-center space-x-4">
+                    <div class="practice-box border-2 border-teal-300"></div>
+                    <div class="practice-box border-2 border-teal-300"></div>
+                </div>
+                <p class="text-center text-gray-600">How old are you? Write your age using the numbers you've learned!</p>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="mt-8 p-4 bg-teal-50 border border-teal-200 rounded-lg">
+                <h4 class="font-semibold text-teal-800 mb-2">🔢 Advanced Number Tips:</h4>
+                <ul class="text-sm text-teal-700 space-y-1">
+                    <li>• <strong>6:</strong> Start with a curve down, then make a circle at the bottom</li>
+                    <li>• <strong>7:</strong> Horizontal line across the top, then diagonal down</li>
+                    <li>• <strong>8:</strong> Two circles stacked on top of each other</li>
+                    <li>• <strong>9:</strong> Circle at the top, then curve down like a backwards 6</li>
+                    <li>• Practice slowly and focus on making smooth curves</li>
+                    <li>• These numbers use more complex curves than 0-5</li>
+                </ul>
+            </div>
+        </main>
+
+        <div class="no-print mt-12 text-center">
+            <button onclick="window.print()" class="bg-teal-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-300 transition-transform transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                </svg>
+                Print Worksheet
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 1.1: Vertical Lines</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Balsamiq+Sans:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact; /* Chrome, Safari */
+                color-adjust: exact; /* Firefox */
+            }
+            .no-print {
+                display: none;
+            }
+            .printable-area {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: 1px solid #e2e8f0;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .worksheet-title {
+            font-family: 'Balsamiq Sans', cursive;
+        }
+        /* Arrow marker for the line */
+        #arrow path {
+            fill: #6b7280; /* Gray color for the arrow */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+
+    <div class="w-full max-w-4xl">
+        <!-- Main worksheet container -->
+        <div id="worksheet" class="printable-area bg-white rounded-2xl shadow-lg p-6 sm:p-10 border-2 border-gray-200">
+            <!-- Header section -->
+            <header class="text-center border-b-2 border-dashed border-gray-300 pb-6 mb-8">
+                <h1 class="worksheet-title text-3xl sm:text-4xl text-blue-600">Worksheet 1.1: Vertical Lines</h1>
+                <p class="text-gray-600 text-lg mt-4 max-w-2xl mx-auto"><strong>Instructions:</strong> Start at the green dot and trace the line straight down to the red dot. Follow the arrow!</p>
+            </header>
+
+            <!-- SVG definitions for markers -->
+            <svg class="absolute w-0 h-0">
+                <defs>
+                    <marker
+                        id="arrow"
+                        viewBox="0 0 10 10"
+                        refX="5"
+                        refY="5"
+                        markerWidth="5"
+                        markerHeight="5"
+                        orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                    </marker>
+                </defs>
+            </svg>
+
+            <!-- Tracing practice area -->
+            <main class="space-y-10">
+                <!-- Row 1: Short Lines -->
+                <div class="flex justify-around items-center h-24">
+                    <script>
+                        for (let i = 0; i < 6; i++) {
+                            document.write(`
+                                <svg width="20" height="70" class="overflow-visible">
+                                    <line x1="10" y1="10" x2="10" y2="60" stroke="#d1d5db" stroke-width="3" stroke-dasharray="5,5" marker-mid="url(#arrow)"></line>
+                                    <circle cx="10" cy="10" r="6" fill="#22c55e"></circle>
+                                    <circle cx="10" cy="60" r="6" fill="#ef4444"></circle>
+                                </svg>
+                            `);
+                        }
+                    </script>
+                </div>
+
+                <!-- Row 2: Short Lines -->
+                <div class="flex justify-around items-center h-24">
+                     <script>
+                        for (let i = 0; i < 6; i++) {
+                            document.write(`
+                                <svg width="20" height="70" class="overflow-visible">
+                                    <line x1="10" y1="10" x2="10" y2="60" stroke="#d1d5db" stroke-width="3" stroke-dasharray="5,5" marker-mid="url(#arrow)"></line>
+                                    <circle cx="10" cy="10" r="6" fill="#22c55e"></circle>
+                                    <circle cx="10" cy="60" r="6" fill="#ef4444"></circle>
+                                </svg>
+                            `);
+                        }
+                    </script>
+                </div>
+
+                <!-- Row 3: Long Lines -->
+                <div class="flex justify-around items-center h-40">
+                    <script>
+                        for (let i = 0; i < 5; i++) {
+                            document.write(`
+                                <svg width="20" height="130" class="overflow-visible">
+                                    <line x1="10" y1="10" x2="10" y2="120" stroke="#d1d5db" stroke-width="3" stroke-dasharray="5,5" marker-mid="url(#arrow)"></line>
+                                    <circle cx="10" cy="10" r="6" fill="#22c55e"></circle>
+                                    <circle cx="10" cy="120" r="6" fill="#ef4444"></circle>
+                                </svg>
+                            `);
+                        }
+                    </script>
+                </div>
+
+                <!-- Row 4: Long Lines -->
+                <div class="flex justify-around items-center h-40">
+                     <script>
+                        for (let i = 0; i < 5; i++) {
+                            document.write(`
+                                <svg width="20" height="130" class="overflow-visible">
+                                    <line x1="10" y1="10" x2="10" y2="120" stroke="#d1d5db" stroke-width="3" stroke-dasharray="5,5" marker-mid="url(#arrow)"></line>
+                                    <circle cx="10" cy="10" r="6" fill="#22c55e"></circle>
+                                    <circle cx="10" cy="120" r="6" fill="#ef4444"></circle>
+                                </svg>
+                            `);
+                        }
+                    </script>
+                </div>
+            </main>
+        </div>
+
+        <!-- Print Button -->
+        <div class="no-print mt-6 text-center">
+            <button onclick="window.print()" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                </svg>
+                Print Worksheet
+            </button>
+        </div>
+
+    </div>
+</body>
+</html>

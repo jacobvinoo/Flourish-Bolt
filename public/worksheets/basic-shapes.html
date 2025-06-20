@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 1.6: Basic Shapes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .no-print {
+                display: none;
+            }
+            .printable-area {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: 1px solid #e2e8f0;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .worksheet-container {
+            max-width: 800px;
+            min-height: 100vh;
+        }
+        .instruction-font {
+            font-family: 'Comic Neue', cursive;
+        }
+        .shape-container {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+        }
+        .trace-shape {
+            stroke: #d1d5db;
+            stroke-width: 3;
+            stroke-dasharray: 8, 4;
+            fill: none;
+        }
+        .start-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            z-index: 10;
+        }
+        .stroke-number {
+            position: absolute;
+            font-size: 12px;
+            font-weight: bold;
+            color: #6b7280;
+            background-color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #6b7280;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-start p-4 sm:p-8">
+
+    <div id="worksheet" class="worksheet-container bg-white p-8 sm:p-12 shadow-lg rounded-lg border border-gray-200">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-indigo-600">Worksheet 1.6: Basic Shapes</h1>
+            <p class="text-xl text-gray-600 mt-4 instruction-font">
+                "Trace each shape following the numbers. Start at the green dot and follow the path!"
+            </p>
+        </header>
+
+        <main class="space-y-12">
+            <!-- Squares Section -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-indigo-600 text-center">Squares □</h2>
+                <div class="flex justify-around items-center flex-wrap">
+                    <script>
+                        for (let i = 0; i < 4; i++) {
+                            const size = 80;
+                            document.write(`
+                                <div class="shape-container" style="width: ${size + 40}px; height: ${size + 40}px;">
+                                    <svg width="${size + 40}" height="${size + 40}" class="absolute">
+                                        <rect x="20" y="20" width="${size}" height="${size}" class="trace-shape"/>
+                                    </svg>
+                                    <div class="start-dot" style="top: 15px; left: 15px;"></div>
+                                    <div class="stroke-number" style="top: 5px; left: 30px;">1</div>
+                                    <div class="stroke-number" style="top: 5px; right: 10px;">2</div>
+                                    <div class="stroke-number" style="bottom: 5px; right: 10px;">3</div>
+                                    <div class="stroke-number" style="bottom: 5px; left: 10px;">4</div>
+                                </div>
+                            `);
+                        }
+                    </script>
+                </div>
+            </div>
+
+            <!-- Triangles Section -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-indigo-600 text-center">Triangles △</h2>
+                <div class="flex justify-around items-center flex-wrap">
+                    <script>
+                        for (let i = 0; i < 4; i++) {
+                            const size = 80;
+                            document.write(`
+                                <div class="shape-container" style="width: ${size + 40}px; height: ${size + 40}px;">
+                                    <svg width="${size + 40}" height="${size + 40}" class="absolute">
+                                        <polygon points="60,20 20,100 100,100" class="trace-shape"/>
+                                    </svg>
+                                    <div class="start-dot" style="top: 15px; left: 55px;"></div>
+                                    <div class="stroke-number" style="top: 5px; left: 45px;">1</div>
+                                    <div class="stroke-number" style="bottom: 5px; left: 5px;">2</div>
+                                    <div class="stroke-number" style="bottom: 5px; right: 20px;">3</div>
+                                </div>
+                            `);
+                        }
+                    </script>
+                </div>
+            </div>
+
+            <!-- Rectangles Section -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-indigo-600 text-center">Rectangles ▭</h2>
+                <div class="flex justify-around items-center flex-wrap">
+                    <script>
+                        for (let i = 0; i < 3; i++) {
+                            const width = 100;
+                            const height = 60;
+                            document.write(`
+                                <div class="shape-container" style="width: ${width + 40}px; height: ${height + 40}px;">
+                                    <svg width="${width + 40}" height="${height + 40}" class="absolute">
+                                        <rect x="20" y="20" width="${width}" height="${height}" class="trace-shape"/>
+                                    </svg>
+                                    <div class="start-dot" style="top: 15px; left: 15px;"></div>
+                                    <div class="stroke-number" style="top: 5px; left: 30px;">1</div>
+                                    <div class="stroke-number" style="top: 5px; right: 10px;">2</div>
+                                    <div class="stroke-number" style="bottom: 5px; right: 10px;">3</div>
+                                    <div class="stroke-number" style="bottom: 5px; left: 10px;">4</div>
+                                </div>
+                            `);
+                        }
+                    </script>
+                </div>
+            </div>
+
+            <!-- Mixed Practice Section -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-indigo-600 text-center">Mixed Practice</h2>
+                <div class="flex justify-around items-center flex-wrap">
+                    <!-- Square -->
+                    <div class="shape-container" style="width: 100px; height: 100px;">
+                        <svg width="100" height="100" class="absolute">
+                            <rect x="15" y="15" width="70" height="70" class="trace-shape"/>
+                        </svg>
+                        <div class="start-dot" style="top: 10px; left: 10px;"></div>
+                        <div class="stroke-number" style="top: 0px; left: 25px;">1</div>
+                        <div class="stroke-number" style="top: 0px; right: 5px;">2</div>
+                        <div class="stroke-number" style="bottom: 0px; right: 5px;">3</div>
+                        <div class="stroke-number" style="bottom: 0px; left: 5px;">4</div>
+                    </div>
+                    <!-- Triangle -->
+                    <div class="shape-container" style="width: 100px; height: 100px;">
+                        <svg width="100" height="100" class="absolute">
+                            <polygon points="50,15 15,85 85,85" class="trace-shape"/>
+                        </svg>
+                        <div class="start-dot" style="top: 10px; left: 45px;"></div>
+                        <div class="stroke-number" style="top: 0px; left: 35px;">1</div>
+                        <div class="stroke-number" style="bottom: 0px; left: 0px;">2</div>
+                        <div class="stroke-number" style="bottom: 0px; right: 10px;">3</div>
+                    </div>
+                    <!-- Rectangle -->
+                    <div class="shape-container" style="width: 120px; height: 80px;">
+                        <svg width="120" height="80" class="absolute">
+                            <rect x="15" y="15" width="90" height="50" class="trace-shape"/>
+                        </svg>
+                        <div class="start-dot" style="top: 10px; left: 10px;"></div>
+                        <div class="stroke-number" style="top: 0px; left: 25px;">1</div>
+                        <div class="stroke-number" style="top: 0px; right: 5px;">2</div>
+                        <div class="stroke-number" style="bottom: 0px; right: 5px;">3</div>
+                        <div class="stroke-number" style="bottom: 0px; left: 5px;">4</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="mt-8 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                <h4 class="font-semibold text-indigo-800 mb-2">🔷 Shape Tips:</h4>
+                <ul class="text-sm text-indigo-700 space-y-1">
+                    <li>• <strong>Squares:</strong> All four sides are the same length</li>
+                    <li>• <strong>Triangles:</strong> Start at the top and work your way around</li>
+                    <li>• <strong>Rectangles:</strong> Opposite sides are the same length</li>
+                    <li>• Try to make your corners sharp and clean</li>
+                    <li>• These shapes help with letters like A, D, H, L, P, and more!</li>
+                </ul>
+            </div>
+        </main>
+
+        <div class="no-print mt-12 text-center">
+            <button onclick="window.print()" class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-transform transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                </svg>
+                Print Worksheet
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 3.1: The "Magic C" Letters (c, a, d, g, o, q)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .no-print {
+                display: none;
+            }
+            .printable-area {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: 1px solid #e2e8f0;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .worksheet-container {
+            max-width: 800px;
+            min-height: 100vh;
+        }
+        .instruction-font {
+            font-family: 'Comic Neue', cursive;
+        }
+        .letter-container {
+            position: relative;
+            width: 100px;
+            height: 120px;
+            margin: 10px;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .letter-guide {
+            stroke: #d1d5db;
+            stroke-width: 3;
+            stroke-dasharray: 6, 3;
+            fill: none;
+        }
+        .start-dot {
+            fill: #22c55e;
+        }
+        .stroke-number {
+            font-size: 11px;
+            font-weight: bold;
+            fill: #6b7280;
+        }
+        .practice-box {
+            width: 60px;
+            height: 80px;
+            border: 1px solid #e5e7eb;
+            margin: 3px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-start p-4 sm:p-8">
+
+    <div id="worksheet" class="worksheet-container bg-white p-8 sm:p-12 shadow-lg rounded-lg border border-gray-200">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-violet-600">Worksheet 3.1: The "Magic C" Letters</h1>
+            <p class="text-xl text-gray-600 mt-4 instruction-font">
+                "All these letters start with the same 'c' shape! c, a, d, g, o, q"
+            </p>
+        </header>
+
+        <main class="space-y-10">
+            <!-- Magic C Demo -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-violet-600 text-center">The Magic C Shape</h2>
+                <div class="flex justify-center">
+                    <div class="letter-container border-4 border-violet-300">
+                        <svg width="80" height="80" class="absolute">
+                            <path d="M 60 25 Q 50 15 35 20 Q 20 25 20 40 Q 20 55 35 60 Q 50 65 60 55" class="letter-guide" stroke="#8b5cf6" stroke-width="4"/>
+                            <circle cx="60" cy="25" r="5" class="start-dot"/>
+                            <text x="65" y="30" class="stroke-number">START</text>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-center text-sm text-gray-600">This is the "Magic C" - it starts every letter below!</p>
+            </div>
+
+            <!-- Letter c -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-violet-600">Letter c (just the Magic C!)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="80" class="absolute">
+                            <path d="M 60 25 Q 50 15 35 20 Q 20 25 20 40 Q 20 55 35 60 Q 50 65 60 55" class="letter-guide"/>
+                            <circle cx="60" cy="25" r="4" class="start-dot"/>
+                            <text x="65" y="30" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter a -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-violet-600">Letter a (Magic C + line down)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="80" class="absolute">
+                            <path d="M 60 25 Q 50 15 35 20 Q 20 25 20 40 Q 20 55 35 60 Q 50 65 60 55" class="letter-guide"/>
+                            <line x1="60" y1="25" x2="60" y2="65" class="letter-guide"/>
+                            <circle cx="60" cy="25" r="4" class="start-dot"/>
+                            <text x="65" y="30" class="stroke-number">1</text>
+                            <text x="65" y="50" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter d -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-violet-600">Letter d (Magic C + tall line up)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 60 35 Q 50 25 35 30 Q 20 35 20 50 Q 20 65 35 70 Q 50 75 60 65" class="letter-guide"/>
+                            <line x1="60" y1="10" x2="60" y2="75" class="letter-guide"/>
+                            <circle cx="60" cy="35" r="4" class="start-dot"/>
+                            <text x="65" y="40" class="stroke-number">1</text>
+                            <text x="65" y="15" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter g -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-violet-600">Letter g (Magic C + tail down)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 60 25 Q 50 15 35 20 Q 20 25 20 40 Q 20 55 35 60 Q 50 65 60 55" class="letter-guide"/>
+                            <line x1="60" y1="25" x2="60" y2="85" class="letter-guide"/>
+                            <path d="M 60 85 Q 55 95 40 95 Q 25 95 25 85" class="letter-guide"/>
+                            <circle cx="60" cy="25" r="4" class="start-dot"/>
+                            <text x="65" y="30" class="stroke-number">1</text>
+                            <text x="65" y="70" class="stroke-number">2</text>
+                            <text x="30" y="105" class="stroke-number">3</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter o -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-violet-600">Letter o (Magic C + close the circle)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="80" class="absolute">
+                            <ellipse cx="40" cy="40" rx="20" ry="25" class="letter-guide"/>
+                            <circle cx="60" cy="25" r="4" class="start-dot"/>
+                            <text x="65" y="30" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter q -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-violet-600">Letter q (Magic C + line down with tail)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 60 25 Q 50 15 35 20 Q 20 25 20 40 Q 20 55 35 60 Q 50 65 60 55" class="letter-guide"/>
+                            <line x1="60" y1="25" x2="60" y2="95" class="letter-guide"/>
+                            <circle cx="60" cy="25" r="4" class="start-dot"/>
+                            <text x="65" y="30" class="stroke-number">1</text>
+                            <text x="65" y="85" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="mt-8 p-4 bg-violet-50 border border-violet-200 rounded-lg">
+                <h4 class="font-semibold text-violet-800 mb-2">✨ Magic C Tips:</h4>
+                <ul class="text-sm text-violet-700 space-y-1">
+                    <li>• <strong>All letters start the same way</strong> - with the Magic C shape!</li>
+                    <li>• <strong>c:</strong> Just the Magic C by itself</li>
+                    <li>• <strong>a:</strong> Magic C + straight line down on the right</li>
+                    <li>• <strong>d:</strong> Magic C + tall line up and down on the right</li>
+                    <li>• <strong>g:</strong> Magic C + line down with a hook at the bottom</li>
+                    <li>• <strong>o:</strong> Magic C but close it into a complete circle</li>
+                    <li>• <strong>q:</strong> Magic C + straight line down below the baseline</li>
+                    <li>• Start at the top right and curve around to the left!</li>
+                </ul>
+            </div>
+        </main>
+
+        <div class="no-print mt-12 text-center">
+            <button onclick="window.print()" class="bg-violet-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-300 transition-transform transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                </svg>
+                Print Worksheet
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 2.5: Mixed Formation Letters (J, U)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .no-print {
+                display: none;
+            }
+            .printable-area {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: 1px solid #e2e8f0;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .worksheet-container {
+            max-width: 800px;
+            min-height: 100vh;
+        }
+        .instruction-font {
+            font-family: 'Comic Neue', cursive;
+        }
+        .letter-container {
+            position: relative;
+            width: 120px;
+            height: 140px;
+            margin: 10px;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .letter-guide {
+            stroke: #d1d5db;
+            stroke-width: 3;
+            stroke-dasharray: 6, 3;
+            fill: none;
+        }
+        .start-dot {
+            fill: #22c55e;
+        }
+        .stroke-number {
+            font-size: 12px;
+            font-weight: bold;
+            fill: #6b7280;
+        }
+        .practice-line {
+            border-bottom: 1px solid #e5e7eb;
+            height: 60px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-start p-4 sm:p-8">
+
+    <div id="worksheet" class="worksheet-container bg-white p-8 sm:p-12 shadow-lg rounded-lg border border-gray-200">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-cyan-600">Worksheet 2.5: Mixed Formation Letters</h1>
+            <p class="text-xl text-gray-600 mt-4 instruction-font">
+                "Practice special letters with unique shapes: J and U"
+            </p>
+        </header>
+
+        <main class="space-y-12">
+            <!-- Letter J -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-cyan-600 text-center">Letter J</h2>
+                <div class="flex justify-center">
+                    <div class="flex items-center space-x-8">
+                        <div class="letter-container">
+                            <svg width="80" height="120" class="absolute">
+                                <line x1="50" y1="20" x2="50" y2="80" class="letter-guide"/>
+                                <path d="M 50 80 Q 45 95 30 95 Q 15 95 15 80" class="letter-guide"/>
+                                <circle cx="50" cy="20" r="4" class="start-dot"/>
+                                <text x="55" y="25" class="stroke-number">1</text>
+                                <text x="25" y="110" class="stroke-number">2</text>
+                            </svg>
+                        </div>
+                        <div class="flex-1 space-y-2">
+                            <div class="practice-line"></div>
+                            <div class="practice-line"></div>
+                            <div class="practice-line"></div>
+                            <div class="practice-line"></div>
+                            <div class="practice-line"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm text-gray-600 bg-cyan-50 border border-cyan-200 rounded-lg p-3 inline-block">
+                        <strong>J Formation:</strong> Start with a straight line down, then curve left at the bottom like a hook
+                    </p>
+                </div>
+            </div>
+
+            <!-- Letter U -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-cyan-600 text-center">Letter U</h2>
+                <div class="flex justify-center">
+                    <div class="flex items-center space-x-8">
+                        <div class="letter-container">
+                            <svg width="80" height="100" class="absolute">
+                                <path d="M 20 20 L 20 65 Q 20 80 40 80 Q 60 80 60 65 L 60 20" class="letter-guide"/>
+                                <circle cx="20" cy="20" r="4" class="start-dot"/>
+                                <text x="10" y="15" class="stroke-number">1</text>
+                            </svg>
+                        </div>
+                        <div class="flex-1 space-y-2">
+                            <div class="practice-line"></div>
+                            <div class="practice-line"></div>
+                            <div class="practice-line"></div>
+                            <div class="practice-line"></div>
+                            <div class="practice-line"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm text-gray-600 bg-cyan-50 border border-cyan-200 rounded-lg p-3 inline-block">
+                        <strong>U Formation:</strong> Start at the top left, go down, curve around the bottom, and go back up
+                    </p>
+                </div>
+            </div>
+
+            <!-- Practice Both Letters Together -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-cyan-600 text-center">Practice Both Letters</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
+                    <!-- J Practice -->
+                    <div class="letter-container">
+                        <svg width="80" height="120" class="absolute">
+                            <line x1="50" y1="20" x2="50" y2="80" class="letter-guide"/>
+                            <path d="M 50 80 Q 45 95 30 95 Q 15 95 15 80" class="letter-guide"/>
+                            <circle cx="50" cy="20" r="4" class="start-dot"/>
+                            <text x="55" y="25" class="stroke-number">1</text>
+                            <text x="25" y="110" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <!-- U Practice -->
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 20 20 L 20 65 Q 20 80 40 80 Q 60 80 60 65 L 60 20" class="letter-guide"/>
+                            <circle cx="20" cy="20" r="4" class="start-dot"/>
+                            <text x="10" y="15" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <!-- J Practice -->
+                    <div class="letter-container">
+                        <svg width="80" height="120" class="absolute">
+                            <line x1="50" y1="20" x2="50" y2="80" class="letter-guide"/>
+                            <path d="M 50 80 Q 45 95 30 95 Q 15 95 15 80" class="letter-guide"/>
+                            <circle cx="50" cy="20" r="4" class="start-dot"/>
+                            <text x="55" y="25" class="stroke-number">1</text>
+                            <text x="25" y="110" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <!-- U Practice -->
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 20 20 L 20 65 Q 20 80 40 80 Q 60 80 60 65 L 60 20" class="letter-guide"/>
+                            <circle cx="20" cy="20" r="4" class="start-dot"/>
+                            <text x="10" y="15" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Word Practice -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-cyan-600 text-center">Word Practice</h2>
+                <div class="space-y-4">
+                    <div class="text-center">
+                        <h3 class="text-lg font-medium text-gray-700 mb-2">Practice writing these words:</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="border-2 border-dashed border-cyan-300 rounded-lg p-4">
+                                <p class="text-lg font-bold text-cyan-600 mb-2">JUG</p>
+                                <div class="space-y-2">
+                                    <div class="practice-line"></div>
+                                    <div class="practice-line"></div>
+                                </div>
+                            </div>
+                            <div class="border-2 border-dashed border-cyan-300 rounded-lg p-4">
+                                <p class="text-lg font-bold text-cyan-600 mb-2">JUMP</p>
+                                <div class="space-y-2">
+                                    <div class="practice-line"></div>
+                                    <div class="practice-line"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="mt-8 p-4 bg-cyan-50 border border-cyan-200 rounded-lg">
+                <h4 class="font-semibold text-cyan-800 mb-2">🔤 Mixed Formation Tips:</h4>
+                <ul class="text-sm text-cyan-700 space-y-1">
+                    <li>• <strong>J:</strong> Think of it as a straight line with a hook at the bottom</li>
+                    <li>• <strong>U:</strong> Like a smile turned upside down with straight sides</li>
+                    <li>• J goes below the baseline (descender)</li>
+                    <li>• U stays between the baseline and top line</li>
+                    <li>• Practice the curve at the bottom of both letters</li>
+                    <li>• These letters combine straight lines with curves</li>
+                </ul>
+            </div>
+        </main>
+
+        <div class="no-print mt-12 text-center">
+            <button onclick="window.print()" class="bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-300 transition-transform transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                </svg>
+                Print Worksheet
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

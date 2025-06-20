@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 2.3: Full Curve Letters (C, G, O, Q, S)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .no-print {
+                display: none;
+            }
+            .printable-area {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: 1px solid #e2e8f0;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .worksheet-container {
+            max-width: 800px;
+            min-height: 100vh;
+        }
+        .instruction-font {
+            font-family: 'Comic Neue', cursive;
+        }
+        .letter-container {
+            position: relative;
+            width: 120px;
+            height: 140px;
+            margin: 10px;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .letter-guide {
+            stroke: #d1d5db;
+            stroke-width: 3;
+            stroke-dasharray: 6, 3;
+            fill: none;
+        }
+        .start-dot {
+            fill: #22c55e;
+        }
+        .stroke-number {
+            font-size: 12px;
+            font-weight: bold;
+            fill: #6b7280;
+        }
+        .practice-line {
+            border-bottom: 1px solid #e5e7eb;
+            height: 60px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-start p-4 sm:p-8">
+
+    <div id="worksheet" class="worksheet-container bg-white p-8 sm:p-12 shadow-lg rounded-lg border border-gray-200">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-rose-600">Worksheet 2.3: Full Curve Letters</h1>
+            <p class="text-xl text-gray-600 mt-4 instruction-font">
+                "Practice letters made with curves: C, G, O, Q, S"
+            </p>
+        </header>
+
+        <main class="space-y-12">
+            <!-- Letter C -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-rose-600">Letter C</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 60 30 Q 50 15 35 20 Q 20 25 20 50 Q 20 75 35 80 Q 50 85 60 70" class="letter-guide"/>
+                            <circle cx="60" cy="30" r="4" class="start-dot"/>
+                            <text x="65" y="35" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <div class="flex-1 space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter G -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-rose-600">Letter G</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 60 30 Q 50 15 35 20 Q 20 25 20 50 Q 20 75 35 80 Q 50 85 60 70" class="letter-guide"/>
+                            <line x1="60" y1="70" x2="60" y2="55" class="letter-guide"/>
+                            <line x1="60" y1="55" x2="45" y2="55" class="letter-guide"/>
+                            <circle cx="60" cy="30" r="4" class="start-dot"/>
+                            <text x="65" y="35" class="stroke-number">1</text>
+                            <text x="65" y="65" class="stroke-number">2</text>
+                            <text x="40" y="50" class="stroke-number">3</text>
+                        </svg>
+                    </div>
+                    <div class="flex-1 space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter O -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-rose-600">Letter O</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <ellipse cx="40" cy="50" rx="25" ry="30" class="letter-guide"/>
+                            <circle cx="40" cy="20" r="4" class="start-dot"/>
+                            <text x="45" y="25" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <div class="flex-1 space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter Q -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-rose-600">Letter Q</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <ellipse cx="40" cy="50" rx="25" ry="30" class="letter-guide"/>
+                            <line x1="50" y1="65" x2="65" y2="85" class="letter-guide"/>
+                            <circle cx="40" cy="20" r="4" class="start-dot"/>
+                            <text x="45" y="25" class="stroke-number">1</text>
+                            <text x="60" y="90" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="flex-1 space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter S -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-rose-600">Letter S</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 60 25 Q 50 15 35 20 Q 20 25 25 35 Q 30 45 40 50 Q 50 55 55 65 Q 60 75 45 80 Q 30 85 20 75" class="letter-guide"/>
+                            <circle cx="60" cy="25" r="4" class="start-dot"/>
+                            <text x="65" y="30" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <div class="flex-1 space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="mt-8 p-4 bg-rose-50 border border-rose-200 rounded-lg">
+                <h4 class="font-semibold text-rose-800 mb-2">🌙 Curve Tips:</h4>
+                <ul class="text-sm text-rose-700 space-y-1">
+                    <li>• C and G start at the top right and curve around</li>
+                    <li>• O is a complete oval - start at the top and go around</li>
+                    <li>• Q is like O but with a tail at the bottom right</li>
+                    <li>• S has two curves that connect in the middle</li>
+                    <li>• Practice making smooth, even curves</li>
+                </ul>
+            </div>
+        </main>
+
+        <div class="no-print mt-12 text-center">
+            <button onclick="window.print()" class="bg-rose-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-rose-700 focus:outline-none focus:ring-4 focus:ring-rose-300 transition-transform transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                </svg>
+                Print Worksheet
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

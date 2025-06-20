@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 3.2: The "Down and Up" Letters (h, m, n, r, b, p)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .no-print {
+                display: none;
+            }
+            .printable-area {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: 1px solid #e2e8f0;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .worksheet-container {
+            max-width: 800px;
+            min-height: 100vh;
+        }
+        .instruction-font {
+            font-family: 'Comic Neue', cursive;
+        }
+        .letter-container {
+            position: relative;
+            width: 100px;
+            height: 120px;
+            margin: 10px;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .letter-guide {
+            stroke: #d1d5db;
+            stroke-width: 3;
+            stroke-dasharray: 6, 3;
+            fill: none;
+        }
+        .start-dot {
+            fill: #22c55e;
+        }
+        .stroke-number {
+            font-size: 11px;
+            font-weight: bold;
+            fill: #6b7280;
+        }
+        .practice-box {
+            width: 60px;
+            height: 80px;
+            border: 1px solid #e5e7eb;
+            margin: 3px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-start p-4 sm:p-8">
+
+    <div id="worksheet" class="worksheet-container bg-white p-8 sm:p-12 shadow-lg rounded-lg border border-gray-200">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-green-600">Worksheet 3.2: The "Down and Up" Letters</h1>
+            <p class="text-xl text-gray-600 mt-4 instruction-font">
+                "These letters go down first, then up to make a bump: h, m, n, r, b, p"
+            </p>
+        </header>
+
+        <main class="space-y-10">
+            <!-- Letter h -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-green-600">Letter h (tall line + bump)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="20" y1="10" x2="20" y2="75" class="letter-guide"/>
+                            <path d="M 20 40 Q 30 30 40 35 Q 50 40 50 50 L 50 75" class="letter-guide"/>
+                            <circle cx="20" cy="10" r="4" class="start-dot"/>
+                            <text x="10" y="15" class="stroke-number">1</text>
+                            <text x="55" y="45" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter m -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-green-600">Letter m (line down + two bumps)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="80" class="absolute">
+                            <line x1="15" y1="15" x2="15" y2="65" class="letter-guide"/>
+                            <path d="M 15 30 Q 25 20 30 25 Q 35 30 35 40 L 35 65" class="letter-guide"/>
+                            <path d="M 35 30 Q 45 20 50 25 Q 55 30 55 40 L 55 65" class="letter-guide"/>
+                            <circle cx="15" cy="15" r="4" class="start-dot"/>
+                            <text x="5" y="20" class="stroke-number">1</text>
+                            <text x="40" y="25" class="stroke-number">2</text>
+                            <text x="60" y="35" class="stroke-number">3</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter n -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-green-600">Letter n (line down + one bump)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="80" class="absolute">
+                            <line x1="20" y1="15" x2="20" y2="65" class="letter-guide"/>
+                            <path d="M 20 30 Q 30 20 40 25 Q 50 30 50 40 L 50 65" class="letter-guide"/>
+                            <circle cx="20" cy="15" r="4" class="start-dot"/>
+                            <text x="10" y="20" class="stroke-number">1</text>
+                            <text x="55" y="35" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter r -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-green-600">Letter r (line down + small bump)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="80" class="absolute">
+                            <line x1="20" y1="15" x2="20" y2="65" class="letter-guide"/>
+                            <path d="M 20 30 Q 30 20 40 25 Q 45 30 40 35" class="letter-guide"/>
+                            <circle cx="20" cy="15" r="4" class="start-dot"/>
+                            <text x="10" y="20" class="stroke-number">1</text>
+                            <text x="50" y="30" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter b -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-green-600">Letter b (tall line + bump at bottom)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="20" y1="10" x2="20" y2="75" class="letter-guide"/>
+                            <path d="M 20 40 Q 30 35 40 40 Q 50 45 50 55 Q 50 65 40 70 Q 30 75 20 70" class="letter-guide"/>
+                            <circle cx="20" cy="10" r="4" class="start-dot"/>
+                            <text x="10" y="15" class="stroke-number">1</text>
+                            <text x="55" y="50" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter p -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-green-600">Letter p (line down below + bump at top)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="letter-container">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="20" y1="15" x2="20" y2="85" class="letter-guide"/>
+                            <path d="M 20 15 Q 30 10 40 15 Q 50 20 50 30 Q 50 40 40 45 Q 30 50 20 45" class="letter-guide"/>
+                            <circle cx="20" cy="15" r="4" class="start-dot"/>
+                            <text x="10" y="20" class="stroke-number">1</text>
+                            <text x="55" y="25" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="mt-8 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h4 class="font-semibold text-green-800 mb-2">⬇️⬆️ Down and Up Tips:</h4>
+                <ul class="text-sm text-green-700 space-y-1">
+                    <li>• <strong>All letters start with a line down</strong> from the top</li>
+                    <li>• <strong>h:</strong> Tall line + bump on the right side</li>
+                    <li>• <strong>m:</strong> Short line + two bumps (like two n's together)</li>
+                    <li>• <strong>n:</strong> Short line + one bump on the right</li>
+                    <li>• <strong>r:</strong> Short line + small bump that doesn't go down</li>
+                    <li>• <strong>b:</strong> Tall line + round bump at the bottom</li>
+                    <li>• <strong>p:</strong> Line that goes below + round bump at the top</li>
+                    <li>• The bump always curves up and over, then down</li>
+                </ul>
+            </div>
+        </main>
+
+        <div class="no-print mt-12 text-center">
+            <button onclick="window.print()" class="bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition-transform transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002 2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                </svg>
+                Print Worksheet
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

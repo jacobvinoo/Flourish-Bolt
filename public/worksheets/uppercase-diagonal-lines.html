@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 2.4: Diagonal Line Letters (A, K, M, N, V, W, X, Y, Z)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .no-print {
+                display: none;
+            }
+            .printable-area {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: 1px solid #e2e8f0;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .worksheet-container {
+            max-width: 800px;
+            min-height: 100vh;
+        }
+        .instruction-font {
+            font-family: 'Comic Neue', cursive;
+        }
+        .letter-container {
+            position: relative;
+            width: 120px;
+            height: 140px;
+            margin: 10px;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .letter-guide {
+            stroke: #d1d5db;
+            stroke-width: 3;
+            stroke-dasharray: 6, 3;
+            fill: none;
+        }
+        .start-dot {
+            fill: #22c55e;
+        }
+        .stroke-number {
+            font-size: 12px;
+            font-weight: bold;
+            fill: #6b7280;
+        }
+        .practice-line {
+            border-bottom: 1px solid #e5e7eb;
+            height: 60px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-start p-4 sm:p-8">
+
+    <div id="worksheet" class="worksheet-container bg-white p-8 sm:p-12 shadow-lg rounded-lg border border-gray-200">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-amber-600">Worksheet 2.4: Diagonal Line Letters</h1>
+            <p class="text-xl text-gray-600 mt-4 instruction-font">
+                "Practice letters with diagonal lines: A, K, M, N, V, W, X, Y, Z"
+            </p>
+        </header>
+
+        <main class="space-y-10">
+            <!-- Row 1: A, K, M -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Letter A -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-amber-600">Letter A</h2>
+                    <div class="letter-container mx-auto">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="40" y1="20" x2="20" y2="80" class="letter-guide"/>
+                            <line x1="40" y1="20" x2="60" y2="80" class="letter-guide"/>
+                            <line x1="30" y1="55" x2="50" y2="55" class="letter-guide"/>
+                            <circle cx="40" cy="20" r="4" class="start-dot"/>
+                            <text x="35" y="15" class="stroke-number">1</text>
+                            <text x="15" y="85" class="stroke-number">2</text>
+                            <text x="35" y="50" class="stroke-number">3</text>
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+
+                <!-- Letter K -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-amber-600">Letter K</h2>
+                    <div class="letter-container mx-auto">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="20" y1="20" x2="20" y2="80" class="letter-guide"/>
+                            <line x1="60" y1="20" x2="20" y2="50" class="letter-guide"/>
+                            <line x1="20" y1="50" x2="60" y2="80" class="letter-guide"/>
+                            <circle cx="20" cy="20" r="4" class="start-dot"/>
+                            <text x="10" y="15" class="stroke-number">1</text>
+                            <text x="65" y="25" class="stroke-number">2</text>
+                            <text x="65" y="85" class="stroke-number">3</text>
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+
+                <!-- Letter M -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-amber-600">Letter M</h2>
+                    <div class="letter-container mx-auto">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="15" y1="20" x2="15" y2="80" class="letter-guide"/>
+                            <line x1="15" y1="20" x2="40" y2="50" class="letter-guide"/>
+                            <line x1="40" y1="50" x2="65" y2="20" class="letter-guide"/>
+                            <line x1="65" y1="20" x2="65" y2="80" class="letter-guide"/>
+                            <circle cx="15" cy="20" r="4" class="start-dot"/>
+                            <text x="5" y="15" class="stroke-number">1</text>
+                            <text x="35" y="60" class="stroke-number">2</text>
+                            <text x="70" y="25" class="stroke-number">3</text>
+                            <text x="70" y="85" class="stroke-number">4</text>
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: N, V, W -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Letter N -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-amber-600">Letter N</h2>
+                    <div class="letter-container mx-auto">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="20" y1="20" x2="20" y2="80" class="letter-guide"/>
+                            <line x1="20" y1="20" x2="60" y2="80" class="letter-guide"/>
+                            <line x1="60" y1="20" x2="60" y2="80" class="letter-guide"/>
+                            <circle cx="20" cy="20" r="4" class="start-dot"/>
+                            <text x="10" y="15" class="stroke-number">1</text>
+                            <text x="35" y="60" class="stroke-number">2</text>
+                            <text x="65" y="25" class="stroke-number">3</text>
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+
+                <!-- Letter V -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-amber-600">Letter V</h2>
+                    <div class="letter-container mx-auto">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="20" y1="20" x2="40" y2="80" class="letter-guide"/>
+                            <line x1="60" y1="20" x2="40" y2="80" class="letter-guide"/>
+                            <circle cx="20" cy="20" r="4" class="start-dot"/>
+                            <text x="10" y="25" class="stroke-number">1</text>
+                            <text x="65" y="25" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+
+                <!-- Letter W -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-amber-600">Letter W</h2>
+                    <div class="letter-container mx-auto">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="15" y1="20" x2="25" y2="80" class="letter-guide"/>
+                            <line x1="25" y1="80" x2="40" y2="50" class="letter-guide"/>
+                            <line x1="40" y1="50" x2="55" y2="80" class="letter-guide"/>
+                            <line x1="55" y1="80" x2="65" y2="20" class="letter-guide"/>
+                            <circle cx="15" cy="20" r="4" class="start-dot"/>
+                            <text x="5" y="25" class="stroke-number">1</text>
+                            <text x="35" y="40" class="stroke-number">2</text>
+                            <text x="60" y="85" class="stroke-number">3</text>
+                            <text x="70" y="25" class="stroke-number">4</text>
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3: X, Y, Z -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Letter X -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-amber-600">Letter X</h2>
+                    <div class="letter-container mx-auto">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="20" y1="20" x2="60" y2="80" class="letter-guide"/>
+                            <line x1="60" y1="20" x2="20" y2="80" class="letter-guide"/>
+                            <circle cx="20" cy="20" r="4" class="start-dot"/>
+                            <text x="10" y="25" class="stroke-number">1</text>
+                            <text x="65" y="25" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+
+                <!-- Letter Y -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-amber-600">Letter Y</h2>
+                    <div class="letter-container mx-auto">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="20" y1="20" x2="40" y2="50" class="letter-guide"/>
+                            <line x1="60" y1="20" x2="40" y2="50" class="letter-guide"/>
+                            <line x1="40" y1="50" x2="40" y2="80" class="letter-guide"/>
+                            <circle cx="20" cy="20" r="4" class="start-dot"/>
+                            <text x="10" y="25" class="stroke-number">1</text>
+                            <text x="65" y="25" class="stroke-number">2</text>
+                            <text x="45" y="70" class="stroke-number">3</text>
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+
+                <!-- Letter Z -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-amber-600">Letter Z</h2>
+                    <div class="letter-container mx-auto">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="20" y1="20" x2="60" y2="20" class="letter-guide"/>
+                            <line x1="60" y1="20" x2="20" y2="80" class="letter-guide"/>
+                            <line x1="20" y1="80" x2="60" y2="80" class="letter-guide"/>
+                            <circle cx="20" cy="20" r="4" class="start-dot"/>
+                            <text x="35" y="15" class="stroke-number">1</text>
+                            <text x="35" y="60" class="stroke-number">2</text>
+                            <text x="35" y="95" class="stroke-number">3</text>
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="practice-line"></div>
+                        <div class="practice-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <h4 class="font-semibold text-amber-800 mb-2">⚡ Diagonal Tips:</h4>
+                <ul class="text-sm text-amber-700 space-y-1">
+                    <li>• Keep diagonal lines at consistent angles</li>
+                    <li>• A and V form triangular shapes</li>
+                    <li>• M and W are like upside-down versions of each other</li>
+                    <li>• X is two diagonal lines crossing in the middle</li>
+                    <li>• Y combines diagonals with a vertical line</li>
+                    <li>• Z uses one diagonal between two horizontal lines</li>
+                </ul>
+            </div>
+        </main>
+
+        <div class="no-print mt-12 text-center">
+            <button onclick="window.print()" class="bg-amber-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-300 transition-transform transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                </svg>
+                Print Worksheet
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

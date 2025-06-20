@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 4.1: Numbers 0-5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .no-print {
+                display: none;
+            }
+            .printable-area {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: 1px solid #e2e8f0;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .worksheet-container {
+            max-width: 800px;
+            min-height: 100vh;
+        }
+        .instruction-font {
+            font-family: 'Comic Neue', cursive;
+        }
+        .number-container {
+            position: relative;
+            width: 120px;
+            height: 140px;
+            margin: 10px;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .number-guide {
+            stroke: #d1d5db;
+            stroke-width: 4;
+            stroke-dasharray: 8, 4;
+            fill: none;
+        }
+        .start-dot {
+            fill: #22c55e;
+        }
+        .stroke-number {
+            font-size: 12px;
+            font-weight: bold;
+            fill: #6b7280;
+        }
+        .practice-box {
+            width: 80px;
+            height: 100px;
+            border: 1px solid #e5e7eb;
+            margin: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-start p-4 sm:p-8">
+
+    <div id="worksheet" class="worksheet-container bg-white p-8 sm:p-12 shadow-lg rounded-lg border border-gray-200">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-emerald-600">Worksheet 4.1: Numbers 0-5</h1>
+            <p class="text-xl text-gray-600 mt-4 instruction-font">
+                "Learn to write numbers 0, 1, 2, 3, 4, and 5. Follow the green dot and stroke order!"
+            </p>
+        </header>
+
+        <main class="space-y-12">
+            <!-- Number 0 -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-emerald-600">Number 0 (Zero)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="number-container">
+                        <svg width="80" height="100" class="absolute">
+                            <ellipse cx="40" cy="50" rx="25" ry="35" class="number-guide"/>
+                            <circle cx="40" cy="15" r="4" class="start-dot"/>
+                            <text x="50" y="20" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Number 1 -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-emerald-600">Number 1 (One)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="number-container">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="30" y1="25" x2="40" y2="15" class="number-guide"/>
+                            <line x1="40" y1="15" x2="40" y2="85" class="number-guide"/>
+                            <circle cx="30" cy="25" r="4" class="start-dot"/>
+                            <text x="20" y="30" class="stroke-number">1</text>
+                            <text x="45" y="25" class="stroke-number">2</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Number 2 -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-emerald-600">Number 2 (Two)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="number-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 20 30 Q 20 15 40 15 Q 60 15 60 30 Q 60 45 20 85 L 60 85" class="number-guide"/>
+                            <circle cx="20" cy="30" r="4" class="start-dot"/>
+                            <text x="10" y="35" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Number 3 -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-emerald-600">Number 3 (Three)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="number-container">
+                        <svg width="80" height="100" class="absolute">
+                            <path d="M 20 20 Q 40 15 50 25 Q 60 35 40 45 Q 60 55 50 75 Q 40 85 20 80" class="number-guide"/>
+                            <circle cx="20" cy="20" r="4" class="start-dot"/>
+                            <text x="10" y="25" class="stroke-number">1</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Number 4 -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-emerald-600">Number 4 (Four)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="number-container">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="45" y1="15" x2="45" y2="85" class="number-guide"/>
+                            <line x1="45" y1="15" x2="20" y2="60" class="number-guide"/>
+                            <line x1="15" y1="60" x2="60" y2="60" class="number-guide"/>
+                            <circle cx="45" cy="15" r="4" class="start-dot"/>
+                            <text x="50" y="20" class="stroke-number">1</text>
+                            <text x="25" y="50" class="stroke-number">2</text>
+                            <text x="35" y="70" class="stroke-number">3</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Number 5 -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-emerald-600">Number 5 (Five)</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="number-container">
+                        <svg width="80" height="100" class="absolute">
+                            <line x1="55" y1="15" x2="25" y2="15" class="number-guide"/>
+                            <line x1="25" y1="15" x2="25" y2="45" class="number-guide"/>
+                            <path d="M 25 45 Q 45 40 55 50 Q 65 60 55 70 Q 45 80 25 75" class="number-guide"/>
+                            <circle cx="55" cy="15" r="4" class="start-dot"/>
+                            <text x="60" y="20" class="stroke-number">1</text>
+                            <text x="15" y="25" class="stroke-number">2</text>
+                            <text x="30" y="55" class="stroke-number">3</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-wrap">
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                        <div class="practice-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="mt-8 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                <h4 class="font-semibold text-emerald-800 mb-2">🔢 Number Writing Tips:</h4>
+                <ul class="text-sm text-emerald-700 space-y-1">
+                    <li>• <strong>0:</strong> Start at the top and make a smooth oval</li>
+                    <li>• <strong>1:</strong> Start with a small diagonal line, then straight down</li>
+                    <li>• <strong>2:</strong> Curve at the top, then diagonal down and across</li>
+                    <li>• <strong>3:</strong> Two curves that connect in the middle</li>
+                    <li>• <strong>4:</strong> Vertical line, then diagonal, then horizontal</li>
+                    <li>• <strong>5:</strong> Horizontal line, vertical down, then curve</li>
+                </ul>
+            </div>
+        </main>
+
+        <div class="no-print mt-12 text-center">
+            <button onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-300 transition-transform transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                </svg>
+                Print Worksheet
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

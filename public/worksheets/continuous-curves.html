@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 1.7: Continuous Curves</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .no-print {
+                display: none;
+            }
+            .printable-area {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: 1px solid #e2e8f0;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .worksheet-container {
+            max-width: 800px;
+            min-height: 100vh;
+        }
+        .instruction-font {
+            font-family: 'Comic Neue', cursive;
+        }
+        .trace-curve {
+            stroke: #d1d5db;
+            stroke-width: 3;
+            stroke-dasharray: 8, 4;
+            fill: none;
+        }
+        .start-dot {
+            fill: #22c55e;
+        }
+        .end-dot {
+            fill: #ef4444;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-start p-4 sm:p-8">
+
+    <div id="worksheet" class="worksheet-container bg-white p-8 sm:p-12 shadow-lg rounded-lg border border-gray-200">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-pink-600">Worksheet 1.7: Continuous Curves</h1>
+            <p class="text-xl text-gray-600 mt-4 instruction-font">
+                "Trace the flowing curves like ocean waves! Keep your pencil moving smoothly."
+            </p>
+        </header>
+
+        <main class="space-y-12">
+            <!-- Simple Waves Section -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-pink-600 text-center">Ocean Waves 〰️</h2>
+                <div class="space-y-8">
+                    <script>
+                        for (let row = 0; row < 4; row++) {
+                            document.write('<div class="flex justify-center">');
+                            const waveHeight = 30;
+                            const waveWidth = 60;
+                            const numWaves = 5;
+                            const totalWidth = numWaves * waveWidth + 40;
+                            
+                            document.write(`<svg width="${totalWidth}" height="${waveHeight * 2 + 20}" class="overflow-visible">`);
+                            
+                            // Create wave path
+                            let pathData = `M 20 ${waveHeight + 10}`;
+                            for (let i = 0; i < numWaves; i++) {
+                                const x1 = 20 + i * waveWidth + waveWidth * 0.25;
+                                const x2 = 20 + i * waveWidth + waveWidth * 0.75;
+                                const x3 = 20 + (i + 1) * waveWidth;
+                                const y1 = i % 2 === 0 ? 10 : waveHeight * 2 + 10;
+                                const y2 = i % 2 === 0 ? waveHeight * 2 + 10 : 10;
+                                pathData += ` Q ${x1} ${y1} ${20 + i * waveWidth + waveWidth * 0.5} ${waveHeight + 10} Q ${x2} ${y2} ${x3} ${waveHeight + 10}`;
+                            }
+                            
+                            document.write(`<path d="${pathData}" class="trace-curve"/>`);
+                            document.write(`<circle cx="20" cy="${waveHeight + 10}" r="6" class="start-dot"/>`);
+                            document.write(`<circle cx="${20 + numWaves * waveWidth}" cy="${waveHeight + 10}" r="6" class="end-dot"/>`);
+                            document.write('</svg>');
+                            document.write('</div>');
+                        }
+                    </script>
+                </div>
+            </div>
+
+            <!-- Loops Section -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-pink-600 text-center">Cursive Loops 🌀</h2>
+                <div class="space-y-8">
+                    <script>
+                        for (let row = 0; row < 3; row++) {
+                            document.write('<div class="flex justify-around items-center">');
+                            for (let i = 0; i < 4; i++) {
+                                const loopWidth = 40;
+                                const loopHeight = 60;
+                                document.write(`
+                                    <svg width="${loopWidth + 20}" height="${loopHeight + 20}" class="overflow-visible">
+                                        <path d="M 10 ${loopHeight + 10} Q 10 10 ${loopWidth/2 + 10} 10 Q ${loopWidth + 10} 10 ${loopWidth + 10} ${loopHeight/2 + 10} Q ${loopWidth + 10} ${loopHeight + 10} ${loopWidth/2 + 10} ${loopHeight + 10} Q 10 ${loopHeight + 10} 10 ${loopHeight/2 + 10}" class="trace-curve"/>
+                                        <circle cx="10" cy="${loopHeight + 10}" r="5" class="start-dot"/>
+                                        <circle cx="10" cy="${loopHeight/2 + 10}" r="5" class="end-dot"/>
+                                    </svg>
+                                `);
+                            }
+                            document.write('</div>');
+                        }
+                    </script>
+                </div>
+            </div>
+
+            <!-- S-Curves Section -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-pink-600 text-center">S-Curves 🐍</h2>
+                <div class="space-y-8">
+                    <script>
+                        for (let row = 0; row < 3; row++) {
+                            document.write('<div class="flex justify-around items-center">');
+                            for (let i = 0; i < 5; i++) {
+                                const curveWidth = 50;
+                                const curveHeight = 80;
+                                document.write(`
+                                    <svg width="${curveWidth + 20}" height="${curveHeight + 20}" class="overflow-visible">
+                                        <path d="M 10 10 Q ${curveWidth + 10} 10 ${curveWidth/2 + 10} ${curveHeight/2 + 10} Q 10 ${curveHeight + 10} ${curveWidth + 10} ${curveHeight + 10}" class="trace-curve"/>
+                                        <circle cx="10" cy="10" r="5" class="start-dot"/>
+                                        <circle cx="${curveWidth + 10}" cy="${curveHeight + 10}" r="5" class="end-dot"/>
+                                    </svg>
+                                `);
+                            }
+                            document.write('</div>');
+                        }
+                    </script>
+                </div>
+            </div>
+
+            <!-- Challenge: Continuous Pattern -->
+            <div class="space-y-6">
+                <h2 class="text-xl font-semibold text-pink-600 text-center">Challenge: Flowing Pattern</h2>
+                <div class="flex justify-center">
+                    <svg width="600" height="120" class="overflow-visible">
+                        <!-- Complex flowing pattern -->
+                        <path d="M 20 60 Q 80 20 140 60 Q 200 100 260 60 Q 320 20 380 60 Q 440 100 500 60 Q 560 20 580 60" 
+                              class="trace-curve"/>
+                        <circle cx="20" cy="60" r="8" class="start-dot"/>
+                        <circle cx="580" cy="60" r="8" class="end-dot"/>
+                        
+                        <!-- Helper dots -->
+                        <circle cx="140" cy="60" r="4" fill="#fbbf24" opacity="0.7"/>
+                        <circle cx="260" cy="60" r="4" fill="#fbbf24" opacity="0.7"/>
+                        <circle cx="380" cy="60" r="4" fill="#fbbf24" opacity="0.7"/>
+                        <circle cx="500" cy="60" r="4" fill="#fbbf24" opacity="0.7"/>
+                    </svg>
+                </div>
+                <p class="text-sm text-gray-500 text-center mt-2">Follow the yellow dots to create a beautiful flowing pattern!</p>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="mt-8 p-4 bg-pink-50 border border-pink-200 rounded-lg">
+                <h4 class="font-semibold text-pink-800 mb-2">🌊 Curve Tips:</h4>
+                <ul class="text-sm text-pink-700 space-y-1">
+                    <li>• Keep your pencil moving smoothly - don't stop and start</li>
+                    <li>• Use your whole arm, not just your wrist</li>
+                    <li>• Practice breathing steadily as you trace</li>
+                    <li>• These curves prepare you for cursive letters like e, l, and connecting strokes</li>
+                    <li>• Smooth curves help develop fluidity in handwriting</li>
+                </ul>
+            </div>
+        </main>
+
+        <div class="no-print mt-12 text-center">
+            <button onclick="window.print()" class="bg-pink-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-4 focus:ring-pink-300 transition-transform transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                </svg>
+                Print Worksheet
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

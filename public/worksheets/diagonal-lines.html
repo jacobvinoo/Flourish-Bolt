@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 1.4: Diagonal Lines</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Balsamiq+Sans:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact; /* Chrome, Safari */
+                color-adjust: exact; /* Firefox */
+            }
+            .no-print {
+                display: none;
+            }
+            .printable-area {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: 1px solid #e2e8f0;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .worksheet-title {
+            font-family: 'Balsamiq Sans', cursive;
+        }
+        /* Arrow marker for the line */
+        #arrow path {
+            fill: #7c3aed; /* Purple color for the arrow */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+
+    <div class="w-full max-w-4xl">
+        <!-- Main worksheet container -->
+        <div id="worksheet" class="printable-area bg-white rounded-2xl shadow-lg p-6 sm:p-10 border-2 border-gray-200">
+            <!-- Header section -->
+            <header class="text-center border-b-2 border-dashed border-gray-300 pb-6 mb-8">
+                <h1 class="worksheet-title text-3xl sm:text-4xl text-purple-600">Worksheet 1.4: Diagonal Lines</h1>
+                <p class="text-gray-600 text-lg mt-4 max-w-2xl mx-auto"><strong>Instructions:</strong> Start at the green dot and trace the diagonal line to the red dot. Practice both directions!</p>
+            </header>
+
+            <!-- SVG definitions for markers -->
+            <svg class="absolute w-0 h-0">
+                <defs>
+                    <marker
+                        id="arrow"
+                        viewBox="0 0 10 10"
+                        refX="5"
+                        refY="5"
+                        markerWidth="5"
+                        markerHeight="5"
+                        orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                    </marker>
+                </defs>
+            </svg>
+
+            <!-- Tracing practice area -->
+            <main class="space-y-12">
+                <!-- Row 1: Down-Right Diagonals -->
+                <div class="text-center mb-4">
+                    <h3 class="text-lg font-semibold text-purple-600 mb-6">Down-Right Diagonals ↘</h3>
+                    <div class="flex justify-around items-center">
+                        <script>
+                            const downRightLengths = [80, 100, 90, 110, 85];
+                            for (const len of downRightLengths) {
+                                document.write(`
+                                    <svg width="${len + 20}" height="${len + 20}" class="overflow-visible">
+                                        <line x1="10" y1="10" x2="${len}" y2="${len}" stroke="#d1d5db" stroke-width="3" stroke-dasharray="5,5" marker-mid="url(#arrow)"></line>
+                                        <circle cx="10" cy="10" r="6" fill="#22c55e"></circle>
+                                        <circle cx="${len}" cy="${len}" r="6" fill="#ef4444"></circle>
+                                    </svg>
+                                `);
+                            }
+                        </script>
+                    </div>
+                </div>
+
+                <!-- Row 2: Down-Left Diagonals -->
+                <div class="text-center mb-4">
+                    <h3 class="text-lg font-semibold text-purple-600 mb-6">Down-Left Diagonals ↙</h3>
+                    <div class="flex justify-around items-center">
+                        <script>
+                            const downLeftLengths = [90, 80, 105, 95, 100];
+                            for (const len of downLeftLengths) {
+                                document.write(`
+                                    <svg width="${len + 20}" height="${len + 20}" class="overflow-visible">
+                                        <line x1="${len}" y1="10" x2="10" y2="${len}" stroke="#d1d5db" stroke-width="3" stroke-dasharray="5,5" marker-mid="url(#arrow)"></line>
+                                        <circle cx="${len}" cy="10" r="6" fill="#22c55e"></circle>
+                                        <circle cx="10" cy="${len}" r="6" fill="#ef4444"></circle>
+                                    </svg>
+                                `);
+                            }
+                        </script>
+                    </div>
+                </div>
+
+                <!-- Row 3: Mixed Practice - Shorter Lines -->
+                <div class="text-center mb-4">
+                    <h3 class="text-lg font-semibold text-purple-600 mb-6">Mixed Practice</h3>
+                    <div class="flex justify-around items-center flex-wrap gap-4">
+                        <script>
+                            // Alternating down-right and down-left diagonals
+                            const mixedPatterns = [
+                                { type: 'down-right', len: 60 },
+                                { type: 'down-left', len: 65 },
+                                { type: 'down-right', len: 70 },
+                                { type: 'down-left', len: 60 },
+                                { type: 'down-right', len: 65 },
+                                { type: 'down-left', len: 70 }
+                            ];
+                            
+                            for (const pattern of mixedPatterns) {
+                                if (pattern.type === 'down-right') {
+                                    document.write(`
+                                        <svg width="${pattern.len + 20}" height="${pattern.len + 20}" class="overflow-visible">
+                                            <line x1="10" y1="10" x2="${pattern.len}" y2="${pattern.len}" stroke="#d1d5db" stroke-width="3" stroke-dasharray="5,5" marker-mid="url(#arrow)"></line>
+                                            <circle cx="10" cy="10" r="6" fill="#22c55e"></circle>
+                                            <circle cx="${pattern.len}" cy="${pattern.len}" r="6" fill="#ef4444"></circle>
+                                        </svg>
+                                    `);
+                                } else {
+                                    document.write(`
+                                        <svg width="${pattern.len + 20}" height="${pattern.len + 20}" class="overflow-visible">
+                                            <line x1="${pattern.len}" y1="10" x2="10" y2="${pattern.len}" stroke="#d1d5db" stroke-width="3" stroke-dasharray="5,5" marker-mid="url(#arrow)"></line>
+                                            <circle cx="${pattern.len}" cy="10" r="6" fill="#22c55e"></circle>
+                                            <circle cx="10" cy="${pattern.len}" r="6" fill="#ef4444"></circle>
+                                        </svg>
+                                    `);
+                                }
+                            }
+                        </script>
+                    </div>
+                </div>
+
+                <!-- Row 4: Challenge Section - Zigzag Pattern -->
+                <div class="text-center mb-4">
+                    <h3 class="text-lg font-semibold text-purple-600 mb-6">Challenge: Zigzag Pattern</h3>
+                    <div class="flex justify-center">
+                        <svg width="400" height="120" class="overflow-visible">
+                            <!-- Zigzag pattern with multiple connected diagonal lines -->
+                            <path d="M 20 20 L 70 70 L 120 20 L 170 70 L 220 20 L 270 70 L 320 20 L 370 70" 
+                                  stroke="#d1d5db" 
+                                  stroke-width="3" 
+                                  stroke-dasharray="5,5" 
+                                  fill="none"
+                                  marker-start="url(#arrow)"></path>
+                            <circle cx="20" cy="20" r="8" fill="#22c55e"></circle>
+                            <circle cx="370" cy="70" r="8" fill="#ef4444"></circle>
+                            
+                            <!-- Helper dots at each peak and valley -->
+                            <circle cx="70" cy="70" r="4" fill="#fbbf24" opacity="0.7"></circle>
+                            <circle cx="120" cy="20" r="4" fill="#fbbf24" opacity="0.7"></circle>
+                            <circle cx="170" cy="70" r="4" fill="#fbbf24" opacity="0.7"></circle>
+                            <circle cx="220" cy="20" r="4" fill="#fbbf24" opacity="0.7"></circle>
+                            <circle cx="270" cy="70" r="4" fill="#fbbf24" opacity="0.7"></circle>
+                            <circle cx="320" cy="20" r="4" fill="#fbbf24" opacity="0.7"></circle>
+                        </svg>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">Follow the yellow dots to create a zigzag pattern!</p>
+                </div>
+            </main>
+
+            <!-- Tips Section -->
+            <div class="mt-8 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                <h4 class="font-semibold text-purple-800 mb-2">💡 Practice Tips:</h4>
+                <ul class="text-sm text-purple-700 space-y-1">
+                    <li>• Keep your wrist steady and move from your shoulder</li>
+                    <li>• Practice slow, controlled movements first</li>
+                    <li>• Try to make your lines the same angle each time</li>
+                    <li>• Diagonal lines help prepare for letters like A, V, W, and X</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Print Button -->
+        <div class="no-print mt-6 text-center">
+            <button onclick="window.print()" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-300 transition-transform transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                </svg>
+                Print Worksheet
+            </button>
+        </div>
+    </div>
+</body>
+</html>
