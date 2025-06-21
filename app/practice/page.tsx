@@ -27,6 +27,67 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
+// Add animations styles
+const animationStyles = `
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-10px) rotate(1deg); }
+    66% { transform: translateY(-5px) rotate(-1deg); }
+  }
+  
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(2deg); }
+  }
+  
+  @keyframes float-delay {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-8px) rotate(-1deg); }
+    66% { transform: translateY(-12px) rotate(1deg); }
+  }
+  
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  
+  @keyframes twinkle-delay {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+  }
+  
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  @keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+  }
+  
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+  .animate-float-delay { animation: float-delay 7s ease-in-out infinite; }
+  .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
+  .animate-twinkle-delay { animation: twinkle-delay 4s ease-in-out infinite; }
+  .animate-bounce-slow { animation: bounce-slow 4s ease-in-out infinite; }
+  .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+  .animate-spin-reverse { animation: spin-reverse 25s linear infinite; }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = animationStyles;
+  document.head.appendChild(style);
+}
+
 type Profile = Tables<'profiles'>;
 
 interface WorksheetStep {
@@ -613,11 +674,110 @@ export default function PracticePage() {
   const isCompleted = completedSteps.has(currentWorksheet.id);
 
   return (
-    <div className={`min-h-screen transition-all duration-500 ${
+    <div className={`min-h-screen transition-all duration-500 relative overflow-hidden ${
       isKidsMode 
         ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
         : 'bg-gray-50'
     }`}>
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Wavy Background Patterns */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 opacity-20">
+          <svg viewBox="0 0 200 200" className="w-full h-full animate-spin-slow">
+            <defs>
+              <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor={isKidsMode ? "#ec4899" : "#3b82f6"} />
+                <stop offset="100%" stopColor={isKidsMode ? "#8b5cf6" : "#1e40af"} />
+              </linearGradient>
+            </defs>
+            <path d="M20,100 Q100,20 180,100 Q100,180 20,100" fill="url(#gradient1)" opacity="0.3" />
+          </svg>
+        </div>
+
+        <div className="absolute -bottom-32 -right-32 w-80 h-80 opacity-15">
+          <svg viewBox="0 0 200 200" className="w-full h-full animate-spin-reverse">
+            <defs>
+              <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor={isKidsMode ? "#06b6d4" : "#10b981"} />
+                <stop offset="100%" stopColor={isKidsMode ? "#3b82f6" : "#059669"} />
+              </linearGradient>
+            </defs>
+            <circle cx="100" cy="100" r="80" fill="url(#gradient2)" opacity="0.4" />
+          </svg>
+        </div>
+
+        {/* Floating Animated Elements */}
+        {isKidsMode && (
+          <>
+            {/* Pencil */}
+            <div className="absolute top-20 left-10 w-12 h-12 animate-float">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-500">
+                <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+              </svg>
+            </div>
+
+            {/* Stars */}
+            <div className="absolute top-32 right-20 w-6 h-6 animate-twinkle">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-pink-400">
+                <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
+              </svg>
+            </div>
+
+            <div className="absolute bottom-32 left-20 w-4 h-4 animate-twinkle-delay">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-blue-400">
+                <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
+              </svg>
+            </div>
+
+            {/* Book */}
+            <div className="absolute top-1/2 right-10 w-10 h-10 animate-float-slow">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-green-500">
+                <path fill="currentColor" d="M19,2L14,6.5V17.5L19,13V2M6.5,5C4.55,5 2.45,5.4 1,6.5V21.16C1,21.41 1.25,21.66 1.5,21.66C1.6,21.66 1.65,21.59 1.75,21.59C3.1,20.94 5.05,20.68 6.5,20.68C8.45,20.68 10.55,21.1 12,22C13.35,21.15 15.8,20.68 17.5,20.68C19.15,20.68 20.85,21.1 22.25,21.81C22.35,21.86 22.4,21.91 22.5,21.91C22.75,21.91 23,21.66 23,21.41V6.5C22.4,6.05 21.75,5.75 21,5.5V19C19.9,18.65 18.7,18.5 17.5,18.5C15.8,18.5 13.35,18.9 12,19.81V6.5C10.55,5.4 8.45,5 6.5,5Z" />
+              </svg>
+            </div>
+
+            {/* Trophy */}
+            <div className="absolute bottom-20 right-32 w-8 h-8 animate-bounce-slow">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-amber-500">
+                <path fill="currentColor" d="M7.5,14H16.5L16,12.5L15.5,11H8.5L8,12.5L7.5,14M12,3.8C9.68,3.8 7.8,5.68 7.8,8C7.8,8.76 8,9.47 8.34,10.1L9.5,12.5V21H14.5V12.5L15.66,10.1C16,9.47 16.2,8.76 16.2,8C16.2,5.68 14.32,3.8 12,3.8M5.91,6.41A1,1 0 0,1 6.84,6.48L7.5,7.13A1,1 0 0,1 6.13,8.5L5.48,7.84A1,1 0 0,1 5.41,6.91M18.09,6.41A1,1 0 0,1 18.52,7.84L17.87,8.5A1,1 0 0,1 16.5,7.13L17.16,6.48A1,1 0 0,1 18.09,6.41Z" />
+              </svg>
+            </div>
+
+            {/* Colorful shapes */}
+            <div className="absolute top-1/4 left-1/3 w-6 h-6 bg-pink-400 rounded-full animate-float opacity-60"></div>
+            <div className="absolute bottom-1/3 left-1/4 w-4 h-4 bg-blue-400 transform rotate-45 animate-float-delay opacity-60"></div>
+            <div className="absolute top-2/3 right-1/4 w-5 h-5 bg-yellow-400 rounded-full animate-twinkle opacity-60"></div>
+          </>
+        )}
+
+        {/* Adult mode subtle elements */}
+        {!isKidsMode && (
+          <>
+            <div className="absolute top-20 right-20 w-8 h-8 opacity-20 animate-float">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-blue-600">
+                <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+              </svg>
+            </div>
+            <div className="absolute bottom-32 left-16 w-6 h-6 opacity-15 animate-float-slow">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-green-600">
+                <path fill="currentColor" d="M9,5V9H15V5M9,11V15H15V11M9,17V21H15V17M5,5V9H7V5M5,11V15H7V11M5,17V21H7V17M17,5V9H19V5M17,11V15H19V11M17,17V21H19V17Z" />
+              </svg>
+            </div>
+          </>
+        )}
+
+        {/* Wavy lines overlay */}
+        <div className="absolute inset-0 opacity-10">
+          <svg width="100%" height="100%" viewBox="0 0 1200 600" className="absolute inset-0">
+            <defs>
+              <pattern id="wave" x="0" y="0" width="200" height="100" patternUnits="userSpaceOnUse">
+                <path d="M0,50 Q50,0 100,50 T200,50" stroke={isKidsMode ? "#ec4899" : "#3b82f6"} strokeWidth="2" fill="none" opacity="0.3" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#wave)" />
+          </svg>
+        </div>
+      </div>
       {/* Header with Logo */}
       <header className={`${
         isKidsMode 
