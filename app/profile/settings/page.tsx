@@ -67,7 +67,8 @@ export default function ProfileSettingsPage() {
     applyTheme(formData.display_mode as 'adult' | 'kids');
   }, [formData.display_mode, applyTheme]);
 
-  // [FIX] Combined fetching and creation logic for better stability.
+  // [FIX] Wrapped fetchOrCreateProfile in useCallback to prevent it from being recreated on every render.
+  // This stabilizes the function and prevents the useEffect hook from causing an infinite loop.
   const fetchOrCreateProfile = useCallback(async (user: User) => {
     const { data, error } = await supabase
       .from('profiles')
@@ -83,10 +84,9 @@ export default function ProfileSettingsPage() {
         display_mode: data.display_mode || 'adult',
         avatar_url: data.avatar_url || null,
       });
-      return; // Profile found, exit function
+      return;
     }
     
-    // If no data and the error indicates no row was found, create one.
     if (error && error.code === 'PGRST116') {
       console.log('No profile found, creating a new one...');
       const newProfile: TablesInsert<'profiles'> = {
@@ -119,7 +119,6 @@ export default function ProfileSettingsPage() {
         });
       }
     } else if (error) {
-      // Handle other potential errors during fetch
       console.error('Error fetching profile:', error);
       setMessage({ type: 'error', text: 'Failed to load profile data.' });
     }
@@ -128,7 +127,6 @@ export default function ProfileSettingsPage() {
 
   useEffect(() => {
     const getUserAndProfile = async () => {
-      setLoading(true);
       const { data: { user }, error: authError } = await supabase.auth.getUser();
 
       if (authError || !user) {
@@ -138,7 +136,7 @@ export default function ProfileSettingsPage() {
       
       setUser(user);
       await fetchOrCreateProfile(user);
-      setLoading(false);
+      setLoading(false); // This will now be reached correctly.
     };
     
     getUserAndProfile();
@@ -201,17 +199,6 @@ export default function ProfileSettingsPage() {
         <div className="text-center">
           <Loader2 className="h-16 w-16 text-primary animate-spin mx-auto mb-4" />
           <p className="text-muted-foreground">Loading profile settings...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <p className="text-muted-foreground">Unable to load user data. Redirecting to login.</p>
         </div>
       </div>
     );
@@ -284,7 +271,7 @@ export default function ProfileSettingsPage() {
                   <Input
                     id="email"
                     type="email"
-                    value={user.email || ''}
+                    value={user?.email || ''}
                     disabled
                     className={`bg-muted ${isKidsMode ? 'form-input' : ''}`}
                   />
