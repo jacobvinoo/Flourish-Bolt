@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Database, Tables } from '@/lib/database.types';
+import { Database, Tables, TablesInsert } from '@/lib/database.types';
 import { 
   ArrowLeft, 
   User as UserIcon, 
@@ -67,32 +67,64 @@ export default function ProfileSettingsPage() {
     applyTheme(formData.display_mode as 'adult' | 'kids');
   }, [formData.display_mode, applyTheme]);
 
-  const fetchProfile = useCallback(async (userId: string) => {
-    try {
-      const { data, error, status } = await supabase
+  // [FIX] Combined fetching and creation logic for better stability.
+  const fetchOrCreateProfile = useCallback(async (user: User) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (data) {
+      setProfile(data);
+      setFormData({
+        full_name: data.full_name || '',
+        user_role: data.user_role || 'student',
+        display_mode: data.display_mode || 'adult',
+        avatar_url: data.avatar_url || null,
+      });
+      return; // Profile found, exit function
+    }
+    
+    // If no data and the error indicates no row was found, create one.
+    if (error && error.code === 'PGRST116') {
+      console.log('No profile found, creating a new one...');
+      const newProfile: TablesInsert<'profiles'> = {
+        id: user.id,
+        full_name: user.user_metadata?.full_name || '',
+        user_role: 'student',
+        display_mode: 'adult',
+        avatar_url: user.user_metadata?.avatar_url || null,
+      };
+
+      const { data: createdProfile, error: createError } = await supabase
         .from('profiles')
-        .select('*')
-        .eq('id', userId)
+        .insert(newProfile)
+        .select()
         .single();
+      
+      if (createError) {
+        setMessage({ type: 'error', text: 'Failed to create a new profile.' });
+        console.error('Error creating profile:', createError);
+        return;
+      }
 
-      if (error && status !== 406) throw error;
-
-      if (data) {
-        setProfile(data);
+      if (createdProfile) {
+        setProfile(createdProfile);
         setFormData({
-          full_name: data.full_name || '',
-          user_role: data.user_role || 'student',
-          display_mode: data.display_mode || 'adult',
-          avatar_url: data.avatar_url || null,
+          full_name: createdProfile.full_name || '',
+          user_role: createdProfile.user_role || 'student',
+          display_mode: createdProfile.display_mode || 'adult',
+          avatar_url: createdProfile.avatar_url || null,
         });
       }
-    } catch (error) {
+    } else if (error) {
+      // Handle other potential errors during fetch
       console.error('Error fetching profile:', error);
       setMessage({ type: 'error', text: 'Failed to load profile data.' });
-    } finally {
-      setLoading(false);
     }
   }, [supabase]);
+
 
   useEffect(() => {
     const getUserAndProfile = async () => {
@@ -105,13 +137,14 @@ export default function ProfileSettingsPage() {
       }
       
       setUser(user);
-      await fetchProfile(user.id);
+      await fetchOrCreateProfile(user);
+      setLoading(false);
     };
     
     getUserAndProfile();
 
     return () => applyTheme(null);
-  }, [supabase.auth, router, fetchProfile, applyTheme]);
+  }, [supabase.auth, router, fetchOrCreateProfile, applyTheme]);
 
   const handleSave = async () => {
     if (!user) {
@@ -123,11 +156,8 @@ export default function ProfileSettingsPage() {
     setSaving(true);
 
     try {
-      // [FIX] Construct the `updateData` object within the function scope.
-      // This ensures TypeScript knows `user.id` is a valid string
-      // because of the `!user` check above.
       const updateData = {
-        id: user.id, // Guaranteed to be a string here
+        id: user.id,
         full_name: formData.full_name,
         user_role: formData.user_role as 'student' | 'parent' | 'therapist',
         display_mode: formData.display_mode as 'adult' | 'kids',
@@ -137,7 +167,7 @@ export default function ProfileSettingsPage() {
 
       const { data, error } = await supabase
         .from('profiles')
-        .upsert(updateData) // This call now has the correct type
+        .upsert(updateData)
         .select()
         .single();
 
@@ -154,7 +184,7 @@ export default function ProfileSettingsPage() {
     }
   };
   
-  const handleInputChange = (field: keyof ProfileFormData, value: string) => {
+  const handleInputChange = (field: keyof ProfileFormData, value: string | null) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -338,7 +368,7 @@ export default function ProfileSettingsPage() {
               <CardContent className="pt-6">
                 <Button
                   onClick={handleSave}
-                  disabled={saving}
+                  disabled={saving || loading}
                   className={`w-full h-12 text-lg font-semibold ${isKidsMode ? 'button big-button' : ''}`}
                   size="lg"
                 >
