@@ -42,6 +42,7 @@ export default function ProfileSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
   
   // Form state - separate from profile state for better control
   const [formData, setFormData] = useState<FormData>({
@@ -53,6 +54,12 @@ export default function ProfileSettingsPage() {
 
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
+
+  // Debug logging function
+  const addDebugInfo = (info: string) => {
+    console.log('DEBUG:', info);
+    setDebugInfo(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${info}`]);
+  };
 
   const applyTheme = useCallback((theme: 'adult' | 'kids' | null) => {
     if (typeof window !== 'undefined') {
@@ -95,25 +102,32 @@ export default function ProfileSettingsPage() {
   // Fetch or create profile
   const fetchOrCreateProfile = useCallback(async (user: User) => {
     try {
-      console.log('Fetching profile for user:', user.id);
+      addDebugInfo(`Starting profile fetch for user: ${user.id}`);
       
       // First try to fetch existing profile
-      let { data: profileData, error: fetchError } = await supabase
+      const { data: profileData, error: fetchError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle(); // Use maybeSingle instead of single to handle no rows gracefully
+
+      addDebugInfo(`Profile fetch result: ${fetchError ? 'ERROR' : 'SUCCESS'}`);
+      
+      if (fetchError) {
+        addDebugInfo(`Fetch error: ${fetchError.message}`);
+        throw fetchError;
+      }
 
       // If profile doesn't exist, create one
-      if (fetchError && fetchError.code === 'PGRST116') {
-        console.log('No profile found, creating a new one...');
+      if (!profileData) {
+        addDebugInfo('No profile found, creating new profile');
         
         const newProfileData = {
           id: user.id,
           full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || '',
           avatar_url: user.user_metadata?.avatar_url || null,
-          user_role: 'student' as const,
-          display_mode: 'adult' as const
+          user_role: 'student',
+          display_mode: 'adult'
         };
         
         const { data: newProfile, error: createError } = await supabase
@@ -123,34 +137,32 @@ export default function ProfileSettingsPage() {
           .single();
         
         if (createError) {
-          console.error('Error creating profile:', createError);
+          addDebugInfo(`Create error: ${createError.message}`);
           throw createError;
         }
         
-        profileData = newProfile;
-        console.log('Created new profile:', profileData);
-      } else if (fetchError) {
-        console.error('Error fetching profile:', fetchError);
-        throw fetchError;
-      }
-      
-      if (profileData) {
-        console.log('Profile loaded successfully:', profileData);
+        addDebugInfo('New profile created successfully');
+        setProfile(newProfile);
+        setFormData({
+          full_name: newProfile.full_name || '',
+          user_role: getUserRole(newProfile.user_role),
+          display_mode: getDisplayMode(newProfile.display_mode),
+          avatar_url: newProfile.avatar_url || null,
+        });
+      } else {
+        addDebugInfo('Profile loaded successfully');
         setProfile(profileData);
-        
-        // Update form data with loaded profile
         setFormData({
           full_name: profileData.full_name || '',
           user_role: getUserRole(profileData.user_role),
           display_mode: getDisplayMode(profileData.display_mode),
           avatar_url: profileData.avatar_url || null,
         });
-      } else {
-        throw new Error("Profile could not be fetched or created.");
       }
-    } catch (error) {
+    } catch (error: any) {
+      addDebugInfo(`Profile operation failed: ${error.message}`);
       console.error("Error in fetchOrCreateProfile:", error);
-      setMessage({ type: 'error', text: 'Failed to load profile data. Please try refreshing the page.' });
+      setMessage({ type: 'error', text: `Failed to load profile: ${error.message}` });
     }
   }, [supabase]);
 
@@ -158,28 +170,33 @@ export default function ProfileSettingsPage() {
   useEffect(() => {
     const getUserAndProfile = async () => {
       try {
+        addDebugInfo('Starting user authentication check');
+        
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError) {
+          addDebugInfo(`Auth error: ${authError.message}`);
           console.error('Auth error:', authError);
-          router.push('/login');
+          setMessage({ type: 'error', text: `Authentication failed: ${authError.message}` });
           return;
         }
         
         if (!user) {
-          console.log('No user found, redirecting to login');
+          addDebugInfo('No user found, redirecting to login');
           router.push('/login');
           return;
         }
         
-        console.log('User authenticated:', user.email);
+        addDebugInfo(`User authenticated: ${user.email}`);
         setUser(user);
         await fetchOrCreateProfile(user);
 
-      } catch (error) {
+      } catch (error: any) {
+        addDebugInfo(`Unexpected error: ${error.message}`);
         console.error("An unexpected error occurred while loading the page:", error);
-        setMessage({ type: 'error', text: 'An unexpected error occurred. Please refresh the page.' });
+        setMessage({ type: 'error', text: `An unexpected error occurred: ${error.message}` });
       } finally {
+        addDebugInfo('Loading complete');
         setLoading(false);
       }
     };
@@ -197,12 +214,11 @@ export default function ProfileSettingsPage() {
       return;
     }
 
+    addDebugInfo('Starting profile save');
     setMessage(null);
     setSaving(true);
 
     try {
-      console.log('Saving profile with data:', formData);
-      
       const updateData = {
         id: user.id,
         full_name: formData.full_name.trim(),
@@ -211,6 +227,8 @@ export default function ProfileSettingsPage() {
         avatar_url: formData.avatar_url,
         updated_at: new Date().toISOString()
       };
+
+      addDebugInfo(`Saving profile data: ${JSON.stringify(updateData)}`);
 
       const { data, error } = await supabase
         .from('profiles')
@@ -221,19 +239,21 @@ export default function ProfileSettingsPage() {
         .single();
 
       if (error) {
+        addDebugInfo(`Save error: ${error.message}`);
         console.error('Error saving profile:', error);
         throw error;
       }
       
-      console.log('Profile saved successfully:', data);
+      addDebugInfo('Profile saved successfully');
       setProfile(data);
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
       
     } catch (error: any) {
+      addDebugInfo(`Save failed: ${error.message}`);
       console.error('Error saving profile:', error);
       setMessage({ 
         type: 'error', 
-        text: error.message || 'Failed to update profile. Please try again.' 
+        text: `Failed to update profile: ${error.message}. Please check your database connection and table schema.` 
       });
     } finally {
       setSaving(false);
@@ -263,9 +283,16 @@ export default function ProfileSettingsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center max-w-md mx-auto">
           <Loader2 className="h-16 w-16 text-primary animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading profile settings...</p>
+          <p className="text-muted-foreground mb-4">Loading profile settings...</p>
+          {/* Debug information */}
+          <div className="text-left bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-xs space-y-1">
+            <div className="font-semibold mb-2">Debug Log:</div>
+            {debugInfo.map((info, index) => (
+              <div key={index} className="text-gray-600 dark:text-gray-400">{info}</div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -293,6 +320,22 @@ export default function ProfileSettingsPage() {
             </p>
           </div>
         </div>
+
+        {/* Debug Panel (only show if there are debug messages) */}
+        {debugInfo.length > 0 && (
+          <Card className="mb-6 border-blue-200 bg-blue-50 dark:bg-blue-900/20">
+            <CardHeader>
+              <CardTitle className="text-sm text-blue-800 dark:text-blue-200">Debug Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xs space-y-1 text-blue-700 dark:text-blue-300">
+                {debugInfo.map((info, index) => (
+                  <div key={index}>{info}</div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Success/Error Messages */}
         {message && (
