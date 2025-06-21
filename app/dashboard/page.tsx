@@ -93,19 +93,39 @@ export default function DashboardPage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
   const [exercisesLoading, setExercisesLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.push('/login');
-      } else {
+      try {
+        console.log('Fetching user...');
+        const { data: { user }, error } = await supabase.auth.getUser();
+        
+        if (error) {
+          console.error('Auth error:', error);
+          setAuthError(error.message);
+          router.push('/login');
+          return;
+        }
+        
+        if (!user) {
+          console.log('No user found, redirecting to login');
+          router.push('/login');
+          return;
+        }
+        
+        console.log('User found:', user.email);
         setUser(user);
         await fetchProfile(user.id);
+      } catch (err) {
+        console.error('Error getting user:', err);
+        setAuthError('Failed to authenticate user');
+        router.push('/login');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     getUser();
@@ -113,6 +133,7 @@ export default function DashboardPage() {
 
   const fetchProfile = async (userId: string) => {
     try {
+      console.log('Fetching profile for user:', userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -121,7 +142,28 @@ export default function DashboardPage() {
 
       if (error) {
         console.error('Error fetching profile:', error);
+        // If profile doesn't exist, create a default one
+        if (error.code === 'PGRST116') {
+          console.log('Profile not found, creating default profile');
+          const { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert({
+              id: userId,
+              full_name: user?.user_metadata?.full_name || 'User',
+              user_role: 'student',
+              display_mode: 'adult'
+            })
+            .select()
+            .single();
+          
+          if (createError) {
+            console.error('Error creating profile:', createError);
+          } else {
+            setProfile(newProfile);
+          }
+        }
       } else {
+        console.log('Profile loaded:', data);
         setProfile(data);
       }
     } catch (error) {
@@ -132,6 +174,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchExercises = async () => {
       try {
+        console.log('Fetching exercises...');
         const { data, error } = await supabase
           .from('exercises')
           .select('*')
@@ -140,6 +183,7 @@ export default function DashboardPage() {
         if (error) {
           console.error('Error fetching exercises:', error);
         } else {
+          console.log('Exercises loaded:', data?.length || 0);
           setExercises(data || []);
         }
       } catch (error) {
@@ -149,8 +193,13 @@ export default function DashboardPage() {
       }
     };
 
-    fetchExercises();
-  }, [supabase]);
+    // Only fetch exercises if we have a user
+    if (user) {
+      fetchExercises();
+    } else {
+      setExercisesLoading(false);
+    }
+  }, [supabase, user]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -175,16 +224,45 @@ export default function DashboardPage() {
     window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
   };
 
+  // Show loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading dashboard...</p>
+        </div>
       </div>
     );
   }
 
+  // Show error state
+  if (authError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 mb-4">Authentication Error</div>
+          <p className="text-muted-foreground mb-4">{authError}</p>
+          <Button onClick={() => router.push('/login')}>
+            Go to Login
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show if no user (shouldn't happen due to redirect, but safety check)
   if (!user) {
-    return null;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">No user session found</p>
+          <Button onClick={() => router.push('/login')}>
+            Go to Login
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   const isKidsMode = profile?.display_mode === 'kid';
