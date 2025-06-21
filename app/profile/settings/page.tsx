@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Database, Tables, TablesInsert, TablesUpdate } from '@/lib/database.types';
+import { Database, Tables, TablesUpdate } from '@/lib/database.types';
 import { 
   ArrowLeft, 
   User as UserIcon, 
@@ -28,6 +28,8 @@ import {
 import Link from 'next/link';
 
 type Profile = Tables<'profiles'>;
+// This type represents the fields we are editing in the form
+type ProfileFormData = Omit<Profile, 'id' | 'created_at' | 'updated_at'>;
 
 export default function ProfileSettingsPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -35,15 +37,18 @@ export default function ProfileSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-  const [formData, setFormData] = useState<Omit<Profile, 'id' | 'created_at' | 'updated_at'>>({
+  
+  // [FIX] Initialize formData with all required fields, including avatar_url
+  const [formData, setFormData] = useState<ProfileFormData>({
     full_name: '',
+    avatar_url: null, // This was the missing field
     user_role: 'student',
     display_mode: 'adult'
   });
+
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
-  // Callback to apply theme class to the body
   const applyTheme = useCallback((theme: 'adult' | 'kids' | null) => {
     if (typeof window !== 'undefined') {
       document.body.classList.remove('adult-mode', 'kids-mode');
@@ -53,45 +58,36 @@ export default function ProfileSettingsPage() {
     }
   }, []);
 
-  // Clear message after 5 seconds
   useEffect(() => {
     if (message) {
-      const timer = setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+      const timer = setTimeout(() => setMessage(null), 5000);
       return () => clearTimeout(timer);
     }
   }, [message]);
   
-  // Effect to apply theme when formData changes
   useEffect(() => {
     applyTheme(formData.display_mode as 'adult' | 'kids');
   }, [formData.display_mode, applyTheme]);
 
   const fetchProfile = useCallback(async (userId: string) => {
     try {
-      console.log('Fetching profile for user:', userId);
       const { data, error, status } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
-      if (error && status !== 406) { // 406 is "Not Acceptable", happens when no row is found
-        throw error;
-      }
+      if (error && status !== 406) throw error;
 
       if (data) {
-        console.log('Profile loaded:', data);
         setProfile(data);
+        // [FIX] Ensure all fetched data, including avatar_url, is populated into the form state
         setFormData({
           full_name: data.full_name || '',
           user_role: data.user_role || 'student',
           display_mode: data.display_mode || 'adult',
+          avatar_url: data.avatar_url || null,
         });
-      } else {
-         // This block can be used to create a profile if one doesn't exist
-        console.log('No profile found for user, using default form data.');
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -107,22 +103,17 @@ export default function ProfileSettingsPage() {
       const { data: { user }, error: authError } = await supabase.auth.getUser();
 
       if (authError || !user) {
-        console.error('Auth error or no user, redirecting to login.');
         router.push('/login');
         return;
       }
       
-      console.log('User found:', user.id);
       setUser(user);
       await fetchProfile(user.id);
     };
     
     getUserAndProfile();
 
-    // Cleanup theme class on component unmount
-    return () => {
-      applyTheme(null);
-    };
+    return () => applyTheme(null);
   }, [supabase.auth, router, fetchProfile, applyTheme]);
 
   const handleSave = async () => {
@@ -135,32 +126,26 @@ export default function ProfileSettingsPage() {
     setSaving(true);
 
     try {
-      console.log('Saving profile data:', formData);
-      
+      // [FIX] Include avatar_url in the data being sent to the database
       const updateData: TablesUpdate<'profiles'> = {
         id: user.id,
         full_name: formData.full_name,
         user_role: formData.user_role as 'student' | 'parent' | 'therapist',
-        // [FIX] Corrected 'kid' to 'kids'
         display_mode: formData.display_mode as 'adult' | 'kids',
+        avatar_url: formData.avatar_url,
         updated_at: new Date().toISOString()
       };
 
       const { data, error } = await supabase
         .from('profiles')
-        .upsert(updateData) // Using upsert is safer: it updates if exists, inserts if not.
+        .upsert(updateData)
         .select()
         .single();
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
       
-      console.log('Profile updated successfully:', data);
       setProfile(data);
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
-      
-      // The useEffect for formData.display_mode will handle applying the theme
       
     } catch (error: any) {
       console.error('Error saving profile:', error);
@@ -170,17 +155,13 @@ export default function ProfileSettingsPage() {
     }
   };
   
-  const handleInputChange = (field: keyof typeof formData, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  const handleInputChange = (field: keyof ProfileFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleDisplayModeToggle = (checked: boolean) => {
     setFormData(prev => ({
       ...prev,
-      // [FIX] Corrected 'kid' to 'kids'
       display_mode: checked ? 'kids' : 'adult'
     }));
   };
