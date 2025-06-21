@@ -681,11 +681,11 @@ const goToNextStep = () => {
         ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
         : 'bg-gray-50'
     }`}>
-      {/* Animated Background Elements */}
+ {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Left Wavy Edge */}
-        <div className="absolute left-0 top-0 h-full w-32 opacity-30">
-          <svg viewBox="0 0 100 800" className="w-full h-full" preserveAspectRatio="none">
+        <div className="absolute left-0 top-0 h-full w-64 opacity-60">
+          <svg viewBox="0 0 150 800" className="w-full h-full" preserveAspectRatio="none">
             <defs>
               <linearGradient id="leftWave" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor={isKidsMode ? "#ec4899" : "#3b82f6"} />
@@ -694,7 +694,7 @@ const goToNextStep = () => {
               </linearGradient>
             </defs>
             <path 
-              d="M0,0 Q20,50 0,100 T0,200 T0,300 T0,400 T0,500 T0,600 T0,700 T0,800 L0,800 L0,0 Z" 
+              d="M0,0 Q40,80 0,160 Q60,240 0,320 Q40,400 0,480 Q60,560 0,640 Q40,720 0,800 L150,800 L150,0 Z" 
               fill="url(#leftWave)" 
               className="animate-float-slow"
             />
@@ -702,8 +702,8 @@ const goToNextStep = () => {
         </div>
 
         {/* Right Wavy Edge */}
-        <div className="absolute right-0 top-0 h-full w-32 opacity-30">
-          <svg viewBox="0 0 100 800" className="w-full h-full" preserveAspectRatio="none">
+        <div className="absolute right-0 top-0 h-full w-64 opacity-60">
+          <svg viewBox="0 0 150 800" className="w-full h-full" preserveAspectRatio="none">
             <defs>
               <linearGradient id="rightWave" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor={isKidsMode ? "#06b6d4" : "#10b981"} />
@@ -712,7 +712,7 @@ const goToNextStep = () => {
               </linearGradient>
             </defs>
             <path 
-              d="M100,0 Q80,50 100,100 T100,200 T100,300 T100,400 T100,500 T100,600 T100,700 T100,800 L100,800 L100,0 Z" 
+              d="M150,0 Q110,80 150,160 Q90,240 150,320 Q110,400 150,480 Q90,560 150,640 Q110,720 150,800 L0,800 L0,0 Z" 
               fill="url(#rightWave)" 
               className="animate-float-delay"
             />
