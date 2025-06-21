@@ -33,9 +33,9 @@ type Profile = Tables<'profiles'>;
 
 function Progress({ value, className = '' }: { value: number; className?: string }) {
   return (
-    <div className={`w-full bg-gray-200 rounded-full h-2 ${className}`}>
+    <div className={`w-full bg-slate-100 rounded-full h-2 ${className}`}>
       <div 
-        className="bg-gradient-to-r from-emerald-500 to-teal-500 h-2 rounded-full transition-all duration-300 ease-out"
+        className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full transition-all duration-300 ease-out"
         style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
       />
     </div>
@@ -48,7 +48,7 @@ const mockLearningPaths = [
     title: 'Basic Strokes',
     description: 'Master fundamental writing movements',
     icon: '📏',
-    color: 'from-blue-400 to-blue-600',
+    color: 'from-indigo-500 to-purple-600',
     progress: 85,
     totalLessons: 7,
     unlockedLessons: 6,
@@ -60,7 +60,7 @@ const mockLearningPaths = [
     title: 'Lowercase Letters',
     description: 'Learn proper lowercase formation',
     icon: 'abc',
-    color: 'from-green-400 to-green-600',
+    color: 'from-emerald-500 to-teal-600',
     progress: 45,
     totalLessons: 26,
     unlockedLessons: 12,
@@ -72,7 +72,7 @@ const mockLearningPaths = [
     title: 'Uppercase Letters',
     description: 'Perfect your capital letters',
     icon: 'ABC',
-    color: 'from-purple-400 to-purple-600',
+    color: 'from-rose-500 to-pink-600',
     progress: 0,
     totalLessons: 26,
     unlockedLessons: 0,
@@ -141,10 +141,10 @@ export default function ModernDashboard() {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner': return 'bg-green-100 text-green-800';
-      case 'intermediate': return 'bg-yellow-100 text-yellow-800';
-      case 'advanced': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'beginner': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'intermediate': return 'bg-amber-50 text-amber-700 border-amber-200';
+      case 'advanced': return 'bg-rose-50 text-rose-700 border-rose-200';
+      default: return 'bg-slate-50 text-slate-700 border-slate-200';
     }
   };
 
@@ -154,10 +154,10 @@ export default function ModernDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-          <p className="text-emerald-700">Loading your learning journey...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-500 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading your learning journey...</p>
         </div>
       </div>
     );
@@ -169,52 +169,50 @@ export default function ModernDashboard() {
 
   return (
     <div className={`min-h-screen transition-all duration-500 ${isKidsMode 
-      ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
-      : 'bg-gradient-to-br from-emerald-50 via-blue-50 to-indigo-100'
+      ? 'bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50' 
+      : 'bg-gradient-to-br from-slate-50 via-white to-indigo-50'
     }`}>
-      <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${isKidsMode 
-        ? 'bg-white/90 border-purple-200' 
-        : 'bg-white/90 border-emerald-200'
-      }`}>
+      <header className="sticky top-0 z-50 border-b border-slate-200/60 backdrop-blur-xl bg-white/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isKidsMode 
-                ? 'bg-gradient-to-r from-purple-500 to-pink-500' 
-                : 'bg-gradient-to-r from-emerald-500 to-teal-500'
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isKidsMode 
+                ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/25' 
+                : 'bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25'
               }`}>
                 <PenTool className="h-5 w-5 text-white" />
               </div>
-              <h1 className={`text-xl font-bold ${isKidsMode 
+              <h1 className={`text-xl font-semibold ${isKidsMode 
                 ? 'text-purple-700' 
-                : 'text-emerald-700'
+                : 'text-slate-800'
               }`}>
-                {isKidsMode ? '✨ Flourish - My Writing Adventure!' : 'Flourish'}
+                {isKidsMode ? '✨ Flourish' : 'Flourish'}
               </h1>
             </div>
             
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Flame className={`h-5 w-5 ${currentStreak > 0 ? 'text-orange-500' : 'text-gray-400'}`} />
-                <span className={`font-bold ${isKidsMode ? 'text-purple-700' : 'text-emerald-700'}`}>
-                  {currentStreak}
-                </span>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-orange-50 to-red-50 rounded-full border border-orange-200">
+                <Flame className="h-4 w-4 text-orange-500" />
+                <span className="font-medium text-orange-700 text-sm">{currentStreak}</span>
               </div>
               
-              <div className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-yellow-500" />
-                <span className={`font-bold ${isKidsMode ? 'text-purple-700' : 'text-emerald-700'}`}>
-                  {xp.toLocaleString()}
-                </span>
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-full border border-yellow-200">
+                <Star className="h-4 w-4 text-yellow-500" />
+                <span className="font-medium text-amber-700 text-sm">{xp.toLocaleString()}</span>
               </div>
 
               <Link href="/profile/settings">
-                <Button variant="ghost" size="sm" className={isKidsMode ? 'text-purple-600 hover:bg-purple-50' : 'text-emerald-600 hover:bg-emerald-50'}>
+                <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800 hover:bg-slate-100">
                   <Settings className="h-4 w-4" />
                 </Button>
               </Link>
 
-              <Button onClick={handleSignOut} variant="outline" size="sm" className={isKidsMode ? 'border-purple-200 text-purple-700 hover:bg-purple-50' : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'}>
+              <Button 
+                onClick={handleSignOut} 
+                variant="outline" 
+                size="sm" 
+                className="border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800"
+              >
                 {isKidsMode ? '👋 Bye!' : 'Sign Out'}
               </Button>
             </div>
@@ -224,18 +222,18 @@ export default function ModernDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className={`text-2xl font-bold ${isKidsMode 
+              <h2 className={`text-3xl font-bold ${isKidsMode 
                 ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600' 
-                : 'text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600'
+                : 'text-slate-800'
               }`}>
                 {isKidsMode 
                   ? `🌟 Welcome back, ${profile?.full_name || 'Superstar'}!` 
-                  : `Welcome back, ${profile?.full_name || user.email}`
+                  : `Welcome back, ${profile?.full_name || user.email?.split('@')[0]}`
                 }
               </h2>
-              <p className={`text-lg ${isKidsMode ? 'text-purple-600' : 'text-emerald-600'}`}>
+              <p className={`text-lg mt-1 ${isKidsMode ? 'text-purple-600' : 'text-slate-600'}`}>
                 {isKidsMode 
                   ? 'Ready for another amazing writing adventure? 🚀'
                   : 'Continue your handwriting journey'
@@ -243,124 +241,114 @@ export default function ModernDashboard() {
               </p>
             </div>
             
-            <div className={`flex items-center gap-3 px-4 py-2 rounded-full ${isKidsMode 
-              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' 
-              : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white'
+            <div className={`flex items-center gap-3 px-6 py-3 rounded-2xl ${isKidsMode 
+              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25' 
+              : 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25'
             }`}>
               <Crown className="h-5 w-5" />
               <div className="text-center">
-                <div className="text-sm font-medium">Level</div>
+                <div className="text-sm font-medium opacity-90">Level</div>
                 <div className="text-xl font-bold">{level}</div>
               </div>
             </div>
           </div>
 
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className={`text-sm font-medium ${isKidsMode ? 'text-purple-700' : 'text-emerald-700'}`}>
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-3">
+              <span className={`text-sm font-medium ${isKidsMode ? 'text-purple-700' : 'text-slate-700'}`}>
                 {isKidsMode ? '⭐ Progress to Next Level' : 'Progress to Level ' + (level + 1)}
               </span>
-              <span className={`text-sm ${isKidsMode ? 'text-purple-600' : 'text-emerald-600'}`}>
+              <span className={`text-sm ${isKidsMode ? 'text-purple-600' : 'text-slate-600'}`}>
                 {xp.toLocaleString()} / {(xp + xpToNextLevel).toLocaleString()} XP
               </span>
             </div>
-            <Progress value={levelProgress} className={`h-3 ${isKidsMode ? 'bg-purple-100' : 'bg-emerald-100'}`} />
+            <Progress value={levelProgress} className="h-3" />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className={`${isKidsMode 
-            ? 'border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-red-50' 
-            : 'border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-red-50'
-          } transition-all duration-200 hover:scale-105`}>
+          <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-xl shadow-orange-500/5 hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className={`text-sm font-medium ${isKidsMode ? 'text-orange-700' : 'text-orange-700'}`}>
+                  <p className="text-sm font-medium text-orange-600 mb-1">
                     {isKidsMode ? '🔥 Fire Streak!' : 'Current Streak'}
                   </p>
-                  <p className={`text-3xl font-bold ${isKidsMode ? 'text-orange-800' : 'text-orange-800'}`}>
+                  <p className="text-3xl font-bold text-orange-700">
                     {currentStreak}
                   </p>
-                  <p className={`text-xs ${isKidsMode ? 'text-orange-600' : 'text-orange-600'}`}>
+                  <p className="text-xs text-orange-600">
                     {isKidsMode ? 'Days of awesome practice!' : 'days'}
                   </p>
                 </div>
-                <div className={`p-3 rounded-full ${isKidsMode ? 'bg-orange-200' : 'bg-orange-200'}`}>
-                  <Flame className={`h-6 w-6 ${currentStreak > 0 ? 'text-orange-500' : 'text-gray-400'}`} />
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-orange-50 to-red-50 border border-orange-100">
+                  <Flame className="h-6 w-6 text-orange-500" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className={`${isKidsMode 
-            ? 'border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50' 
-            : 'border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50'
-          } transition-all duration-200 hover:scale-105`}>
+          <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-xl shadow-emerald-500/5 hover:shadow-emerald-500/10 transition-all duration-300 hover:-translate-y-1">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className={`text-sm font-medium ${isKidsMode ? 'text-green-700' : 'text-green-700'}`}>
+                  <p className="text-sm font-medium text-emerald-600 mb-1">
                     {isKidsMode ? '🎯 Weekly Goal' : 'Weekly Goal'}
                   </p>
-                  <p className={`text-3xl font-bold ${isKidsMode ? 'text-green-800' : 'text-green-800'}`}>
+                  <p className="text-3xl font-bold text-emerald-700">
                     {Math.round(weeklyGoalProgress)}%
                   </p>
-                  <p className={`text-xs ${isKidsMode ? 'text-green-600' : 'text-green-600'}`}>
+                  <p className="text-xs text-emerald-600">
                     {weeklyProgress} / {weeklyGoal} min
                   </p>
                 </div>
-                <div className={`p-3 rounded-full ${isKidsMode ? 'bg-green-200' : 'bg-green-200'}`}>
-                  <Target className="h-6 w-6 text-green-500" />
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100">
+                  <Target className="h-6 w-6 text-emerald-500" />
                 </div>
               </div>
-              <Progress value={weeklyGoalProgress} className="mt-3 h-2" />
+              <div className="mt-4">
+                <Progress value={weeklyGoalProgress} className="h-1.5" />
+              </div>
             </CardContent>
           </Card>
 
-          <Card className={`${isKidsMode 
-            ? 'border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50' 
-            : 'border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50'
-          } transition-all duration-200 hover:scale-105`}>
+          <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-xl shadow-blue-500/5 hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className={`text-sm font-medium ${isKidsMode ? 'text-blue-700' : 'text-teal-700'}`}>
+                  <p className="text-sm font-medium text-blue-600 mb-1">
                     {isKidsMode ? '⏰ Total Practice' : 'Total Practice'}
                   </p>
-                  <p className={`text-3xl font-bold ${isKidsMode ? 'text-blue-800' : 'text-teal-800'}`}>
+                  <p className="text-3xl font-bold text-blue-700">
                     {Math.floor(totalPracticeTime / 60)}h {totalPracticeTime % 60}m
                   </p>
-                  <p className={`text-xs ${isKidsMode ? 'text-blue-600' : 'text-teal-600'}`}>
+                  <p className="text-xs text-blue-600">
                     {isKidsMode ? 'Time well spent!' : 'this month'}
                   </p>
                 </div>
-                <div className={`p-3 rounded-full ${isKidsMode ? 'bg-blue-200' : 'bg-teal-200'}`}>
-                  <Clock className={`h-6 w-6 ${isKidsMode ? 'text-blue-500' : 'text-teal-500'}`} />
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-100">
+                  <Clock className="h-6 w-6 text-blue-500" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className={`${isKidsMode 
-            ? 'border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50' 
-            : 'border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50'
-          } transition-all duration-200 hover:scale-105`}>
+          <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-xl shadow-purple-500/5 hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className={`text-sm font-medium ${isKidsMode ? 'text-purple-700' : 'text-indigo-700'}`}>
+                  <p className="text-sm font-medium text-purple-600 mb-1">
                     {isKidsMode ? '🏆 Achievements' : 'Achievements'}
                   </p>
-                  <p className={`text-3xl font-bold ${isKidsMode ? 'text-purple-800' : 'text-indigo-800'}`}>
+                  <p className="text-3xl font-bold text-purple-700">
                     3
                   </p>
-                  <p className={`text-xs ${isKidsMode ? 'text-purple-600' : 'text-indigo-600'}`}>
+                  <p className="text-xs text-purple-600">
                     of 10 unlocked
                   </p>
                 </div>
-                <div className={`p-3 rounded-full ${isKidsMode ? 'bg-purple-200' : 'bg-indigo-200'}`}>
-                  <Trophy className={`h-6 w-6 ${isKidsMode ? 'text-purple-500' : 'text-indigo-500'}`} />
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-100">
+                  <Trophy className="h-6 w-6 text-purple-500" />
                 </div>
               </div>
             </CardContent>
@@ -370,14 +358,14 @@ export default function ModernDashboard() {
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
-              <h3 className={`text-xl font-bold ${isKidsMode ? 'text-purple-700' : 'text-emerald-700'}`}>
+              <h3 className={`text-xl font-semibold ${isKidsMode ? 'text-purple-700' : 'text-slate-800'}`}>
                 {isKidsMode ? '🎮 Your Learning Adventure!' : 'Your Learning Path'}
               </h3>
               <Link href="/practice">
-                <Button className={isKidsMode 
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600' 
-                  : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white'
-                }>
+                <Button className={`${isKidsMode 
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/25' 
+                  : 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 shadow-lg shadow-indigo-500/25'
+                } text-white border-0`}>
                   {isKidsMode ? '🚀 Continue Adventure!' : 'Continue Learning'}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
@@ -391,28 +379,24 @@ export default function ModernDashboard() {
                 return (
                   <Card 
                     key={path.id} 
-                    className={`transition-all duration-200 hover:scale-[1.02] cursor-pointer ${
-                      isLocked 
-                        ? 'opacity-60' 
-                        : isKidsMode 
-                          ? 'border-2 hover:shadow-xl' 
-                          : 'border-2 shadow-lg hover:shadow-xl'
+                    className={`transition-all duration-300 hover:scale-[1.02] cursor-pointer bg-white/70 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl ${
+                      isLocked ? 'opacity-60' : ''
                     }`}
                   >
                     <CardContent className="p-0">
-                      <div className={`p-6 rounded-t-lg bg-gradient-to-r ${path.color} text-white`}>
+                      <div className={`p-6 rounded-t-2xl bg-gradient-to-r ${path.color} text-white shadow-lg`}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
-                            <div className="text-4xl">
+                            <div className="text-4xl bg-white/10 rounded-2xl p-3 backdrop-blur-sm">
                               {isLocked ? '🔒' : path.icon}
                             </div>
                             <div>
-                              <h4 className="text-xl font-bold">{path.title}</h4>
+                              <h4 className="text-xl font-semibold">{path.title}</h4>
                               <p className="text-white/90">{path.description}</p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <Badge className={`mb-2 ${getDifficultyColor(path.difficulty)} text-xs`}>
+                            <Badge className={`mb-2 border ${getDifficultyColor(path.difficulty)} text-xs font-medium`}>
                               {path.difficulty}
                             </Badge>
                             <div className="text-sm font-medium">
@@ -423,23 +407,26 @@ export default function ModernDashboard() {
                       </div>
                       
                       <div className="p-6">
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-sm font-medium">
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-sm font-medium text-slate-700">
                             {isLocked ? 'Complete previous paths to unlock' : `Next: ${path.nextLesson}`}
                           </span>
-                          <span className="text-sm text-gray-600">
+                          <span className="text-sm text-slate-500">
                             {isLocked ? '' : `${Math.round(path.progress)}% complete`}
                           </span>
                         </div>
                         
                         {!isLocked && (
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-4">
                             <Progress value={path.progress} className="flex-1 h-2" />
                             <Link href="/practice">
-                              <Button size="sm" className={isKidsMode 
-                                ? 'bg-gradient-to-r from-purple-500 to-pink-500' 
-                                : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white'
-                              }>
+                              <Button 
+                                size="sm" 
+                                className={`${isKidsMode 
+                                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600' 
+                                  : 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700'
+                                } text-white border-0 shadow-lg`}
+                              >
                                 {isKidsMode ? '▶️ Play!' : 'Continue'}
                               </Button>
                             </Link>
@@ -447,8 +434,8 @@ export default function ModernDashboard() {
                         )}
                         
                         {isLocked && (
-                          <div className="flex items-center justify-center py-4">
-                            <Lock className="h-8 w-8 text-gray-400" />
+                          <div className="flex items-center justify-center py-6">
+                            <Lock className="h-8 w-8 text-slate-400" />
                           </div>
                         )}
                       </div>
@@ -460,76 +447,58 @@ export default function ModernDashboard() {
           </div>
 
           <div className="space-y-6">
-            <Card className={`${isKidsMode 
-              ? 'border-2 border-yellow-200 bg-gradient-to-br from-yellow-50 to-orange-50' 
-              : 'border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50'
-            }`}>
+            <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-xl">
               <CardHeader>
-                <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-yellow-700' : 'text-amber-700'}`}>
-                  <Zap className="h-5 w-5 text-yellow-500" />
+                <CardTitle className="flex items-center gap-2 text-amber-700">
+                  <Zap className="h-5 w-5 text-amber-500" />
                   {isKidsMode ? '⚡ Today\'s Challenge!' : 'Daily Challenge'}
                 </CardTitle>
-                <CardDescription className={isKidsMode ? 'text-yellow-600' : 'text-amber-600'}>
+                <CardDescription className="text-amber-600">
                   {isKidsMode ? 'Complete this for bonus XP!' : 'Complete for bonus XP'}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="text-3xl">📝</div>
+                  <div className="text-3xl bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-3 border border-amber-100">📝</div>
                   <div>
-                    <h4 className="font-semibold">Perfect 10 Letters</h4>
-                    <p className="text-sm text-gray-600">Write 10 letters with 100% accuracy</p>
+                    <h4 className="font-semibold text-slate-800">Perfect 10 Letters</h4>
+                    <p className="text-sm text-slate-600">Write 10 letters with 100% accuracy</p>
                   </div>
                 </div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm">Progress: 7/10</span>
-                  <span className="text-sm text-yellow-600 font-medium">+50 XP</span>
+                  <span className="text-sm text-slate-700">Progress: 7/10</span>
+                  <span className="text-sm text-amber-600 font-medium">+50 XP</span>
                 </div>
                 <Progress value={70} className="mb-4" />
-                <Button className={`w-full ${isKidsMode 
-                  ? 'bg-gradient-to-r from-yellow-500 to-orange-500' 
-                  : 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white'
-                }`}>
+                <Button className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white border-0 shadow-lg">
                   {isKidsMode ? '🎯 Continue Challenge!' : 'Continue Challenge'}
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className={`${isKidsMode 
-              ? 'border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50' 
-              : 'border-2 border-sky-200 bg-gradient-to-br from-sky-50 to-blue-50'
-            }`}>
+            <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-xl">
               <CardHeader>
-                <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-blue-700' : 'text-sky-700'}`}>
-                  <Sparkles className="h-5 w-5" />
+                <CardTitle className="flex items-center gap-2 text-slate-700">
+                  <Sparkles className="h-5 w-5 text-indigo-500" />
                   {isKidsMode ? '⚡ Quick Actions!' : 'Quick Actions'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <Link href="/practice" className="block">
-                  <Button variant="outline" className={`w-full justify-start ${isKidsMode 
-                    ? 'border-purple-200 hover:bg-purple-50 text-purple-700' 
-                    : 'border-emerald-200 hover:bg-emerald-50 text-emerald-700'
-                  }`}>
+                  <Button variant="outline" className="w-full justify-start border-slate-200 hover:bg-slate-50 text-slate-700 hover:text-slate-800">
                     <Play className="h-4 w-4 mr-2" />
                     {isKidsMode ? '🎮 Start Practice!' : 'Quick Practice'}
                   </Button>
                 </Link>
                 
                 <Link href="/worksheets" className="block">
-                  <Button variant="outline" className={`w-full justify-start ${isKidsMode 
-                    ? 'border-green-200 hover:bg-green-50 text-green-700' 
-                    : 'border-teal-200 hover:bg-teal-50 text-teal-700'
-                  }`}>
+                  <Button variant="outline" className="w-full justify-start border-slate-200 hover:bg-slate-50 text-slate-700 hover:text-slate-800">
                     <BookOpen className="h-4 w-4 mr-2" />
                     {isKidsMode ? '📄 Get Worksheets!' : 'Browse Worksheets'}
                   </Button>
                 </Link>
                 
-                <Button variant="outline" className={`w-full justify-start ${isKidsMode 
-                  ? 'border-pink-200 hover:bg-pink-50 text-pink-700' 
-                  : 'border-indigo-200 hover:bg-indigo-50 text-indigo-700'
-                }`}>
+                <Button variant="outline" className="w-full justify-start border-slate-200 hover:bg-slate-50 text-slate-700 hover:text-slate-800">
                   <TrendingUp className="h-4 w-4 mr-2" />
                   {isKidsMode ? '📊 See My Progress!' : 'View Progress'}
                 </Button>
@@ -539,18 +508,15 @@ export default function ModernDashboard() {
         </div>
 
         <div className="mt-12 text-center">
-          <Card className={`${isKidsMode 
-            ? 'border-2 border-purple-200 bg-gradient-to-r from-purple-100 to-pink-100' 
-            : 'border-2 border-emerald-200 bg-gradient-to-r from-emerald-100 to-teal-100'
-          } p-8`}>
+          <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-xl p-8">
             <div className="max-w-2xl mx-auto">
               <div className="text-4xl mb-4">
                 {isKidsMode ? '🌟' : '✨'}
               </div>
-              <h3 className={`text-2xl font-bold mb-4 ${isKidsMode ? 'text-purple-700' : 'text-emerald-700'}`}>
+              <h3 className={`text-2xl font-bold mb-4 ${isKidsMode ? 'text-purple-700' : 'text-slate-800'}`}>
                 {isKidsMode ? 'Ready for Your Next Adventure?' : 'Ready to Continue Learning?'}
               </h3>
-              <p className={`text-lg mb-6 ${isKidsMode ? 'text-purple-600' : 'text-emerald-600'}`}>
+              <p className={`text-lg mb-6 ${isKidsMode ? 'text-purple-600' : 'text-slate-600'}`}>
                 {isKidsMode 
                   ? 'Every practice session makes you a better writer! Let\'s keep the magic going! ✨'
                   : 'Consistent practice leads to beautiful handwriting. Your next breakthrough is just one session away.'
@@ -559,18 +525,15 @@ export default function ModernDashboard() {
               <div className="flex gap-4 justify-center">
                 <Link href="/practice">
                   <Button size="lg" className={`px-8 ${isKidsMode 
-                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg' 
-                    : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-lg'
-                  }`}>
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/25' 
+                    : 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 shadow-lg shadow-indigo-500/25'
+                  } text-white border-0 text-lg`}>
                     <Play className="h-5 w-5 mr-2" />
                     {isKidsMode ? '🚀 Start Practicing!' : 'Start Practicing'}
                   </Button>
                 </Link>
                 <Link href="/worksheets">
-                  <Button variant="outline" size="lg" className={`px-8 ${isKidsMode 
-                    ? 'border-purple-200 text-purple-700 hover:bg-purple-50' 
-                    : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
-                  }`}>
+                  <Button variant="outline" size="lg" className="px-8 border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-800">
                     <BookOpen className="h-5 w-5 mr-2" />
                     {isKidsMode ? '📄 Browse Worksheets' : 'Browse Worksheets'}
                   </Button>
