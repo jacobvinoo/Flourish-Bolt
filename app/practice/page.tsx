@@ -681,11 +681,11 @@ const goToNextStep = () => {
         ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
         : 'bg-gray-50'
     }`}>
- {/* Animated Background Elements */}
+{/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Left Wavy Edge */}
-        <div className="absolute left-0 top-0 h-full w-64 opacity-60">
-          <svg viewBox="0 0 150 800" className="w-full h-full" preserveAspectRatio="none">
+        <div className="absolute left-0 top-0 h-full w-80 opacity-70">
+          <svg viewBox="0 0 200 800" className="w-full h-full" preserveAspectRatio="none">
             <defs>
               <linearGradient id="leftWave" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor={isKidsMode ? "#ec4899" : "#3b82f6"} />
@@ -694,7 +694,7 @@ const goToNextStep = () => {
               </linearGradient>
             </defs>
             <path 
-              d="M0,0 Q40,80 0,160 Q60,240 0,320 Q40,400 0,480 Q60,560 0,640 Q40,720 0,800 L150,800 L150,0 Z" 
+              d="M0,0 L0,800 L120,800 Q160,720 120,640 Q80,560 120,480 Q160,400 120,320 Q80,240 120,160 Q160,80 120,0 Z" 
               fill="url(#leftWave)" 
               className="animate-float-slow"
             />
@@ -702,8 +702,8 @@ const goToNextStep = () => {
         </div>
 
         {/* Right Wavy Edge */}
-        <div className="absolute right-0 top-0 h-full w-64 opacity-60">
-          <svg viewBox="0 0 150 800" className="w-full h-full" preserveAspectRatio="none">
+        <div className="absolute right-0 top-0 h-full w-80 opacity-70">
+          <svg viewBox="0 0 200 800" className="w-full h-full" preserveAspectRatio="none">
             <defs>
               <linearGradient id="rightWave" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor={isKidsMode ? "#06b6d4" : "#10b981"} />
@@ -712,7 +712,7 @@ const goToNextStep = () => {
               </linearGradient>
             </defs>
             <path 
-              d="M150,0 Q110,80 150,160 Q90,240 150,320 Q110,400 150,480 Q90,560 150,640 Q110,720 150,800 L0,800 L0,0 Z" 
+              d="M200,0 L200,800 L80,800 Q40,720 80,640 Q120,560 80,480 Q40,400 80,320 Q120,240 80,160 Q40,80 80,0 Z" 
               fill="url(#rightWave)" 
               className="animate-float-delay"
             />
@@ -749,137 +749,157 @@ const goToNextStep = () => {
           <>
             {/* Left Side Elements */}
             {/* Pencil */}
-            <div className="absolute top-20 left-16 w-12 h-12 animate-float">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-500">
+            <div className="absolute top-20 left-20 w-20 h-20 animate-float z-10">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-500 drop-shadow-lg">
                 <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
               </svg>
             </div>
 
             {/* Letter A */}
-            <div className="absolute top-64 left-8 w-10 h-10 animate-float-delay">
-              <div className="w-full h-full bg-gradient-to-br from-red-400 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+            <div className="absolute top-64 left-12 w-16 h-16 animate-float-delay z-10">
+              <div className="w-full h-full bg-gradient-to-br from-red-400 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-4xl shadow-xl">
                 A
               </div>
             </div>
 
             {/* Cursive lowercase "a" */}
-            <div className="absolute top-96 left-20 w-12 h-12 animate-bounce-slow">
-              <svg viewBox="0 0 100 100" className="w-full h-full">
-                <path d="M20,40 Q35,20 50,40 Q65,60 50,80 Q35,60 20,40 M50,40 Q65,30 80,50 Q75,70 60,80" stroke="#8b5cf6" strokeWidth="4" fill="none" strokeLinecap="round"/>
+            <div className="absolute top-96 left-24 w-20 h-20 animate-bounce-slow z-10">
+              <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-lg">
+                <path d="M20,40 Q35,20 50,40 Q65,60 50,80 Q35,60 20,40 M50,40 Q65,30 80,50 Q75,70 60,80" stroke="#8b5cf6" strokeWidth="6" fill="none" strokeLinecap="round"/>
               </svg>
             </div>
 
             {/* Number 1 */}
-            <div className="absolute top-32 left-12 w-8 h-8 animate-twinkle">
-              <div className="w-full h-full bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">
+            <div className="absolute top-32 left-16 w-14 h-14 animate-twinkle z-10">
+              <div className="w-full h-full bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
                 1
               </div>
             </div>
 
             {/* Cursive "hello" */}
-            <div className="absolute top-40 left-6 w-16 h-8 animate-float-slow">
-              <svg viewBox="0 0 120 40" className="w-full h-full">
-                <path d="M5,20 Q15,10 25,20 Q35,30 25,35 M25,20 Q35,15 45,25 Q40,35 30,35 M45,20 Q55,10 65,20 Q75,30 65,35 M65,20 Q75,10 85,20 Q95,30 85,35 M85,20 Q95,10 105,20 Q115,30 105,35" stroke="#ec4899" strokeWidth="2" fill="none" strokeLinecap="round"/>
+            <div className="absolute top-40 left-8 w-24 h-12 animate-float-slow z-10">
+              <svg viewBox="0 0 120 40" className="w-full h-full drop-shadow-lg">
+                <path d="M5,20 Q15,10 25,20 Q35,30 25,35 M25,20 Q35,15 45,25 Q40,35 30,35 M45,20 Q55,10 65,20 Q75,30 65,35 M65,20 Q75,10 85,20 Q95,30 85,35 M85,20 Q95,10 105,20 Q115,30 105,35" stroke="#ec4899" strokeWidth="3" fill="none" strokeLinecap="round"/>
               </svg>
             </div>
 
             {/* Right Side Elements */}
             {/* Stars */}
-            <div className="absolute top-32 right-20 w-6 h-6 animate-twinkle">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-pink-400">
+            <div className="absolute top-32 right-20 w-12 h-12 animate-twinkle z-10">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-pink-400 drop-shadow-lg">
                 <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
               </svg>
             </div>
 
             {/* Letter B */}
-            <div className="absolute top-56 right-12 w-10 h-10 animate-float">
-              <div className="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+            <div className="absolute top-56 right-16 w-16 h-16 animate-float z-10">
+              <div className="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-4xl shadow-xl">
                 B
               </div>
             </div>
 
             {/* Cursive "cat" */}
-            <div className="absolute top-80 right-16 w-14 h-8 animate-float-delay">
-              <svg viewBox="0 0 100 40" className="w-full h-full">
-                <path d="M10,20 Q20,10 30,20 Q25,30 15,30 M30,20 Q40,10 50,20 Q60,30 50,35 M50,20 Q60,10 70,20 Q80,30 70,35 Q60,40 50,35" stroke="#06b6d4" strokeWidth="2" fill="none" strokeLinecap="round"/>
+            <div className="absolute top-80 right-20 w-22 h-12 animate-float-delay z-10">
+              <svg viewBox="0 0 100 40" className="w-full h-full drop-shadow-lg">
+                <path d="M10,20 Q20,10 30,20 Q25,30 15,30 M30,20 Q40,10 50,20 Q60,30 50,35 M50,20 Q60,10 70,20 Q80,30 70,35 Q60,40 50,35" stroke="#06b6d4" strokeWidth="3" fill="none" strokeLinecap="round"/>
               </svg>
             </div>
 
             {/* Number 2 */}
-            <div className="absolute top-112 right-8 w-8 h-8 animate-twinkle-delay">
-              <div className="w-full h-full bg-gradient-to-br from-purple-400 to-indigo-500 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">
+            <div className="absolute top-112 right-12 w-14 h-14 animate-twinkle-delay z-10">
+              <div className="w-full h-full bg-gradient-to-br from-purple-400 to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
                 2
               </div>
             </div>
 
-            <div className="absolute bottom-32 left-20 w-4 h-4 animate-twinkle-delay">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-blue-400">
+            <div className="absolute bottom-32 left-24 w-8 h-8 animate-twinkle-delay z-10">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-blue-400 drop-shadow-lg">
                 <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
               </svg>
             </div>
 
             {/* Letter C */}
-            <div className="absolute bottom-56 right-24 w-10 h-10 animate-bounce-slow">
-              <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 rounded-lg flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+            <div className="absolute bottom-56 right-28 w-16 h-16 animate-bounce-slow z-10">
+              <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center text-white font-bold text-4xl shadow-xl">
                 C
               </div>
             </div>
 
             {/* Cursive "dog" */}
-            <div className="absolute bottom-80 left-24 w-14 h-8 animate-float">
-              <svg viewBox="0 0 100 40" className="w-full h-full">
-                <path d="M10,20 Q20,10 30,20 Q35,30 25,35 Q15,30 10,20 M30,20 Q40,10 50,20 Q60,30 50,35 M50,15 Q60,5 70,15 Q80,25 70,30 Q60,35 50,30" stroke="#f59e0b" strokeWidth="2" fill="none" strokeLinecap="round"/>
+            <div className="absolute bottom-80 left-28 w-22 h-12 animate-float z-10">
+              <svg viewBox="0 0 100 40" className="w-full h-full drop-shadow-lg">
+                <path d="M10,20 Q20,10 30,20 Q35,30 25,35 Q15,30 10,20 M30,20 Q40,10 50,20 Q60,30 50,35 M50,15 Q60,5 70,15 Q80,25 70,30 Q60,35 50,30" stroke="#f59e0b" strokeWidth="3" fill="none" strokeLinecap="round"/>
               </svg>
             </div>
 
             {/* Book */}
-            <div className="absolute top-1/2 right-10 w-10 h-10 animate-float-slow">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-green-500">
+            <div className="absolute top-1/2 right-14 w-16 h-16 animate-float-slow z-10">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-green-500 drop-shadow-lg">
                 <path fill="currentColor" d="M19,2L14,6.5V17.5L19,13V2M6.5,5C4.55,5 2.45,5.4 1,6.5V21.16C1,21.41 1.25,21.66 1.5,21.66C1.6,21.66 1.65,21.59 1.75,21.59C3.1,20.94 5.05,20.68 6.5,20.68C8.45,20.68 10.55,21.1 12,22C13.35,21.15 15.8,20.68 17.5,20.68C19.15,20.68 20.85,21.1 22.25,21.81C22.35,21.86 22.4,21.91 22.5,21.91C22.75,21.91 23,21.66 23,21.41V6.5C22.4,6.05 21.75,5.75 21,5.5V19C19.9,18.65 18.7,18.5 17.5,18.5C15.8,18.5 13.35,18.9 12,19.81V6.5C10.55,5.4 8.45,5 6.5,5Z" />
               </svg>
             </div>
 
             {/* Trophy */}
-            <div className="absolute bottom-20 right-32 w-8 h-8 animate-bounce-slow">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-amber-500">
+            <div className="absolute bottom-20 right-36 w-14 h-14 animate-bounce-slow z-10">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-amber-500 drop-shadow-lg">
                 <path fill="currentColor" d="M7.5,14H16.5L16,12.5L15.5,11H8.5L8,12.5L7.5,14M12,3.8C9.68,3.8 7.8,5.68 7.8,8C7.8,8.76 8,9.47 8.34,10.1L9.5,12.5V21H14.5V12.5L15.66,10.1C16,9.47 16.2,8.76 16.2,8C16.2,5.68 14.32,3.8 12,3.8M5.91,6.41A1,1 0 0,1 6.84,6.48L7.5,7.13A1,1 0 0,1 6.13,8.5L5.48,7.84A1,1 0 0,1 5.41,6.91M18.09,6.41A1,1 0 0,1 18.52,7.84L17.87,8.5A1,1 0 0,1 16.5,7.13L17.16,6.48A1,1 0 0,1 18.09,6.41Z" />
               </svg>
             </div>
 
             {/* Colorful shapes with letters */}
-            <div className="absolute top-1/4 left-1/3 w-6 h-6 bg-pink-400 rounded-full animate-float opacity-60 flex items-center justify-center text-white font-bold text-xs">D</div>
-            <div className="absolute bottom-1/3 left-1/4 w-4 h-4 bg-blue-400 transform rotate-45 animate-float-delay opacity-60"></div>
-            <div className="absolute top-2/3 right-1/4 w-5 h-5 bg-yellow-400 rounded-full animate-twinkle opacity-60 flex items-center justify-center text-white font-bold text-xs">E</div>
+            <div className="absolute top-1/4 left-1/3 w-12 h-12 bg-pink-400 rounded-full animate-float opacity-80 flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">D</div>
+            <div className="absolute bottom-1/3 left-1/4 w-10 h-10 bg-blue-400 transform rotate-45 animate-float-delay opacity-80 shadow-xl z-10"></div>
+            <div className="absolute top-2/3 right-1/4 w-12 h-12 bg-yellow-400 rounded-full animate-twinkle opacity-80 flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">E</div>
             
             {/* Cursive practice lines */}
-            <div className="absolute top-20 left-32 w-20 h-4 animate-float-slow opacity-40">
-              <svg viewBox="0 0 150 20" className="w-full h-full">
-                <path d="M5,10 Q25,5 45,10 Q65,15 85,10 Q105,5 125,10 Q145,15 150,10" stroke="#8b5cf6" strokeWidth="1" fill="none" strokeLinecap="round"/>
+            <div className="absolute top-20 left-36 w-32 h-8 animate-float-slow opacity-60 z-10">
+              <svg viewBox="0 0 150 20" className="w-full h-full drop-shadow-lg">
+                <path d="M5,10 Q25,5 45,10 Q65,15 85,10 Q105,5 125,10 Q145,15 150,10" stroke="#8b5cf6" strokeWidth="2" fill="none" strokeLinecap="round"/>
               </svg>
             </div>
             
-            <div className="absolute bottom-40 right-28 w-20 h-4 animate-float-delay opacity-40">
-              <svg viewBox="0 0 150 20" className="w-full h-full">
-                <path d="M5,15 Q25,10 45,15 Q65,20 85,15 Q105,10 125,15 Q145,20 150,15" stroke="#ec4899" strokeWidth="1" fill="none" strokeLinecap="round"/>
+            <div className="absolute bottom-40 right-32 w-32 h-8 animate-float-delay opacity-60 z-10">
+              <svg viewBox="0 0 150 20" className="w-full h-full drop-shadow-lg">
+                <path d="M5,15 Q25,10 45,15 Q65,20 85,15 Q105,10 125,15 Q145,20 150,15" stroke="#ec4899" strokeWidth="2" fill="none" strokeLinecap="round"/>
               </svg>
             </div>
 
             {/* Additional scattered letters */}
-            <div className="absolute top-1/3 left-8 w-8 h-8 animate-twinkle">
-              <div className="w-full h-full bg-gradient-to-br from-teal-400 to-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg">
+            <div className="absolute top-1/3 left-12 w-14 h-14 animate-twinkle z-10">
+              <div className="w-full h-full bg-gradient-to-br from-teal-400 to-blue-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
                 F
               </div>
             </div>
 
-            <div className="absolute bottom-1/4 right-16 w-8 h-8 animate-float-slow">
-              <div className="w-full h-full bg-gradient-to-br from-violet-400 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg">
+            <div className="absolute bottom-1/4 right-20 w-14 h-14 animate-float-slow z-10">
+              <div className="w-full h-full bg-gradient-to-br from-violet-400 to-purple-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
                 G
               </div>
             </div>
 
             {/* Number 3 */}
-            <div className="absolute top-2/3 left-16 w-6 h-6 animate-bounce-slow">
-              <div className="w-full h-full bg-gradient-to-br from-rose-400 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg">
+            <div className="absolute top-2/3 left-20 w-12 h-12 animate-bounce-slow z-10">
+              <div className="w-full h-full bg-gradient-to-br from-rose-400 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
+                3
+              </div>
+            </div>
+
+            {/* Additional scattered letters */}
+            <div className="absolute top-1/3 left-12 w-14 h-14 animate-twinkle z-10">
+              <div className="w-full h-full bg-gradient-to-br from-teal-400 to-blue-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
+                F
+              </div>
+            </div>
+
+            <div className="absolute bottom-1/4 right-20 w-14 h-14 animate-float-slow z-10">
+              <div className="w-full h-full bg-gradient-to-br from-violet-400 to-purple-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
+                G
+              </div>
+            </div>
+
+            {/* Number 3 */}
+            <div className="absolute top-2/3 left-20 w-12 h-12 animate-bounce-slow z-10">
+              <div className="w-full h-full bg-gradient-to-br from-rose-400 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
                 3
               </div>
             </div>
