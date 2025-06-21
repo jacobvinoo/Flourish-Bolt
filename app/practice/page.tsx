@@ -279,8 +279,12 @@ export default function PracticePage() {
       setUploadSuccess(true);
       setSelectedFile(null);
       
-      // Mark current step as completed
-      setCompletedSteps(prev => new Set([...prev, firstWorkbookSteps[currentStep].id]));
+      // Mark current step as completed - Fixed TypeScript error
+      setCompletedSteps(prev => {
+        const newSet = new Set(prev);
+        newSet.add(firstWorkbookSteps[currentStep].id);
+        return newSet;
+      });
       
       // Refresh submissions to show the new one
       await fetchSubmissions(user.id);
