@@ -7,7 +7,6 @@ import { User } from '@supabase/supabase-js';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Database, Tables } from '@/lib/database.types';
 import { 
   Target, 
@@ -16,7 +15,6 @@ import {
   Star, 
   Crown, 
   Zap, 
-  Calendar,
   Clock,
   TrendingUp,
   Settings,
@@ -27,7 +25,6 @@ import {
   BookOpen,
   Award,
   Sparkles,
-  Heart,
   CheckCircle,
   Lock,
   PenTool,
@@ -35,6 +32,25 @@ import {
   ArrowUp
 } from 'lucide-react';
 import Link from 'next/link';
+
+type Profile = Tables<'profiles'>;
+
+// Simple Progress component
+interface ProgressProps {
+  value: number;
+  className?: string;
+}
+
+function Progress({ value, className = '' }: ProgressProps) {
+  return (
+    <div className={`w-full bg-gray-200 rounded-full h-2 ${className}`}>
+      <div 
+        className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
+        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+      />
+    </div>
+  );
+}
 
 type Profile = Tables<'profiles'>;
 
