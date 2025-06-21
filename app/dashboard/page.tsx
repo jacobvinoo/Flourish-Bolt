@@ -6,735 +6,775 @@ import { useRouter } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import { Database, Tables } from '@/lib/database.types';
-import { BookOpen, PenTool, TrendingUp, User as UserIcon, Play, Star, Settings, FileText, Target, Zap, CheckCircle, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import { 
+  Target, 
+  Trophy, 
+  Flame, 
+  Star, 
+  Crown, 
+  Zap, 
+  Calendar,
+  Clock,
+  TrendingUp,
+  Settings,
+  Play,
+  ChevronRight,
+  Gift,
+  Users,
+  BookOpen,
+  Award,
+  Sparkles,
+  Heart,
+  CheckCircle,
+  Lock,
+  PenTool,
+  Smile,
+  ArrowUp
+} from 'lucide-react';
 import Link from 'next/link';
 
-type Exercise = Tables<'exercises'>;
 type Profile = Tables<'profiles'>;
 
-// First Workbook exercises data
-const firstWorkbookExercises = [
+interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  progress: number;
+  total: number;
+  unlocked: boolean;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+}
+
+interface LearningPath {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+  progress: number;
+  totalLessons: number;
+  unlockedLessons: number;
+  nextLesson: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+}
+
+const mockAchievements: Achievement[] = [
   {
-    id: 'vertical-lines',
-    title: 'Vertical Lines',
-    description: 'Master downward stroke control with straight vertical lines from top to bottom.',
-    level: 1,
-    estimatedTime: '10-15 minutes',
-    skills: ['Motor Control', 'Line Direction', 'Pencil Grip'],
-    worksheetUrl: '/worksheets/vertical-lines.html',
-    completed: false
+    id: 'first-steps',
+    title: 'First Steps',
+    description: 'Complete your first lesson',
+    icon: '👶',
+    progress: 1,
+    total: 1,
+    unlocked: true,
+    rarity: 'common'
   },
   {
-    id: 'horizontal-lines',
-    title: 'Horizontal Lines',
-    description: 'Practice horizontal lines from left to right to build reading and writing flow.',
-    level: 1,
-    estimatedTime: '10-15 minutes',
-    skills: ['Left-to-right progression', 'Reading flow', 'Line control'],
-    worksheetUrl: '/worksheets/horizontal-lines.html',
-    completed: false
+    id: 'streak-starter',
+    title: 'Streak Starter',
+    description: 'Practice for 3 days in a row',
+    icon: '🔥',
+    progress: 2,
+    total: 3,
+    unlocked: false,
+    rarity: 'common'
   },
   {
-    id: 'circles',
-    title: 'Circles',
-    description: 'Learn circular motions essential for letters like o, a, and d.',
-    level: 1,
-    estimatedTime: '15-20 minutes',
-    skills: ['Circular motor patterns', 'Hand-eye coordination', 'Smooth curves'],
-    worksheetUrl: '/worksheets/circles.html',
-    completed: false
+    id: 'letter-master',
+    title: 'Letter Master',
+    description: 'Perfect all 26 letters',
+    icon: '🎯',
+    progress: 12,
+    total: 26,
+    unlocked: false,
+    rarity: 'rare'
   },
   {
-    id: 'diagonal-lines',
-    title: 'Diagonal Lines',
-    description: 'Master diagonal strokes for letters like A, V, X, and k.',
-    level: 1,
-    estimatedTime: '15-20 minutes',
-    skills: ['Diagonal control', 'Letter preparation', 'Angle consistency'],
-    worksheetUrl: '/worksheets/diagonal-lines.html',
-    completed: false
-  },
-  {
-    id: 'intersecting-lines',
-    title: 'Intersecting Lines',
-    description: 'Practice crosses and plus signs with precision.',
-    level: 1,
-    estimatedTime: '15-20 minutes',
-    skills: ['Precision', 'Letter formation', 'Intersection control'],
-    worksheetUrl: '/worksheets/intersecting-lines.html',
-    completed: false
-  },
-  {
-    id: 'basic-shapes',
-    title: 'Basic Shapes',
-    description: 'Combine strokes to create squares, triangles, and rectangles.',
-    level: 1,
-    estimatedTime: '20-25 minutes',
-    skills: ['Shape recognition', 'Stroke combination', 'Geometric forms'],
-    worksheetUrl: '/worksheets/basic-shapes.html',
-    completed: false
-  },
-  {
-    id: 'continuous-curves',
-    title: 'Continuous Curves',
-    description: 'Develop fluidity with wavy lines and loops for cursive preparation.',
-    level: 1,
-    estimatedTime: '20-25 minutes',
-    skills: ['Fluidity of motion', 'Cursive preparation', 'Smooth transitions'],
-    worksheetUrl: '/worksheets/continuous-curves.html',
-    completed: false
+    id: 'speed-demon',
+    title: 'Speed Demon',
+    description: 'Write 50 words per minute',
+    icon: '⚡',
+    progress: 0,
+    total: 1,
+    unlocked: false,
+    rarity: 'epic'
   }
 ];
 
-export default function DashboardPage() {
+const mockLearningPaths: LearningPath[] = [
+  {
+    id: 'basic-strokes',
+    title: 'Basic Strokes',
+    description: 'Master fundamental writing movements',
+    icon: '📏',
+    color: 'from-blue-400 to-blue-600',
+    progress: 85,
+    totalLessons: 7,
+    unlockedLessons: 6,
+    nextLesson: 'Continuous Curves',
+    difficulty: 'beginner'
+  },
+  {
+    id: 'lowercase-letters',
+    title: 'Lowercase Letters',
+    description: 'Learn proper lowercase formation',
+    icon: 'abc',
+    color: 'from-green-400 to-green-600',
+    progress: 45,
+    totalLessons: 26,
+    unlockedLessons: 12,
+    nextLesson: 'Letter m',
+    difficulty: 'beginner'
+  },
+  {
+    id: 'uppercase-letters',
+    title: 'Uppercase Letters',
+    description: 'Perfect your capital letters',
+    icon: 'ABC',
+    color: 'from-purple-400 to-purple-600',
+    progress: 0,
+    totalLessons: 26,
+    unlockedLessons: 0,
+    nextLesson: 'Letter A',
+    difficulty: 'intermediate'
+  },
+  {
+    id: 'cursive-writing',
+    title: 'Cursive Writing',
+    description: 'Flowing connected letters',
+    icon: '✍️',
+    color: 'from-pink-400 to-pink-600',
+    progress: 0,
+    totalLessons: 30,
+    unlockedLessons: 0,
+    nextLesson: 'Locked',
+    difficulty: 'advanced'
+  }
+];
+
+export default function ModernDashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
-  const [exercisesLoading, setExercisesLoading] = useState(true);
-  const [authError, setAuthError] = useState<string | null>(null);
-  const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  const [currentStreak, setCurrentStreak] = useState(12);
+  const [longestStreak, setLongestStreak] = useState(28);
+  const [totalPracticeTime, setTotalPracticeTime] = useState(145); // minutes
+  const [weeklyGoal, setWeeklyGoal] = useState(150); // minutes
+  const [weeklyProgress, setWeeklyProgress] = useState(90); // minutes
+  const [level, setLevel] = useState(8);
+  const [xp, setXp] = useState(2350);
+  const [xpToNextLevel, setXpToNextLevel] = useState(650);
   
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
-  // Debug logging function
-  const addDebugInfo = (info: string) => {
-    console.log('DASHBOARD DEBUG:', info);
-    setDebugInfo(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${info}`]);
-  };
-
   useEffect(() => {
     const getUser = async () => {
       try {
-        addDebugInfo('Starting user authentication check');
         const { data: { user }, error } = await supabase.auth.getUser();
         
-        if (error) {
-          addDebugInfo(`Auth error: ${error.message}`);
-          console.error('Auth error:', error);
-          setAuthError(error.message);
+        if (error || !user) {
           router.push('/login');
           return;
         }
         
-        if (!user) {
-          addDebugInfo('No user found, redirecting to login');
-          router.push('/login');
-          return;
-        }
-        
-        addDebugInfo(`User authenticated: ${user.email}`);
         setUser(user);
-        await fetchProfile(user.id, user);
-      } catch (err: any) {
-        addDebugInfo(`Unexpected error: ${err.message}`);
-        console.error('Error getting user:', err);
-        setAuthError('Failed to authenticate user');
+        await fetchProfile(user.id);
+      } catch (error: any) {
         router.push('/login');
       } finally {
-        addDebugInfo('Authentication check complete');
         setLoading(false);
       }
     };
 
     getUser();
-  }, [supabase, router]);
+  }, [supabase.auth, router]);
 
-  const fetchProfile = async (userId: string, user: User) => {
+  const fetchProfile = async (userId: string) => {
     try {
-      addDebugInfo(`Starting profile fetch for user: ${userId}`);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
 
-      if (error) {
-        addDebugInfo(`Profile fetch error: ${error.message}`);
-        console.error('Error fetching profile:', error);
-        
-        // If profile doesn't exist, try to create one
-        if (error.code === 'PGRST116' || error.message.includes('no rows')) {
-          addDebugInfo('Profile not found, creating default profile');
-          
-          const { data: newProfile, error: createError } = await supabase
-            .from('profiles')
-            .insert({
-              id: userId,
-              full_name: user?.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-              user_role: 'student',
-              display_mode: 'adult'
-            })
-            .select()
-            .single();
-          
-          if (createError) {
-            addDebugInfo(`Profile creation error: ${createError.message}`);
-            console.error('Error creating profile:', createError);
-          } else {
-            addDebugInfo('Default profile created successfully');
-            setProfile(newProfile);
-          }
-        }
-      } else if (data) {
-        addDebugInfo('Profile loaded successfully');
+      if (data) {
         setProfile(data);
-      } else {
-        addDebugInfo('No profile data returned, using defaults');
       }
     } catch (error: any) {
-      addDebugInfo(`Profile operation failed: ${error.message}`);
-      console.error('Error in fetchProfile:', error);
+      console.error('Error fetching profile:', error);
     }
   };
 
-  useEffect(() => {
-    const fetchExercises = async () => {
-      try {
-        if (!user) {
-          addDebugInfo('Skipping exercise fetch - no user');
-          setExercisesLoading(false);
-          return;
-        }
-
-        addDebugInfo('Starting exercises fetch');
-        const { data, error } = await supabase
-          .from('exercises')
-          .select('*')
-          .order('level', { ascending: true });
-
-        if (error) {
-          addDebugInfo(`Exercises fetch error: ${error.message}`);
-          console.error('Error fetching exercises:', error);
-          // Don't treat this as a fatal error - exercises table might not exist yet
-          setExercises([]);
-        } else {
-          addDebugInfo(`Exercises loaded: ${data?.length || 0} exercises`);
-          setExercises(data || []);
-        }
-      } catch (error: any) {
-        addDebugInfo(`Exercises fetch failed: ${error.message}`);
-        console.error('Error fetching exercises:', error);
-        setExercises([]);
-      } finally {
-        addDebugInfo('Exercises fetch complete');
-        setExercisesLoading(false);
-      }
-    };
-
-    fetchExercises();
-  }, [supabase, user]);
-  
-  // Apply theme based on profile
-  useEffect(() => {
-    if (profile) {
-      const isKids = profile.display_mode === 'kids';
-      const modeClass = isKids ? 'kids-mode' : 'adult-mode';
-      const otherModeClass = isKids ? 'adult-mode' : 'kids-mode';
-      
-      document.body.classList.add(modeClass);
-      document.body.classList.remove(otherModeClass);
-
-      return () => {
-        document.body.classList.remove(modeClass);
-      };
-    }
-  }, [profile]);
-
   const handleSignOut = async () => {
-    addDebugInfo('User signing out');
     await supabase.auth.signOut();
     router.push('/');
   };
 
-  const getDifficultyColor = (level: number) => {
-    if (level <= 3) return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-    if (level <= 6) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-    if (level <= 8) return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200';
-    return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+  const getRarityColor = (rarity: string) => {
+    switch (rarity) {
+      case 'common': return 'border-gray-300 bg-gray-50';
+      case 'rare': return 'border-blue-300 bg-blue-50';
+      case 'epic': return 'border-purple-300 bg-purple-50';
+      case 'legendary': return 'border-yellow-300 bg-yellow-50';
+      default: return 'border-gray-300 bg-gray-50';
+    }
   };
 
-  const getDifficultyLabel = (level: number) => {
-    if (level <= 3) return 'Beginner';
-    if (level <= 6) return 'Intermediate';
-    if (level <= 8) return 'Advanced';
-    return 'Expert';
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty) {
+      case 'beginner': return 'bg-green-100 text-green-800';
+      case 'intermediate': return 'bg-yellow-100 text-yellow-800';
+      case 'advanced': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
   };
 
-  const openWorksheet = (worksheetUrl: string) => {
-    window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
-  };
+  const isKidsMode = profile?.display_mode === 'kids';
+  const levelProgress = (xp / (xp + xpToNextLevel)) * 100;
+  const weeklyGoalProgress = (weeklyProgress / weeklyGoal) * 100;
 
-  // Show loading state with debug info
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto">
-          <Loader2 className="h-16 w-16 text-primary animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground mb-4">Loading dashboard...</p>
-          
-          {/* Debug information */}
-          <div className="text-left bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-xs space-y-1">
-            <div className="font-semibold mb-2">Debug Log:</div>
-            {debugInfo.map((info, index) => (
-              <div key={index} className="text-gray-600 dark:text-gray-400">{info}</div>
-            ))}
-            {debugInfo.length === 0 && (
-              <div className="text-gray-500">Initializing...</div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Show error state
-  if (authError) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto">
-          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <div className="text-red-500 mb-4 font-semibold">Authentication Error</div>
-          <p className="text-muted-foreground mb-4">{authError}</p>
-          <Button onClick={() => router.push('/login')}>
-            Go to Login
-          </Button>
-          
-          {/* Debug information */}
-          <div className="text-left bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-xs space-y-1 mt-4">
-            <div className="font-semibold mb-2">Debug Log:</div>
-            {debugInfo.map((info, index) => (
-              <div key={index} className="text-gray-600 dark:text-gray-400">{info}</div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Show if no user (shouldn't happen due to redirect, but safety check)
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-muted-foreground mb-4">No user session found</p>
-          <Button onClick={() => router.push('/login')}>
-            Go to Login
-          </Button>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading your learning journey...</p>
         </div>
       </div>
     );
   }
-  
-  const isKidsMode = profile?.display_mode === 'kids';
+
+  if (!user) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className={`text-3xl font-bold text-foreground ${isKidsMode ? 'wiggle' : ''}`}>
-              {isKidsMode ? '🎨 My Dashboard 🌟' : 'Dashboard'}
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              {isKidsMode ? (
-                <>Welcome back, {profile?.full_name || user.email}! Ready to practice? <span className="emoji">✨</span></>
-              ) : (
-                <>Welcome back, {profile?.full_name || user.email}</>
-              )}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Link href="/profile/settings">
-              <Button variant="outline" className={isKidsMode ? 'button' : ''}>
-                <Settings className="h-4 w-4 mr-2" />
-                {isKidsMode ? 'My Settings' : 'Settings'}
+    <div className={`min-h-screen transition-all duration-500 ${
+      isKidsMode 
+        ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
+        : 'bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800'
+    }`}>
+      {/* Header */}
+      <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${
+        isKidsMode 
+          ? 'bg-white/80 border-purple-200' 
+          : 'bg-white/80 dark:bg-slate-900/80 border-border'
+      }`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-4">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                isKidsMode ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-primary'
+              }`}>
+                <PenTool className="h-5 w-5 text-white" />
+              </div>
+              <h1 className={`text-xl font-bold ${
+                isKidsMode ? 'text-purple-700' : 'text-foreground'
+              }`}>
+                {isKidsMode ? '✨ My Writing Adventure!' : 'Handwriting Mastery'}
+              </h1>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              {/* Streak */}
+              <div className="flex items-center gap-2">
+                <Flame className={`h-5 w-5 ${currentStreak > 0 ? 'text-orange-500' : 'text-gray-400'}`} />
+                <span className={`font-bold ${isKidsMode ? 'text-purple-700' : 'text-foreground'}`}>
+                  {currentStreak}
+                </span>
+              </div>
+              
+              {/* XP */}
+              <div className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-500" />
+                <span className={`font-bold ${isKidsMode ? 'text-purple-700' : 'text-foreground'}`}>
+                  {xp.toLocaleString()}
+                </span>
+              </div>
+
+              {/* Settings */}
+              <Link href="/profile/settings">
+                <Button variant="ghost" size="sm">
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </Link>
+
+              {/* Sign Out */}
+              <Button onClick={handleSignOut} variant="outline" size="sm">
+                {isKidsMode ? '👋 Bye!' : 'Sign Out'}
               </Button>
-            </Link>
-            <Button onClick={handleSignOut} variant="outline" className={isKidsMode ? 'button' : ''}>
-              {isKidsMode ? 'Sign Out 👋' : 'Sign Out'}
-            </Button>
+            </div>
           </div>
         </div>
+      </header>
 
-        {/* Debug Panel (only show if there are debug messages and in development) */}
-        {debugInfo.length > 0 && process.env.NODE_ENV === 'development' && (
-          <Card className="mb-6 border-blue-200 bg-blue-50 dark:bg-blue-900/20">
-            <CardHeader>
-              <CardTitle className="text-sm text-blue-800 dark:text-blue-200">Debug Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xs space-y-1 text-blue-700 dark:text-blue-300">
-                {debugInfo.map((info, index) => (
-                  <div key={index}>{info}</div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Display Mode Indicator */}
-        {isKidsMode && (
-          <div className="mb-8 p-4 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 border-2 border-purple-200 dark:border-purple-800 rounded-2xl bounce-in">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🎨</span>
-              <div>
-                <h3 className="font-bold text-purple-800 dark:text-purple-200">Kids Mode Active!</h3>
-                <p className="text-sm text-purple-700 dark:text-purple-300">
-                  You're using the fun, colorful interface! Change this in Settings if you want.
-                </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className={`text-2xl font-bold ${
+                isKidsMode ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600' : 'text-foreground'
+              }`}>
+                {isKidsMode 
+                  ? `🌟 Welcome back, ${profile?.full_name || 'Superstar'}!` 
+                  : `Welcome back, ${profile?.full_name || user.email}`
+                }
+              </h2>
+              <p className={`text-lg ${isKidsMode ? 'text-purple-600' : 'text-muted-foreground'}`}>
+                {isKidsMode 
+                  ? 'Ready for another amazing writing adventure? 🚀'
+                  : 'Continue your handwriting journey'
+                }
+              </p>
+            </div>
+            
+            {/* Level Badge */}
+            <div className={`flex items-center gap-3 px-4 py-2 rounded-full ${
+              isKidsMode 
+                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' 
+                : 'bg-primary text-primary-foreground'
+            }`}>
+              <Crown className="h-5 w-5" />
+              <div className="text-center">
+                <div className="text-sm font-medium">
+                  {isKidsMode ? 'Level' : 'Level'}
+                </div>
+                <div className="text-xl font-bold">{level}</div>
               </div>
             </div>
           </div>
-        )}
 
-        {/* Stats Grid */}
-        <div className="grid md:grid-cols-4 gap-6 mb-8">
-          <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {isKidsMode ? '📚 Fun Exercises' : 'Exercises Available'}
-              </CardTitle>
-              <BookOpen className={`h-4 w-4 text-muted-foreground ${isKidsMode ? 'icon' : ''}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{exercises.length || firstWorkbookExercises.length}</div>
-              <p className="text-xs text-muted-foreground">
-                {isKidsMode ? 'Ready to have fun!' : 'Ready to practice'}
-              </p>
-            </CardContent>
-          </Card>
+          {/* Level Progress */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className={`text-sm font-medium ${isKidsMode ? 'text-purple-700' : 'text-foreground'}`}>
+                {isKidsMode ? '⭐ Progress to Next Level' : 'Progress to Level ' + (level + 1)}
+              </span>
+              <span className={`text-sm ${isKidsMode ? 'text-purple-600' : 'text-muted-foreground'}`}>
+                {xp.toLocaleString()} / {(xp + xpToNextLevel).toLocaleString()} XP
+              </span>
+            </div>
+            <Progress 
+              value={levelProgress} 
+              className={`h-3 ${isKidsMode ? 'bg-purple-100' : ''}`}
+            />
+          </div>
+        </div>
 
-          <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {isKidsMode ? '⭐ My Score' : 'Average Score'}
-              </CardTitle>
-              <TrendingUp className={`h-4 w-4 text-muted-foreground ${isKidsMode ? 'icon' : ''}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">--</div>
-              <p className="text-xs text-muted-foreground">
-                {isKidsMode ? 'Do exercises to see your awesome progress!' : 'Complete exercises to see progress'}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {isKidsMode ? '🎯 My Level' : 'Current Level'}
-              </CardTitle>
-              <PenTool className={`h-4 w-4 text-muted-foreground ${isKidsMode ? 'icon' : ''}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {isKidsMode ? 'Beginner 🌱' : 'Beginner'}
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          {/* Current Streak */}
+          <Card className={`${isKidsMode ? 'border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-red-50' : 'border-0 shadow-lg'} transition-all duration-200 hover:scale-105`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${isKidsMode ? 'text-orange-700' : 'text-muted-foreground'}`}>
+                    {isKidsMode ? '🔥 Fire Streak!' : 'Current Streak'}
+                  </p>
+                  <p className={`text-3xl font-bold ${isKidsMode ? 'text-orange-800' : 'text-foreground'}`}>
+                    {currentStreak}
+                  </p>
+                  <p className={`text-xs ${isKidsMode ? 'text-orange-600' : 'text-muted-foreground'}`}>
+                    {isKidsMode ? 'Days of awesome practice!' : 'days'}
+                  </p>
+                </div>
+                <div className={`p-3 rounded-full ${isKidsMode ? 'bg-orange-200' : 'bg-orange-100'}`}>
+                  <Flame className={`h-6 w-6 ${currentStreak > 0 ? 'text-orange-500' : 'text-gray-400'}`} />
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                {isKidsMode ? 'Keep practicing to level up!' : 'Keep practicing to advance'}
-              </p>
             </CardContent>
           </Card>
 
-          <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {isKidsMode ? '👤 I am a' : 'Profile'}
-              </CardTitle>
-              <UserIcon className={`h-4 w-4 text-muted-foreground ${isKidsMode ? 'icon' : ''}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold capitalize">
-                {profile?.user_role || 'Student'}
-                {isKidsMode && profile?.user_role === 'student' && ' 🎓'}
+          {/* Weekly Goal */}
+          <Card className={`${isKidsMode ? 'border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50' : 'border-0 shadow-lg'} transition-all duration-200 hover:scale-105`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${isKidsMode ? 'text-green-700' : 'text-muted-foreground'}`}>
+                    {isKidsMode ? '🎯 Weekly Goal' : 'Weekly Goal'}
+                  </p>
+                  <p className={`text-3xl font-bold ${isKidsMode ? 'text-green-800' : 'text-foreground'}`}>
+                    {Math.round(weeklyGoalProgress)}%
+                  </p>
+                  <p className={`text-xs ${isKidsMode ? 'text-green-600' : 'text-muted-foreground'}`}>
+                    {weeklyProgress} / {weeklyGoal} min
+                  </p>
+                </div>
+                <div className={`p-3 rounded-full ${isKidsMode ? 'bg-green-200' : 'bg-green-100'}`}>
+                  <Target className="h-6 w-6 text-green-500" />
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                {isKidsMode ? 'Your role in the app' : 'Default role'}
-              </p>
+              <Progress value={weeklyGoalProgress} className="mt-3 h-2" />
+            </CardContent>
+          </Card>
+
+          {/* Total Practice Time */}
+          <Card className={`${isKidsMode ? 'border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50' : 'border-0 shadow-lg'} transition-all duration-200 hover:scale-105`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${isKidsMode ? 'text-blue-700' : 'text-muted-foreground'}`}>
+                    {isKidsMode ? '⏰ Total Practice' : 'Total Practice'}
+                  </p>
+                  <p className={`text-3xl font-bold ${isKidsMode ? 'text-blue-800' : 'text-foreground'}`}>
+                    {Math.floor(totalPracticeTime / 60)}h {totalPracticeTime % 60}m
+                  </p>
+                  <p className={`text-xs ${isKidsMode ? 'text-blue-600' : 'text-muted-foreground'}`}>
+                    {isKidsMode ? 'Time well spent!' : 'this month'}
+                  </p>
+                </div>
+                <div className={`p-3 rounded-full ${isKidsMode ? 'bg-blue-200' : 'bg-blue-100'}`}>
+                  <Clock className="h-6 w-6 text-blue-500" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Achievements */}
+          <Card className={`${isKidsMode ? 'border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50' : 'border-0 shadow-lg'} transition-all duration-200 hover:scale-105`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-sm font-medium ${isKidsMode ? 'text-purple-700' : 'text-muted-foreground'}`}>
+                    {isKidsMode ? '🏆 Achievements' : 'Achievements'}
+                  </p>
+                  <p className={`text-3xl font-bold ${isKidsMode ? 'text-purple-800' : 'text-foreground'}`}>
+                    {mockAchievements.filter(a => a.unlocked).length}
+                  </p>
+                  <p className={`text-xs ${isKidsMode ? 'text-purple-600' : 'text-muted-foreground'}`}>
+                    of {mockAchievements.length} unlocked
+                  </p>
+                </div>
+                <div className={`p-3 rounded-full ${isKidsMode ? 'bg-purple-200' : 'bg-yellow-100'}`}>
+                  <Trophy className="h-6 w-6 text-yellow-500" />
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* First Workbook Section */}
-        <div className="mb-8">
-          <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2 text-2xl">
-                    <Target className="h-6 w-6 text-primary" />
-                    {isKidsMode ? '🎯 First Workbook - Start Here! 🚀' : 'First Workbook - Start Your Journey'}
-                  </CardTitle>
-                  <CardDescription className="mt-2 text-base">
-                    {isKidsMode 
-                      ? 'Master the basics with 7 fun exercises! Start with vertical lines and work your way up! 🌟'
-                      : 'Master the fundamentals with our structured 7-exercise program. Build essential motor skills step by step.'
-                    }
-                  </CardDescription>
-                </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold text-primary">7</div>
-                  <div className="text-sm text-muted-foreground">Exercises</div>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {/* Progress Bar */}
-              <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium">
-                    {isKidsMode ? 'My Progress 📈' : 'Progress'}
-                  </span>
-                  <span className="text-sm text-muted-foreground">0 of 7 completed</span>
-                </div>
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-                  <div 
-                    className={`h-3 rounded-full transition-all duration-500 ${
-                      isKidsMode 
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500' 
-                        : 'bg-primary'
-                    }`}
-                    style={{ width: '0%' }}
-                  ></div>
-                </div>
-              </div>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Learning Path */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className={`text-xl font-bold ${isKidsMode ? 'text-purple-700' : 'text-foreground'}`}>
+                {isKidsMode ? '🎮 Your Learning Adventure!' : 'Your Learning Path'}
+              </h3>
+              <Link href="/practice">
+                <Button className={isKidsMode ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600' : ''}>
+                  {isKidsMode ? '🚀 Continue Adventure!' : 'Continue Learning'}
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </Link>
+            </div>
 
-              {/* Exercise Grid */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                {firstWorkbookExercises.map((exercise, index) => (
-                  <Card key={exercise.id} className={`border border-border/50 hover:border-primary/50 transition-all duration-200 ${isKidsMode ? 'hover:scale-105' : ''}`}>
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                              exercise.completed 
-                                ? 'bg-green-500 text-white' 
-                                : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
-                            }`}>
-                              {exercise.completed ? <CheckCircle className="h-3 w-3" /> : index + 1}
-                            </span>
-                            {isKidsMode ? `${exercise.title} ✨` : exercise.title}
-                          </CardTitle>
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                            {exercise.description}
-                          </p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex items-center justify-between">
-                        <div className="flex flex-col gap-1">
-                          <span className="text-xs text-muted-foreground">
-                            {exercise.estimatedTime}
-                          </span>
-                          <div className="flex flex-wrap gap-1">
-                            {exercise.skills.slice(0, 2).map((skill, skillIndex) => (
-                              <span key={skillIndex} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                                {skill}
-                              </span>
-                            ))}
+            <div className="space-y-4">
+              {mockLearningPaths.map((path, index) => {
+                const isLocked = path.progress === 0 && index > 1;
+                
+                return (
+                  <Card 
+                    key={path.id} 
+                    className={`transition-all duration-200 hover:scale-[1.02] cursor-pointer ${
+                      isLocked 
+                        ? 'opacity-60' 
+                        : isKidsMode 
+                          ? 'border-2 hover:shadow-xl' 
+                          : 'border-0 shadow-lg hover:shadow-xl'
+                    }`}
+                  >
+                    <CardContent className="p-0">
+                      <div className={`p-6 rounded-t-lg bg-gradient-to-r ${path.color} text-white`}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="text-4xl">
+                              {isLocked ? '🔒' : path.icon}
+                            </div>
+                            <div>
+                              <h4 className="text-xl font-bold">{path.title}</h4>
+                              <p className="text-white/90">{path.description}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <Badge className={`mb-2 ${getDifficultyColor(path.difficulty)} text-xs`}>
+                              {path.difficulty}
+                            </Badge>
+                            <div className="text-sm font-medium">
+                              {path.unlockedLessons} / {path.totalLessons}
+                            </div>
                           </div>
                         </div>
-                        <Button
-                          onClick={() => openWorksheet(exercise.worksheetUrl)}
-                          size="sm"
-                          className={isKidsMode ? 'button' : ''}
-                        >
-                          <Play className="h-3 w-3 mr-1" />
-                          {isKidsMode ? 'Go!' : 'Start'}
-                        </Button>
+                      </div>
+                      
+                      <div className="p-6">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-medium">
+                            {isLocked ? 'Complete previous paths to unlock' : `Next: ${path.nextLesson}`}
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            {isLocked ? '' : `${Math.round(path.progress)}% complete`}
+                          </span>
+                        </div>
+                        
+                        {!isLocked && (
+                          <div className="flex items-center gap-3">
+                            <Progress value={path.progress} className="flex-1 h-2" />
+                            <Link href="/practice">
+                              <Button size="sm" className={isKidsMode ? 'bg-gradient-to-r from-purple-500 to-pink-500' : ''}>
+                                {isKidsMode ? '▶️ Play!' : 'Continue'}
+                              </Button>
+                            </Link>
+                          </div>
+                        )}
+                        
+                        {isLocked && (
+                          <div className="flex items-center justify-center py-4">
+                            <Lock className="h-8 w-8 text-gray-400" />
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
-                ))}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3">
-                <Link href="/practice" className="flex-1">
-                  <Button className={`w-full h-12 text-lg font-semibold ${isKidsMode ? 'button big-button' : ''}`}>
-                    <Play className="h-5 w-5 mr-2" />
-                    {isKidsMode ? 'Start My Journey! 🚀' : 'Begin First Workbook'}
-                  </Button>
-                </Link>
-                <Link href="/worksheets">
-                  <Button variant="outline" className={`h-12 ${isKidsMode ? 'button' : ''}`}>
-                    <FileText className="h-5 w-5 mr-2" />
-                    {isKidsMode ? 'All Worksheets 📄' : 'All Worksheets'}
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5" />
-                {isKidsMode ? '⚡ Quick Practice!' : 'Quick Practice'}
-              </CardTitle>
-              <CardDescription>
-                {isKidsMode 
-                  ? 'Jump into any exercise and start practicing right away! 🎯'
-                  : 'Jump into any exercise and start practicing immediately'
-                }
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/worksheets">
-                <Button variant="outline" className={`w-full ${isKidsMode ? 'button' : ''}`}>
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  {isKidsMode ? 'Browse Exercises! 🔍' : 'Browse All Exercises'}
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                {isKidsMode ? '📝 Practice Worksheets!' : 'Practice Worksheets'}
-              </CardTitle>
-              <CardDescription>
-                {isKidsMode 
-                  ? 'Print fun worksheets to practice your handwriting! ✏️'
-                  : 'Download and print interactive worksheets for offline practice'
-                }
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/worksheets">
-                <Button variant="outline" className={`w-full ${isKidsMode ? 'button' : ''}`}>
-                  <FileText className="h-4 w-4 mr-2" />
-                  {isKidsMode ? 'Get Worksheets! 🎨' : 'Browse Worksheets'}
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-            <CardHeader>
-              <CardTitle>
-                {isKidsMode ? '📊 See My Progress!' : 'View Progress'}
-              </CardTitle>
-              <CardDescription>
-                {isKidsMode 
-                  ? 'Check out how much you\'ve improved! So cool! 🚀'
-                  : 'Track your handwriting improvement over time'
-                }
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className={`w-full ${isKidsMode ? 'button' : ''}`}>
-                {isKidsMode ? 'Show My Progress! 📈' : 'View Analytics'}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Advanced Exercises Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-foreground">
-                {isKidsMode ? '🎮 Advanced Writing Games!' : 'Advanced Exercises'}
-              </h2>
-              <p className="text-muted-foreground">
-                {isKidsMode 
-                  ? 'Ready for more challenges? Try these advanced exercises! 🏆' 
-                  : 'Advanced exercises for continued skill development'
-                }
-              </p>
+                );
+              })}
             </div>
           </div>
 
-          {exercisesLoading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <Card key={i} className={`border-0 shadow-lg ${isKidsMode ? 'card' : ''}`}>
-                  <CardHeader>
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2"></div>
-                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-2/3"></div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : exercises.length === 0 ? (
-            <Card className={`border-0 shadow-lg ${isKidsMode ? 'card' : ''}`}>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <BookOpen className={`h-12 w-12 text-muted-foreground mb-4 ${isKidsMode ? 'icon' : ''}`} />
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {isKidsMode ? 'No Advanced Games Yet! 😢' : 'No Advanced Exercises Available'}
-                </h3>
-                <p className="text-muted-foreground text-center">
-                  {isKidsMode 
-                    ? 'Start with the First Workbook to unlock more games! 🎈'
-                    : 'Complete the First Workbook to unlock advanced exercises.'
-                  }
-                </p>
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Daily Challenge */}
+            <Card className={`${isKidsMode ? 'border-2 border-yellow-200 bg-gradient-to-br from-yellow-50 to-orange-50' : 'border-0 shadow-lg'}`}>
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-yellow-700' : ''}`}>
+                  <Zap className="h-5 w-5 text-yellow-500" />
+                  {isKidsMode ? '⚡ Today\'s Challenge!' : 'Daily Challenge'}
+                </CardTitle>
+                <CardDescription className={isKidsMode ? 'text-yellow-600' : ''}>
+                  {isKidsMode ? 'Complete this for bonus XP!' : 'Complete for bonus XP'}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="text-3xl">📝</div>
+                  <div>
+                    <h4 className="font-semibold">Perfect 10 Letters</h4>
+                    <p className="text-sm text-muted-foreground">Write 10 letters with 100% accuracy</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm">Progress: 7/10</span>
+                  <span className="text-sm text-yellow-600 font-medium">+50 XP</span>
+                </div>
+                <Progress value={70} className="mb-4" />
+                <Button className={`w-full ${isKidsMode ? 'bg-gradient-to-r from-yellow-500 to-orange-500' : ''}`}>
+                  {isKidsMode ? '🎯 Continue Challenge!' : 'Continue Challenge'}
+                </Button>
               </CardContent>
             </Card>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {exercises.map((exercise) => (
-                <Card key={exercise.id} className={`border-0 shadow-lg hover:shadow-xl transition-all duration-300 group ${isKidsMode ? 'card bounce-in' : ''}`}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className={`text-lg font-semibold group-hover:text-primary transition-colors ${isKidsMode ? 'text-primary' : ''}`}>
-                          {isKidsMode ? `🎯 ${exercise.title}` : exercise.title}
-                        </CardTitle>
-                        {exercise.description && (
-                          <CardDescription className="mt-2 line-clamp-2">
-                            {exercise.description}
-                          </CardDescription>
+
+            {/* Recent Achievements */}
+            <Card className={`${isKidsMode ? 'border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50' : 'border-0 shadow-lg'}`}>
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-purple-700' : ''}`}>
+                  <Award className="h-5 w-5" />
+                  {isKidsMode ? '🏆 My Awesome Badges!' : 'Recent Achievements'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {mockAchievements.slice(0, 3).map((achievement) => (
+                    <div key={achievement.id} className={`p-3 rounded-lg border ${getRarityColor(achievement.rarity)} ${
+                      achievement.unlocked ? '' : 'opacity-60'
+                    }`}>
+                      <div className="flex items-center gap-3">
+                        <div className="text-2xl">{achievement.icon}</div>
+                        <div className="flex-1">
+                          <h5 className="font-medium text-sm">{achievement.title}</h5>
+                          <p className="text-xs text-muted-foreground">{achievement.description}</p>
+                          {!achievement.unlocked && (
+                            <div className="mt-2">
+                              <Progress 
+                                value={(achievement.progress / achievement.total) * 100} 
+                                className="h-1" 
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {achievement.progress}/{achievement.total}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                        {achievement.unlocked && (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
                         )}
                       </div>
-                      <div className="flex items-center gap-1 ml-2">
-                        <Star className={`h-4 w-4 text-yellow-500 ${isKidsMode ? 'icon' : ''}`} />
-                        <span className="text-sm font-medium">{exercise.level}</span>
-                      </div>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="flex flex-col gap-2">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(exercise.level)} ${isKidsMode ? 'badge' : ''}`}>
-                          {isKidsMode ? `${getDifficultyLabel(exercise.level)} 🌟` : getDifficultyLabel(exercise.level)}
-                        </span>
-                        {exercise.font_style && (
-                          <span className="text-xs text-muted-foreground">
-                            {isKidsMode ? '✏️ ' : 'Font: '}
-                            {exercise.font_style.replace('_', ' ').toUpperCase()}
-                          </span>
-                        )}
-                      </div>
-                      <Link href={`/exercise/${exercise.id}`}>
-                        <Button className={`group-hover:bg-primary/90 transition-colors ${isKidsMode ? 'button big-button' : ''}`}>
-                          <Play className="h-4 w-4 mr-2" />
-                          {isKidsMode ? 'Play!' : 'Start Exercise'}
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                  ))}
+                </div>
+                <Button variant="outline" className="w-full mt-4">
+                  {isKidsMode ? '👀 See All Badges!' : 'View All Achievements'}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card className={`${isKidsMode ? 'border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50' : 'border-0 shadow-lg'}`}>
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-blue-700' : ''}`}>
+                  <Sparkles className="h-5 w-5" />
+                  {isKidsMode ? '⚡ Quick Actions!' : 'Quick Actions'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Link href="/practice" className="block">
+                  <Button variant="outline" className={`w-full justify-start ${isKidsMode ? 'border-pink-200 hover:bg-pink-50' : ''}`}>
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  {isKidsMode ? '📊 See My Progress!' : 'View Progress'}
+                </Button>
+
+                <Button variant="outline" className={`w-full justify-start ${isKidsMode ? 'border-yellow-200 hover:bg-yellow-50' : ''}`}>
+                  <Users className="h-4 w-4 mr-2" />
+                  {isKidsMode ? '👥 Find Friends!' : 'Find Study Buddies'}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Streak Protection */}
+            {currentStreak >= 3 && (
+              <Card className={`${isKidsMode ? 'border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-red-50' : 'border-0 shadow-lg bg-gradient-to-br from-orange-50 to-red-50'}`}>
+                <CardHeader>
+                  <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-orange-700' : 'text-orange-800'}`}>
+                    <Gift className="h-5 w-5" />
+                    {isKidsMode ? '🛡️ Streak Shield!' : 'Streak Protection'}
+                  </CardTitle>
+                  <CardDescription className={isKidsMode ? 'text-orange-600' : 'text-orange-700'}>
+                    {isKidsMode ? 'Protect your amazing streak!' : 'Don\'t lose your progress!'}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center mb-4">
+                    <div className="text-4xl mb-2">🔥</div>
+                    <p className="text-sm font-medium">
+                      You have a {currentStreak}-day streak!
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {isKidsMode ? 'Keep it going, superstar!' : 'Keep the momentum going'}
+                    </p>
+                  </div>
+                  <Button className={`w-full ${isKidsMode ? 'bg-gradient-to-r from-orange-500 to-red-500' : 'bg-orange-500 hover:bg-orange-600'} text-white`}>
+                    {isKidsMode ? '🔥 Practice Now!' : 'Practice Today'}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Fun Fact / Tip */}
+            <Card className={`${isKidsMode ? 'border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50' : 'border-0 shadow-lg bg-gradient-to-br from-emerald-50 to-teal-50'}`}>
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-green-700' : 'text-emerald-700'}`}>
+                  <Smile className="h-5 w-5" />
+                  {isKidsMode ? '🤓 Fun Fact!' : 'Writing Tip'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center">
+                  <div className="text-3xl mb-3">✍️</div>
+                  <p className="text-sm font-medium mb-2">
+                    {isKidsMode 
+                      ? 'Did you know? The pencil was invented over 400 years ago!' 
+                      : 'Good handwriting can improve memory and comprehension!'
+                    }
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {isKidsMode 
+                      ? 'That\'s older than your great-great-great-great grandparents! 🤯'
+                      : 'Studies show that writing by hand activates different parts of the brain than typing.'
+                    }
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Level Up Progress */}
+            <Card className={`${isKidsMode ? 'border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50' : 'border-0 shadow-lg bg-gradient-to-br from-indigo-50 to-purple-50'}`}>
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-purple-700' : 'text-indigo-700'}`}>
+                  <ArrowUp className="h-5 w-5" />
+                  {isKidsMode ? '⬆️ Level Up Soon!' : 'Almost There!'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center mb-4">
+                  <div className="text-4xl mb-2">🎯</div>
+                  <p className="text-sm font-medium">
+                    {xpToNextLevel.toLocaleString()} XP to Level {level + 1}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {isKidsMode ? 'You\'re so close to leveling up!' : 'Complete a few more lessons!'}
+                  </p>
+                </div>
+                <Progress value={levelProgress} className="mb-4 h-3" />
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Level {level}</span>
+                  <span>Level {level + 1}</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Footer CTA */}
+        <div className="mt-12 text-center">
+          <Card className={`${isKidsMode ? 'border-2 border-purple-200 bg-gradient-to-r from-purple-100 to-pink-100' : 'border-0 shadow-lg bg-gradient-to-r from-blue-50 to-indigo-50'} p-8`}>
+            <div className="max-w-2xl mx-auto">
+              <div className="text-4xl mb-4">
+                {isKidsMode ? '🌟' : '✨'}
+              </div>
+              <h3 className={`text-2xl font-bold mb-4 ${isKidsMode ? 'text-purple-700' : 'text-foreground'}`}>
+                {isKidsMode ? 'Ready for Your Next Adventure?' : 'Ready to Continue Learning?'}
+              </h3>
+              <p className={`text-lg mb-6 ${isKidsMode ? 'text-purple-600' : 'text-muted-foreground'}`}>
+                {isKidsMode 
+                  ? 'Every practice session makes you a better writer! Let\'s keep the magic going! ✨'
+                  : 'Consistent practice leads to beautiful handwriting. Your next breakthrough is just one session away.'
+                }
+              </p>
+              <div className="flex gap-4 justify-center">
+                <Link href="/practice">
+                  <Button size="lg" className={`px-8 ${isKidsMode ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg' : ''}`}>
+                    <Play className="h-5 w-5 mr-2" />
+                    {isKidsMode ? '🚀 Start Practicing!' : 'Start Practicing'}
+                  </Button>
+                </Link>
+                <Link href="/worksheets">
+                  <Button variant="outline" size="lg" className={`px-8 ${isKidsMode ? 'border-purple-200 text-purple-700 hover:bg-purple-50' : ''}`}>
+                    <BookOpen className="h-5 w-5 mr-2" />
+                    {isKidsMode ? '📄 Browse Worksheets' : 'Browse Worksheets'}
+                  </Button>
+                </Link>
+              </div>
             </div>
-          )}
+          </Card>
         </div>
       </div>
     </div>
   );
-}
+}border-purple-200 hover:bg-purple-50' : ''}`}>
+                    <Play className="h-4 w-4 mr-2" />
+                    {isKidsMode ? '🎮 Start Practice!' : 'Quick Practice'}
+                  </Button>
+                </Link>
+                
+                <Link href="/worksheets" className="block">
+                  <Button variant="outline" className={`w-full justify-start ${isKidsMode ? 'border-green-200 hover:bg-green-50' : ''}`}>
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    {isKidsMode ? '📄 Get Worksheets!' : 'Browse Worksheets'}
+                  </Button>
+                </Link>
+                
+                <Button variant="outline" className={`w-full justify-start ${isKidsMode ? '
