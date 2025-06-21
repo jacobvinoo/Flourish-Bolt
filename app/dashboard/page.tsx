@@ -118,7 +118,7 @@ export default function DashboardPage() {
         
         console.log('User found:', user.email);
         setUser(user);
-        await fetchProfile(user.id);
+        await fetchProfile(user.id, user);
       } catch (err) {
         console.error('Error getting user:', err);
         setAuthError('Failed to authenticate user');
@@ -129,9 +129,9 @@ export default function DashboardPage() {
     };
 
     getUser();
-  }, [supabase.auth, router]);
+  }, [supabase, router]);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string, user: User) => {
     try {
       console.log('Fetching profile for user:', userId);
       const { data, error } = await supabase
@@ -200,6 +200,24 @@ export default function DashboardPage() {
       setExercisesLoading(false);
     }
   }, [supabase, user]);
+  
+  // [FIX] This new useEffect block manages the theme class on the body element.
+  // This makes the theme switching between adult and kids mode more robust.
+  useEffect(() => {
+    if (profile) {
+      const isKids = profile.display_mode === 'kids';
+      const modeClass = isKids ? 'kids-mode' : 'adult-mode';
+      const otherModeClass = isKids ? 'adult-mode' : 'kids-mode';
+      
+      document.body.classList.add(modeClass);
+      document.body.classList.remove(otherModeClass);
+
+      // Cleanup function to remove the class when the component unmounts
+      return () => {
+        document.body.classList.remove(modeClass);
+      };
+    }
+  }, [profile]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -264,8 +282,10 @@ export default function DashboardPage() {
       </div>
     );
   }
-
-  const isKidsMode = profile?.display_mode === 'kid';
+  
+  // [FIX] Corrected typo from 'kid' to 'kids' to match file name 'globals-kids.css'
+  // This ensures the correct theme and animations are applied for kids' profiles.
+  const isKidsMode = profile?.display_mode === 'kids';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
@@ -527,7 +547,7 @@ export default function DashboardPage() {
               </CardTitle>
               <CardDescription>
                 {isKidsMode 
-                  ? 'Print fun worksheets to practice your handwriting! 🖨️'
+                  ? 'Print fun worksheets to practice your handwriting! �️'
                   : 'Download and print interactive worksheets for offline practice'
                 }
               </CardDescription>
