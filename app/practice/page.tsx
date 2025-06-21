@@ -4,35 +4,26 @@ import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Database, Tables } from '@/lib/database.types';
 import { 
   ArrowLeft, 
-  FileText, 
-  Download, 
   Upload, 
   Star,
   CheckCircle,
   AlertCircle,
-  BookOpen,
-  Target,
-  Zap,
-  Play,
   Eye,
   Printer,
-  Clock,
-  Award,
-  TrendingUp,
   X,
   Image as ImageIcon,
   ChevronLeft,
   ChevronRight,
   Trophy,
   Heart,
-  Sparkles
+  Sparkles,
+  PenTool,
+  Award
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -489,10 +480,10 @@ export default function PracticePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading practice session...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading practice session...</p>
         </div>
       </div>
     );
@@ -510,48 +501,73 @@ export default function PracticePage() {
     <div className={`min-h-screen transition-all duration-500 ${
       isKidsMode 
         ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
-        : 'bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800'
+        : 'bg-gray-50'
     }`}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Link href="/">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className={`${
-                isKidsMode 
-                  ? 'bg-white hover:bg-purple-50 border-purple-200 text-purple-700 hover:text-purple-800' 
-                  : 'hover:bg-primary/10'
-              } transition-all duration-200`}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {isKidsMode ? '🏠 Back Home' : 'Back to Dashboard'}
-            </Button>
-          </Link>
-          <div className="flex-1">
-            <h1 className={`text-4xl font-bold ${
-              isKidsMode 
-                ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600' 
-                : 'text-foreground'
-            }`}>
-              {isKidsMode ? '🎨 Handwriting Adventure!' : 'First Workbook Practice'}
-            </h1>
-            <p className={`mt-2 text-lg ${
-              isKidsMode ? 'text-purple-700' : 'text-muted-foreground'
-            }`}>
-              {isKidsMode 
-                ? 'Let\'s practice writing and have tons of fun! 🚀✨'
-                : 'Master the fundamentals with our structured practice program'
-              }
-            </p>
+      {/* Header with Logo */}
+      <header className={`${
+        isKidsMode 
+          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' 
+          : 'bg-white border-b border-gray-200'
+      }`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                isKidsMode ? 'bg-white/20' : 'bg-green-600'
+              }`}>
+                <PenTool className={`h-4 w-4 ${
+                  isKidsMode ? 'text-white' : 'text-white'
+                }`} />
+              </div>
+              <h1 className={`text-xl font-bold ${
+                isKidsMode ? 'text-white' : 'text-gray-900'
+              }`}>
+                {isKidsMode ? '✨ Flourish Practice!' : 'Flourish Practice'}
+              </h1>
+            </div>
+            
+            <Link href="/">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className={`${
+                  isKidsMode 
+                    ? 'text-white/90 hover:bg-white/10 hover:text-white' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                } transition-all duration-200`}
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                {isKidsMode ? '🏠 Back Home' : 'Back to Dashboard'}
+              </Button>
+            </Link>
           </div>
+        </div>
+      </header>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Page Title */}
+        <div className="mb-8 text-center">
+          <h2 className={`text-3xl font-bold ${
+            isKidsMode 
+              ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600' 
+              : 'text-gray-900'
+          }`}>
+            {isKidsMode ? '🎨 Handwriting Adventure!' : 'First Workbook Practice'}
+          </h2>
+          <p className={`mt-2 text-lg ${
+            isKidsMode ? 'text-purple-700' : 'text-gray-600'
+          }`}>
+            {isKidsMode 
+              ? 'Let\'s practice writing and have tons of fun! 🚀✨'
+              : 'Master the fundamentals with our structured practice program'
+            }
+          </p>
         </div>
 
         {/* Progress Star Bar */}
         {isKidsMode && (
-          <Card className="border-0 shadow-xl mb-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white overflow-hidden">
-            <CardContent className="pt-6">
+          <div className="border-0 shadow-xl mb-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white overflow-hidden rounded-2xl">
+            <div className="pt-6 p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold flex items-center gap-2">
                   <Trophy className="h-6 w-6" />
@@ -584,32 +600,34 @@ export default function PracticePage() {
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {/* Success Message */}
         {uploadSuccess && (
-          <div className={`mb-6 p-6 rounded-xl flex items-center gap-4 animate-bounce ${
+          <div className={`mb-6 p-6 rounded-2xl flex items-center gap-4 animate-bounce shadow-lg ${
             isKidsMode 
               ? 'bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-300' 
-              : 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+              : 'bg-green-50 border border-green-200'
           }`}>
             <div className="flex-shrink-0">
               {isKidsMode ? (
                 <div className="text-4xl">🎉</div>
               ) : (
-                <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+                <div className="p-2 rounded-xl bg-green-500">
+                  <CheckCircle className="h-6 w-6 text-white" />
+                </div>
               )}
             </div>
             <div>
               <p className={`font-bold text-lg ${
-                isKidsMode ? 'text-green-800' : 'text-green-800 dark:text-green-200'
+                isKidsMode ? 'text-green-800' : 'text-green-800'
               }`}>
                 {isKidsMode ? '🌟 Fantastic work! You\'re amazing!' : 'Upload Successful!'}
               </p>
               <p className={`${
-                isKidsMode ? 'text-green-700' : 'text-green-700 dark:text-green-300'
+                isKidsMode ? 'text-green-700' : 'text-green-700'
               }`}>
                 {isKidsMode 
                   ? 'Your beautiful work has been saved! Moving to the next adventure... 🚀'
@@ -622,26 +640,28 @@ export default function PracticePage() {
 
         {/* Error Message */}
         {uploadError && (
-          <div className={`mb-6 p-6 rounded-xl flex items-center gap-4 ${
+          <div className={`mb-6 p-6 rounded-2xl flex items-center gap-4 shadow-lg ${
             isKidsMode 
               ? 'bg-gradient-to-r from-red-100 to-pink-100 border-2 border-red-300' 
-              : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+              : 'bg-red-50 border border-red-200'
           }`}>
             <div className="flex-shrink-0">
               {isKidsMode ? (
                 <div className="text-4xl">😅</div>
               ) : (
-                <AlertCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
+                <div className="p-2 rounded-xl bg-red-500">
+                  <AlertCircle className="h-6 w-6 text-white" />
+                </div>
               )}
             </div>
             <div>
               <p className={`font-bold text-lg ${
-                isKidsMode ? 'text-red-800' : 'text-red-800 dark:text-red-200'
+                isKidsMode ? 'text-red-800' : 'text-red-800'
               }`}>
                 {isKidsMode ? 'Oopsie! Let\'s try that again!' : 'Upload Failed'}
               </p>
               <p className={`${
-                isKidsMode ? 'text-red-700' : 'text-red-700 dark:text-red-300'
+                isKidsMode ? 'text-red-700' : 'text-red-700'
               }`}>
                 {uploadError}
               </p>
@@ -653,28 +673,28 @@ export default function PracticePage() {
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Current Worksheet Card */}
-            <Card className={`border-0 shadow-xl mb-8 overflow-hidden ${
+            <div className={`border-0 shadow-xl mb-8 overflow-hidden rounded-2xl ${
               isKidsMode 
                 ? `bg-gradient-to-br ${currentWorksheet.color} text-white` 
-                : ''
+                : 'bg-white border border-gray-200'
             }`}>
-              <CardHeader className="pb-4">
+              <div className="pb-4 p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className={`text-6xl ${isKidsMode ? 'animate-bounce' : ''}`}>
                       {currentWorksheet.emoji}
                     </div>
                     <div>
-                      <CardTitle className={`text-2xl font-bold ${
-                        isKidsMode ? 'text-white' : 'text-primary'
+                      <h3 className={`text-2xl font-bold ${
+                        isKidsMode ? 'text-white' : 'text-gray-900'
                       }`}>
                         {isKidsMode ? currentWorksheet.friendlyTitle : currentWorksheet.title}
-                      </CardTitle>
-                      <CardDescription className={`mt-2 text-lg ${
-                        isKidsMode ? 'text-white/90' : ''
+                      </h3>
+                      <p className={`mt-2 text-lg ${
+                        isKidsMode ? 'text-white/90' : 'text-gray-600'
                       }`}>
                         {isKidsMode ? currentWorksheet.kidsDescription : currentWorksheet.description}
-                      </CardDescription>
+                      </p>
                     </div>
                   </div>
                   {isCompleted && (
@@ -684,33 +704,32 @@ export default function PracticePage() {
                     </div>
                   )}
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
+              </div>
+              <div className="space-y-6 p-6 pt-0">
                 <div className="flex flex-wrap gap-2">
                   {currentWorksheet.skills.map((skill, index) => (
-                    <Badge 
+                    <span 
                       key={index} 
-                      variant="outline" 
-                      className={`text-sm px-3 py-1 ${
+                      className={`text-sm px-3 py-1 rounded-full border ${
                         isKidsMode 
-                          ? 'bg-white/20 border-white/30 text-white hover:bg-white/30' 
-                          : ''
+                          ? 'bg-white/20 border-white/30 text-white' 
+                          : 'bg-gray-100 border-gray-200 text-gray-700'
                       }`}
                     >
                       {skill}
-                    </Badge>
+                    </span>
                   ))}
                 </div>
 
                 <div className="flex items-center gap-6">
                   <div className={`flex items-center gap-2 ${
-                    isKidsMode ? 'text-white/90' : 'text-muted-foreground'
+                    isKidsMode ? 'text-white/90' : 'text-gray-600'
                   }`}>
                     <Heart className="h-5 w-5" />
                     <span className="font-medium">{currentWorksheet.estimatedTime}</span>
                   </div>
                   <div className={`flex items-center gap-2 ${
-                    isKidsMode ? 'text-white/90' : 'text-muted-foreground'
+                    isKidsMode ? 'text-white/90' : 'text-gray-600'
                   }`}>
                     <Sparkles className="h-5 w-5" />
                     <span className="font-medium">Step {currentStep + 1} of {firstWorkbookSteps.length}</span>
@@ -720,10 +739,10 @@ export default function PracticePage() {
                 <div className="flex gap-3">
                   <Button
                     onClick={() => openWorksheet(currentWorksheet.worksheetUrl)}
-                    className={`flex-1 h-12 text-lg font-bold ${
+                    className={`flex-1 h-12 text-lg font-bold transition-all duration-200 ${
                       isKidsMode 
-                        ? 'bg-white text-purple-600 hover:bg-gray-100 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200' 
-                        : ''
+                        ? 'bg-white text-purple-600 hover:bg-gray-100 shadow-lg hover:shadow-xl transform hover:scale-105' 
+                        : 'bg-green-600 text-white hover:bg-green-700'
                     }`}
                   >
                     <Eye className="h-5 w-5 mr-2" />
@@ -736,14 +755,14 @@ export default function PracticePage() {
                     className={`h-12 w-12 ${
                       isKidsMode 
                         ? 'bg-white/20 border-white/30 text-white hover:bg-white/30 shadow-lg' 
-                        : ''
+                        : 'border-gray-200 hover:bg-gray-50'
                     }`}
                   >
                     <Printer className="h-5 w-5" />
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Navigation */}
             <div className="flex items-center justify-between mb-8">
@@ -751,10 +770,10 @@ export default function PracticePage() {
                 onClick={goToPreviousStep}
                 disabled={currentStep === 0}
                 variant="outline"
-                className={`h-12 px-6 ${
+                className={`h-12 px-6 transition-all duration-200 ${
                   isKidsMode 
                     ? 'bg-white border-purple-200 text-purple-700 hover:bg-purple-50 disabled:opacity-50' 
-                    : ''
+                    : 'border-gray-200 hover:bg-gray-50 disabled:opacity-50'
                 }`}
               >
                 <ChevronLeft className="h-5 w-5 mr-2" />
@@ -764,7 +783,7 @@ export default function PracticePage() {
               <div className={`text-center px-4 py-2 rounded-full ${
                 isKidsMode 
                   ? 'bg-white/80 text-purple-700 font-bold' 
-                  : 'bg-primary/10 text-primary font-medium'
+                  : 'bg-green-100 text-green-700 font-medium'
               }`}>
                 {currentStep + 1} of {firstWorkbookSteps.length}
               </div>
@@ -773,10 +792,10 @@ export default function PracticePage() {
                 onClick={goToNextStep}
                 disabled={currentStep === firstWorkbookSteps.length - 1}
                 variant="outline"
-                className={`h-12 px-6 ${
+                className={`h-12 px-6 transition-all duration-200 ${
                   isKidsMode 
                     ? 'bg-white border-purple-200 text-purple-700 hover:bg-purple-50 disabled:opacity-50' 
-                    : ''
+                    : 'border-gray-200 hover:bg-gray-50 disabled:opacity-50'
                 }`}
               >
                 {isKidsMode ? 'Next ➡️' : 'Next Step'}
@@ -785,32 +804,34 @@ export default function PracticePage() {
             </div>
 
             {/* Upload Section */}
-            <Card className={`border-0 shadow-xl ${
+            <div className={`border-0 shadow-xl rounded-2xl ${
               isKidsMode 
                 ? 'bg-gradient-to-br from-white to-purple-50 border-2 border-purple-200' 
-                : ''
+                : 'bg-white border border-gray-200'
             }`}>
-              <CardHeader>
-                <CardTitle className={`flex items-center gap-3 text-2xl ${
-                  isKidsMode ? 'text-purple-700' : 'text-primary'
+              <div className="p-6">
+                <h3 className={`flex items-center gap-3 text-2xl font-bold mb-2 ${
+                  isKidsMode ? 'text-purple-700' : 'text-gray-900'
                 }`}>
                   <div className={`p-2 rounded-full ${
-                    isKidsMode ? 'bg-purple-100' : 'bg-primary/10'
+                    isKidsMode ? 'bg-purple-100' : 'bg-green-100'
                   }`}>
-                    <Upload className="h-6 w-6" />
+                    <Upload className={`h-6 w-6 ${
+                      isKidsMode ? 'text-purple-600' : 'text-green-600'
+                    }`} />
                   </div>
                   {isKidsMode ? '📸 Show Off Your Amazing Work!' : 'Upload Your Completed Worksheet'}
-                </CardTitle>
-                <CardDescription className={`text-lg ${
-                  isKidsMode ? 'text-purple-600' : ''
+                </h3>
+                <p className={`text-lg mb-6 ${
+                  isKidsMode ? 'text-purple-600' : 'text-gray-600'
                 }`}>
                   {isKidsMode 
                     ? 'Take a super cool photo of your finished worksheet and share it with us! We can\'t wait to see how awesome you did! 🌟'
                     : 'Take a clear photo or scan of your completed worksheet for progress tracking'
                   }
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+                </p>
+              </div>
+              <div className="space-y-6 p-6 pt-0">
                 <FileUpload
                   onFileSelect={handleFileSelect}
                   onFileRemove={handleFileRemove}
@@ -826,10 +847,10 @@ export default function PracticePage() {
                       onClick={handleUpload}
                       disabled={uploading}
                       size="lg"
-                      className={`flex-1 h-14 text-lg font-bold ${
+                      className={`flex-1 h-14 text-lg font-bold transition-all duration-200 ${
                         isKidsMode 
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200' 
-                          : ''
+                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
+                          : 'bg-green-600 text-white hover:bg-green-700'
                       }`}
                     >
                       {uploading ? (
@@ -851,7 +872,7 @@ export default function PracticePage() {
                       className={`h-14 px-6 ${
                         isKidsMode 
                           ? 'border-purple-200 text-purple-700 hover:bg-purple-50' 
-                          : ''
+                          : 'border-gray-200 hover:bg-gray-50'
                       }`}
                     >
                       {isKidsMode ? '❌ Remove' : 'Cancel'}
@@ -863,15 +884,15 @@ export default function PracticePage() {
                 <div className={`p-6 rounded-xl border-2 ${
                   isKidsMode 
                     ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200' 
-                    : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                    : 'bg-blue-50 border-blue-200'
                 }`}>
                   <h4 className={`font-bold text-lg mb-4 flex items-center gap-2 ${
-                    isKidsMode ? 'text-orange-700' : 'text-blue-800 dark:text-blue-200'
+                    isKidsMode ? 'text-orange-700' : 'text-blue-800'
                   }`}>
                     {isKidsMode ? '📸 Super Photo Tips! 🌟' : '📸 Photo Tips for Best Results'}
                   </h4>
                   <div className={`grid md:grid-cols-2 gap-4 text-sm ${
-                    isKidsMode ? 'text-orange-700' : 'text-blue-700 dark:text-blue-300'
+                    isKidsMode ? 'text-orange-700' : 'text-blue-700'
                   }`}>
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
@@ -919,34 +940,34 @@ export default function PracticePage() {
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Quick Steps Navigation */}
-            <Card className={`border-0 shadow-xl ${
+            <div className={`border-0 shadow-xl rounded-2xl ${
               isKidsMode 
                 ? 'bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200' 
-                : ''
+                : 'bg-white border border-gray-200'
             }`}>
-              <CardHeader>
-                <CardTitle className={`flex items-center gap-2 ${
-                  isKidsMode ? 'text-indigo-700' : ''
+              <div className="p-6">
+                <h3 className={`flex items-center gap-2 font-bold text-lg mb-2 ${
+                  isKidsMode ? 'text-indigo-700' : 'text-gray-900'
                 }`}>
                   <div className={`p-2 rounded-full ${
-                    isKidsMode ? 'bg-indigo-100' : 'bg-primary/10'
+                    isKidsMode ? 'bg-indigo-100' : 'bg-gray-100'
                   }`}>
                     <Star className="h-5 w-5" />
                   </div>
                   {isKidsMode ? '🎮 Quick Jump!' : 'Quick Navigation'}
-                </CardTitle>
-                <CardDescription className={isKidsMode ? 'text-indigo-600' : ''}>
+                </h3>
+                <p className={`text-sm mb-4 ${isKidsMode ? 'text-indigo-600' : 'text-gray-600'}`}>
                   {isKidsMode ? 'Jump to any step you want!' : 'Navigate between worksheets'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
+                </p>
+              </div>
+              <div className="space-y-2 p-6 pt-0">
                 {firstWorkbookSteps.map((step, index) => (
                   <button
                     key={step.id}
@@ -955,14 +976,14 @@ export default function PracticePage() {
                       index === currentStep
                         ? isKidsMode
                           ? 'border-purple-400 bg-purple-100 text-purple-800 shadow-lg transform scale-105'
-                          : 'border-primary bg-primary/5 text-primary'
+                          : 'border-green-500 bg-green-50 text-green-700'
                         : completedSteps.has(step.id)
                         ? isKidsMode
                           ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100'
-                          : 'border-green-200 bg-green-50 dark:bg-green-900/20 text-green-700'
+                          : 'border-green-200 bg-green-50 text-green-700'
                         : isKidsMode
                           ? 'border-gray-200 bg-white hover:border-purple-300 hover:bg-purple-50 text-gray-700'
-                          : 'border-border hover:border-primary/50 hover:bg-primary/5'
+                          : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -982,13 +1003,13 @@ export default function PracticePage() {
                     </div>
                   </button>
                 ))}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Encouragement Card */}
             {isKidsMode && (
-              <Card className="border-0 shadow-xl bg-gradient-to-br from-pink-100 to-rose-100 border-2 border-pink-200">
-                <CardContent className="pt-6 text-center">
+              <div className="border-0 shadow-xl bg-gradient-to-br from-pink-100 to-rose-100 border-2 border-pink-200 rounded-2xl">
+                <div className="pt-6 text-center p-6">
                   <div className="text-4xl mb-3">🌟</div>
                   <h3 className="font-bold text-lg text-pink-700 mb-2">
                     You're Doing Amazing!
@@ -1007,27 +1028,27 @@ export default function PracticePage() {
                       </span>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
 
             {/* Tips Card */}
-            <Card className={`border-0 shadow-xl ${
+            <div className={`border-0 shadow-xl rounded-2xl ${
               isKidsMode 
                 ? 'bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200' 
-                : 'bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800'
+                : 'bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200'
             }`}>
-              <CardHeader>
-                <CardTitle className={`flex items-center gap-2 ${
-                  isKidsMode ? 'text-emerald-700' : 'text-amber-800 dark:text-amber-200'
+              <div className="p-6">
+                <h3 className={`flex items-center gap-2 font-bold text-lg mb-4 ${
+                  isKidsMode ? 'text-emerald-700' : 'text-amber-800'
                 }`}>
                   <Star className="h-5 w-5" />
                   {isKidsMode ? '💡 Super Secret Tips!' : '💡 Practice Tips'}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </h3>
+              </div>
+              <div className="p-6 pt-0">
                 <ul className={`space-y-3 text-sm ${
-                  isKidsMode ? 'text-emerald-700' : 'text-amber-700 dark:text-amber-300'
+                  isKidsMode ? 'text-emerald-700' : 'text-amber-700'
                 }`}>
                   {isKidsMode ? (
                     <>
@@ -1063,29 +1084,37 @@ export default function PracticePage() {
                     </>
                   )}
                 </ul>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Completed Steps Summary */}
             {completedSteps.size > 0 && (
-              <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+              <div className={`border-0 shadow-lg rounded-2xl ${
+                isKidsMode 
+                  ? 'bg-gradient-to-br from-green-100 to-emerald-100 border-2 border-green-200' 
+                  : 'bg-white border border-gray-200'
+              }`}>
+                <div className="p-6">
+                  <h3 className="flex items-center gap-2 font-bold text-lg mb-4">
                     <Award className="h-5 w-5 text-yellow-500" />
                     {isKidsMode ? '🏆 My Achievements!' : 'Completed Steps'}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </h3>
+                </div>
+                <div className="p-6 pt-0">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">
                         {isKidsMode ? 'Steps Completed:' : 'Progress:'}
                       </span>
-                      <Badge variant="secondary">
+                      <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                        isKidsMode 
+                          ? 'bg-green-200 text-green-800' 
+                          : 'bg-gray-200 text-gray-700'
+                      }`}>
                         {completedSteps.size} / {firstWorkbookSteps.length}
-                      </Badge>
+                      </span>
                     </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 
                         className={`h-2 rounded-full transition-all duration-500 ${
                           isKidsMode 
@@ -1105,8 +1134,8 @@ export default function PracticePage() {
                       </div>
                     )}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
           </div>
         </div>
