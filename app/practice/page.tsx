@@ -349,6 +349,8 @@ export default function PracticePage() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [showGrading, setShowGrading] = useState(false);
 
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
@@ -395,12 +397,75 @@ export default function PracticePage() {
     setSelectedFile(file);
     setUploadError(null);
     setUploadSuccess(false);
+    setAnalysisResult(null);
+    setShowGrading(false);
   };
 
   const handleFileRemove = () => {
     setSelectedFile(null);
     setUploadError(null);
     setUploadSuccess(false);
+    setAnalysisResult(null);
+    setShowGrading(false);
+  };
+
+  // AI Analysis simulation
+  const simulateAIAnalysis = (file: File) => {
+    const mockAnalysisData = [
+      { score: 95, steadiness: 98, accuracy: 92 },
+      { score: 78, steadiness: 70, accuracy: 86 },
+      { score: 92, steadiness: 95, accuracy: 89 },
+      { score: 65, steadiness: 80, accuracy: 50 },
+      { score: 88, steadiness: 90, accuracy: 86 },
+      { score: 96, steadiness: 97, accuracy: 95 },
+      { score: 91, steadiness: 92, accuracy: 90 },
+      { score: 94, steadiness: 95, accuracy: 93 },
+      { score: 82, steadiness: 85, accuracy: 79 },
+      { score: 97, steadiness: 98, accuracy: 96 },
+      { score: 75, steadiness: 72, accuracy: 78 },
+      { score: 90, steadiness: 91, accuracy: 89 },
+      { score: 72, steadiness: 65, accuracy: 79 },
+      { score: 85, steadiness: 88, accuracy: 82 },
+      { score: 93, steadiness: 94, accuracy: 92 },
+      { score: 68, steadiness: 60, accuracy: 76 },
+      { score: 90, steadiness: 92, accuracy: 88 },
+      { score: 96, steadiness: 97, accuracy: 95 },
+      { score: 88, steadiness: 90, accuracy: 86 },
+      { score: 55, steadiness: 70, accuracy: 40 },
+    ];
+
+    const totalScore = mockAnalysisData.reduce((sum, line) => sum + line.score, 0);
+    const averageScore = Math.round(totalScore / mockAnalysisData.length);
+    const averageSteadiness = Math.round(mockAnalysisData.reduce((sum, line) => sum + line.steadiness, 0) / mockAnalysisData.length);
+    const averageAccuracy = Math.round(mockAnalysisData.reduce((sum, line) => sum + line.accuracy, 0) / mockAnalysisData.length);
+
+    let feedbackTip = "";
+    if (averageScore < 70) {
+      feedbackTip = isKidsMode 
+        ? "Good effort! Let's focus on both staying smooth and hitting the dots on our next try. Practice makes perfect! 🌟"
+        : "Good effort! Let's focus on both staying smooth and hitting the dots on our next try. Practice makes perfect!";
+    } else if (averageSteadiness < averageAccuracy && averageSteadiness < 85) {
+      feedbackTip = isKidsMode
+        ? "Great work on accuracy! For next time, let's focus on making our lines smoother and less wobbly. A relaxed grip can help! ✏️"
+        : "Great work on accuracy! For next time, let's focus on making our lines smoother and less wobbly. A relaxed grip can help!";
+    } else if (averageAccuracy < averageSteadiness && averageAccuracy < 85) {
+      feedbackTip = isKidsMode
+        ? "Your lines are nice and steady! Let's now focus on starting right on the green dot and stopping at the red dot. 🎯"
+        : "Your lines are nice and steady! Let's now focus on starting right on the green dot and stopping at the red dot.";
+    } else {
+      feedbackTip = isKidsMode
+        ? "Fantastic work! Your lines are accurate and steady. You're ready to move on to the next challenge! 🏆"
+        : "Fantastic work! Your lines are accurate and steady. You're ready to move on to the next challenge!";
+    }
+
+    return {
+      lines: mockAnalysisData,
+      overallScore: averageScore,
+      steadiness: averageSteadiness,
+      accuracy: averageAccuracy,
+      feedbackTip: feedbackTip,
+      imageUrl: URL.createObjectURL(file),
+    };
   };
 
   const handleUpload = async () => {
@@ -414,6 +479,15 @@ export default function PracticePage() {
     setUploadSuccess(false);
 
     try {
+      // Simulate AI analysis
+      setTimeout(() => {
+        const result = simulateAIAnalysis(selectedFile);
+        setAnalysisResult(result);
+        setShowGrading(true);
+        setUploading(false);
+      }, 2500);
+
+      // Original upload logic
       const timestamp = new Date().getTime();
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `${user.id}/${currentWorksheet.id}/${timestamp}.${fileExt}`;
@@ -429,42 +503,83 @@ export default function PracticePage() {
         throw new Error(uploadError.message);
       }
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('submissions')
-        .getPublicUrl(fileName);
-
-      setUploadSuccess(true);
-      setSelectedFile(null);
-
-      setCompletedSteps(prev => {
-        const newSet = new Set(prev);
-        newSet.add(firstWorkbookSteps[currentStep].id);
-        return newSet;
-      });
-      
-      setTimeout(() => {
-        if (currentStep < firstWorkbookSteps.length - 1) {
-          setCurrentStep(currentStep + 1);
-        }
-        setUploadSuccess(false);
-      }, 2000);
-
     } catch (error: any) {
       console.error('Upload error:', error);
       setUploadError(isKidsMode 
         ? '😞 Oops! Something went wrong. Can you try again?' 
         : error.message || 'An unexpected error occurred during upload'
       );
-    } finally {
       setUploading(false);
     }
+  };
+
+  const handleGradingComplete = () => {
+    setUploadSuccess(true);
+    setSelectedFile(null);
+    setShowGrading(false);
+    setAnalysisResult(null);
+
+    setCompletedSteps(prev => {
+      const newSet = new Set(prev);
+      newSet.add(firstWorkbookSteps[currentStep].id);
+      return newSet;
+    });
+    
+    setTimeout(() => {
+      if (currentStep < firstWorkbookSteps.length - 1) {
+        setCurrentStep(currentStep + 1);
+      }
+      setUploadSuccess(false);
+    }, 2000);
+  };
+
+  // Grading Overlay Component
+  const GradingOverlay = ({ result }: { result: any }) => {
+    const linePositions = [
+      { x: 7.5, y: 19.5, h: 8 }, { x: 19, y: 19.5, h: 8 }, { x: 32, y: 19.5, h: 8 },
+      { x: 46.5, y: 19.5, h: 8 }, { x: 61, y: 19.5, h: 8 }, { x: 74, y: 19.5, h: 8 },
+      { x: 7.5, y: 35.5, h: 8 }, { x: 19, y: 35.5, h: 8 }, { x: 32, y: 35.5, h: 8 },
+      { x: 46.5, y: 35.5, h: 8 }, { x: 61, y: 35.5, h: 8 }, { x: 74, y: 35.5, h: 8 },
+      { x: 8, y: 55, h: 15 }, { x: 21.5, y: 55, h: 15 }, { x: 35, y: 55, h: 15 },
+      { x: 49.5, y: 55, h: 15 }, { x: 64, y: 55, h: 15 }, { x: 77.5, y: 55, h: 15 },
+      { x: 8, y: 76, h: 15 }, { x: 21.5, y: 76, h: 15 }, { x: 35, y: 76, h: 15 },
+      { x: 49.5, y: 76, h: 15 },
+    ].slice(0, result.lines.length);
+
+    const getColor = (score: number) => {
+      if (score >= 90) return 'rgba(34, 197, 94, 0.7)';
+      if (score >= 70) return 'rgba(234, 179, 8, 0.7)';
+      return 'rgba(239, 68, 68, 0.7)';
+    };
+
+    return (
+      <div className="relative w-full max-w-lg mx-auto">
+        <img src={result.imageUrl} alt="Graded worksheet" className="w-full rounded-lg shadow-md" />
+        <div className="absolute top-0 left-0 w-full h-full">
+          {linePositions.map((pos, index) => (
+            <div
+              key={index}
+              className="absolute rounded-full"
+              style={{
+                left: `${pos.x}%`,
+                top: `${pos.y}%`,
+                width: '4px',
+                height: `${pos.h}%`,
+                backgroundColor: getColor(result.lines[index].score),
+                transform: 'translateX(-50%)',
+                boxShadow: '0 0 10px 2px ' + getColor(result.lines[index].score),
+              }}
+              title={`Score: ${result.lines[index].score}`}
+            />
+          ))}
+        </div>
+      </div>
+    );
   };
 
   const openWorksheet = (worksheetUrl: string) => {
     window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
   };
-
-  const goToPreviousStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
@@ -638,7 +753,112 @@ export default function PracticePage() {
           </div>
         )}
 
-        {/* Error Message */}
+        {/* AI Grading Results */}
+        {showGrading && analysisResult && (
+          <div className={`mb-8 p-6 rounded-2xl shadow-xl ${
+            isKidsMode 
+              ? 'bg-gradient-to-br from-white to-blue-50 border-2 border-blue-200' 
+              : 'bg-white border border-gray-200'
+          }`}>
+            <h2 className={`text-2xl font-bold text-center mb-6 ${
+              isKidsMode ? 'text-blue-700' : 'text-gray-900'
+            }`}>
+              {isKidsMode ? '🎓 Your Grading Report!' : 'AI Grading Results'}
+            </h2>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+              {/* Left Side: Graded Image */}
+              <div>
+                <h3 className={`text-lg font-semibold mb-4 ${
+                  isKidsMode ? 'text-blue-600' : 'text-gray-700'
+                }`}>
+                  {isKidsMode ? '📸 Visual Analysis' : 'Visual Analysis'}
+                </h3>
+                <GradingOverlay result={analysisResult} />
+              </div>
+
+              {/* Right Side: Score and Feedback */}
+              <div className="flex flex-col justify-center">
+                <h3 className={`text-lg font-semibold mb-4 ${
+                  isKidsMode ? 'text-blue-600' : 'text-gray-700'
+                }`}>
+                  {isKidsMode ? '⭐ Your Performance!' : 'Overall Performance'}
+                </h3>
+                
+                {/* Overall Score */}
+                <div className={`rounded-xl p-6 text-center mb-4 ${
+                  isKidsMode ? 'bg-blue-100' : 'bg-gray-100'
+                }`}>
+                  <p className={`text-lg ${isKidsMode ? 'text-blue-600' : 'text-gray-600'}`}>
+                    {isKidsMode ? 'Overall Score 🏆' : 'Overall Score'}
+                  </p>
+                  <p className={`text-5xl font-bold ${
+                    analysisResult.overallScore >= 90 
+                      ? 'text-green-500' 
+                      : analysisResult.overallScore >= 70 
+                        ? 'text-yellow-500' 
+                        : 'text-red-500'
+                  }`}>
+                    {analysisResult.overallScore}%
+                  </p>
+                </div>
+
+                {/* Detailed Scores */}
+                {!isKidsMode && (
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div className="bg-blue-50 p-3 rounded-lg text-center">
+                      <p className="text-sm text-blue-600 font-medium">Steadiness</p>
+                      <p className="text-2xl font-bold text-blue-700">{analysisResult.steadiness}%</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg text-center">
+                      <p className="text-sm text-green-600 font-medium">Accuracy</p>
+                      <p className="text-2xl font-bold text-green-700">{analysisResult.accuracy}%</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Feedback */}
+                <div className={`border-l-4 p-4 rounded-r-lg mb-6 ${
+                  isKidsMode 
+                    ? 'bg-yellow-50 border-yellow-400' 
+                    : 'bg-blue-50 border-blue-500'
+                }`}>
+                  <div className="flex">
+                    <div className="py-1">
+                      <Sparkles className={`w-6 h-6 mr-4 ${
+                        isKidsMode ? 'text-yellow-500' : 'text-blue-500'
+                      }`} />
+                    </div>
+                    <div>
+                      <h4 className={`font-bold ${
+                        isKidsMode ? 'text-yellow-800' : 'text-blue-800'
+                      }`}>
+                        {isKidsMode ? '💡 Helpful Tip!' : 'Actionable Tip'}
+                      </h4>
+                      <p className={`text-sm ${
+                        isKidsMode ? 'text-yellow-700' : 'text-blue-700'
+                      }`}>
+                        {analysisResult.feedbackTip}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Button */}
+                <Button
+                  onClick={handleGradingComplete}
+                  className={`w-full h-12 text-lg font-bold transition-all duration-200 ${
+                    isKidsMode 
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
+                      : 'bg-green-600 text-white hover:bg-green-700'
+                  }`}
+                >
+                  {isKidsMode ? '🎉 Awesome! Continue Learning!' : 'Continue to Next Step'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
         {uploadError && (
           <div className={`mb-6 p-6 rounded-2xl flex items-center gap-4 shadow-lg ${
             isKidsMode 
@@ -841,7 +1061,7 @@ export default function PracticePage() {
                   isKidsMode={isKidsMode}
                 />
 
-                {selectedFile && !uploadSuccess && (
+                {selectedFile && !uploadSuccess && !showGrading && (
                   <div className="flex gap-3">
                     <Button
                       onClick={handleUpload}
@@ -856,12 +1076,12 @@ export default function PracticePage() {
                       {uploading ? (
                         <>
                           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                          {isKidsMode ? '🚀 Uploading your masterpiece...' : 'Uploading...'}
+                          {isKidsMode ? '🔍 Analyzing your amazing work...' : 'Analyzing worksheet...'}
                         </>
                       ) : (
                         <>
                           <Upload className="h-5 w-5 mr-3" />
-                          {isKidsMode ? '✨ Submit My Amazing Work!' : 'Submit Worksheet'}
+                          {isKidsMode ? '🎯 Grade My Work!' : 'Grade Worksheet'}
                         </>
                       )}
                     </Button>
