@@ -305,7 +305,7 @@ function FileUpload({
             <div className="flex items-center gap-2 mb-2">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
               <span className="text-sm font-medium">
-                {isKidsMode ? '🚀 Uploading your amazing work...' : 'Uploading...'}
+                {isKidsMode ? '🚀 Uploading your amazing work...': 'Uploading...'}
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3">
