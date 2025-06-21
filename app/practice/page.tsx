@@ -639,18 +639,20 @@ export default function PracticePage() {
   };
 
   const openWorksheet = (worksheetUrl: string) => {
-    window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
-  };
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
+  window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
+};
 
-  const goToNextStep = () => {
-    if (currentStep < firstWorkbookSteps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
+const goToPreviousStep = () => {
+  if (currentStep > 0) {
+    setCurrentStep(currentStep - 1);
+  }
+};
+
+const goToNextStep = () => {
+  if (currentStep < firstWorkbookSteps.length - 1) {
+    setCurrentStep(currentStep + 1);
+  }
+};
 
   const isKidsMode = profile?.display_mode === 'kids';
 
