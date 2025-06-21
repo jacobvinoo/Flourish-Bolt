@@ -67,82 +67,78 @@ export default function ProfileSettingsPage() {
     applyTheme(formData.display_mode as 'adult' | 'kids');
   }, [formData.display_mode, applyTheme]);
 
-  // [FIX] Wrapped fetchOrCreateProfile in useCallback to prevent it from being recreated on every render.
-  // This stabilizes the function and prevents the useEffect hook from causing an infinite loop.
   const fetchOrCreateProfile = useCallback(async (user: User) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-
-    if (data) {
-      setProfile(data);
-      setFormData({
-        full_name: data.full_name || '',
-        user_role: data.user_role || 'student',
-        display_mode: data.display_mode || 'adult',
-        avatar_url: data.avatar_url || null,
-      });
-      return;
-    }
-    
-    if (error && error.code === 'PGRST116') {
-      console.log('No profile found, creating a new one...');
-      const newProfile: TablesInsert<'profiles'> = {
-        id: user.id,
-        full_name: user.user_metadata?.full_name || '',
-        user_role: 'student',
-        display_mode: 'adult',
-        avatar_url: user.user_metadata?.avatar_url || null,
-      };
-
-      const { data: createdProfile, error: createError } = await supabase
+    try {
+      let { data: profileData, error: fetchError } = await supabase
         .from('profiles')
-        .insert(newProfile)
-        .select()
+        .select('*')
+        .eq('id', user.id)
         .single();
-      
-      if (createError) {
-        setMessage({ type: 'error', text: 'Failed to create a new profile.' });
-        console.error('Error creating profile:', createError);
-        return;
-      }
 
-      if (createdProfile) {
-        setProfile(createdProfile);
-        setFormData({
-          full_name: createdProfile.full_name || '',
-          user_role: createdProfile.user_role || 'student',
-          display_mode: createdProfile.display_mode || 'adult',
-          avatar_url: createdProfile.avatar_url || null,
-        });
+      if (fetchError && fetchError.code === 'PGRST116') {
+        console.log('No profile found, creating a new one...');
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            full_name: user.user_metadata?.full_name || '',
+            avatar_url: user.user_metadata?.avatar_url || null,
+            user_role: 'student',
+            display_mode: 'adult'
+          })
+          .select()
+          .single();
+        
+        if (createError) throw createError;
+        profileData = newProfile;
+      } else if (fetchError) {
+        throw fetchError;
       }
-    } else if (error) {
-      console.error('Error fetching profile:', error);
+      
+      if (profileData) {
+        setProfile(profileData);
+        setFormData({
+          full_name: profileData.full_name || '',
+          user_role: profileData.user_role || 'student',
+          display_mode: profileData.display_mode || 'adult',
+          avatar_url: profileData.avatar_url || null,
+        });
+      } else {
+        throw new Error("Profile could not be fetched or created.");
+      }
+    } catch (error) {
+      console.error("Error in fetchOrCreateProfile:", error);
       setMessage({ type: 'error', text: 'Failed to load profile data.' });
     }
   }, [supabase]);
 
-
+  // [FIX] Restructured the main effect to use a try...finally block.
+  // This GUARANTEES that setLoading(false) is called, even if errors occur.
   useEffect(() => {
     const getUserAndProfile = async () => {
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      try {
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-      if (authError || !user) {
-        router.push('/login');
-        return;
+        if (authError || !user) {
+          router.push('/login');
+          return;
+        }
+        
+        setUser(user);
+        await fetchOrCreateProfile(user);
+
+      } catch (e) {
+        console.error("An unexpected error occurred while loading the page:", e);
+        setMessage({ type: 'error', text: 'An unexpected error occurred. Please refresh.' });
+      } finally {
+        setLoading(false);
       }
-      
-      setUser(user);
-      await fetchOrCreateProfile(user);
-      setLoading(false); // This will now be reached correctly.
     };
     
     getUserAndProfile();
 
     return () => applyTheme(null);
-  }, [supabase.auth, router, fetchOrCreateProfile, applyTheme]);
+  }, [supabase, router, fetchOrCreateProfile, applyTheme]);
 
   const handleSave = async () => {
     if (!user) {
@@ -254,7 +250,6 @@ export default function ProfileSettingsPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Settings */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Basic Information */}
             <Card className={`border-0 shadow-lg ${isKidsMode ? 'card' : ''}`}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -308,7 +303,6 @@ export default function ProfileSettingsPage() {
               </CardContent>
             </Card>
 
-            {/* Display Mode Settings */}
             <Card className={`border-0 shadow-lg ${isKidsMode ? 'card' : ''}`}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -350,7 +344,6 @@ export default function ProfileSettingsPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Save Button */}
             <Card className={`border-0 shadow-lg ${isKidsMode ? 'card' : ''}`}>
               <CardContent className="pt-6">
                 <Button
@@ -378,7 +371,6 @@ export default function ProfileSettingsPage() {
               </CardContent>
             </Card>
 
-            {/* Help Section */}
             <Card className={`border-0 shadow-lg bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800 ${isKidsMode ? 'card' : ''}`}>
               <CardHeader>
                 <CardTitle className="text-amber-800 dark:text-amber-200 flex items-center gap-2">
