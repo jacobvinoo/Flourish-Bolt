@@ -7,7 +7,7 @@ import { User } from '@supabase/supabase-js';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Database, Tables } from '@/lib/database.types';
-import { BookOpen, PenTool, TrendingUp, User as UserIcon, Play, Star, Settings, FileText, Target, Zap, CheckCircle, ArrowRight } from 'lucide-react';
+import { BookOpen, PenTool, TrendingUp, User as UserIcon, Play, Star, Settings, FileText, Target, Zap, CheckCircle, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
 type Exercise = Tables<'exercises'>;
@@ -94,16 +94,25 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [exercisesLoading, setExercisesLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
+
+  // Debug logging function
+  const addDebugInfo = (info: string) => {
+    console.log('DASHBOARD DEBUG:', info);
+    setDebugInfo(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${info}`]);
+  };
 
   useEffect(() => {
     const getUser = async () => {
       try {
-        console.log('Fetching user...');
+        addDebugInfo('Starting user authentication check');
         const { data: { user }, error } = await supabase.auth.getUser();
         
         if (error) {
+          addDebugInfo(`Auth error: ${error.message}`);
           console.error('Auth error:', error);
           setAuthError(error.message);
           router.push('/login');
@@ -111,19 +120,21 @@ export default function DashboardPage() {
         }
         
         if (!user) {
-          console.log('No user found, redirecting to login');
+          addDebugInfo('No user found, redirecting to login');
           router.push('/login');
           return;
         }
         
-        console.log('User found:', user.email);
+        addDebugInfo(`User authenticated: ${user.email}`);
         setUser(user);
         await fetchProfile(user.id, user);
-      } catch (err) {
+      } catch (err: any) {
+        addDebugInfo(`Unexpected error: ${err.message}`);
         console.error('Error getting user:', err);
         setAuthError('Failed to authenticate user');
         router.push('/login');
       } finally {
+        addDebugInfo('Authentication check complete');
         setLoading(false);
       }
     };
@@ -133,23 +144,26 @@ export default function DashboardPage() {
 
   const fetchProfile = async (userId: string, user: User) => {
     try {
-      console.log('Fetching profile for user:', userId);
+      addDebugInfo(`Starting profile fetch for user: ${userId}`);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
+        addDebugInfo(`Profile fetch error: ${error.message}`);
         console.error('Error fetching profile:', error);
-        // If profile doesn't exist, create a default one
-        if (error.code === 'PGRST116') {
-          console.log('Profile not found, creating default profile');
+        
+        // If profile doesn't exist, try to create one
+        if (error.code === 'PGRST116' || error.message.includes('no rows')) {
+          addDebugInfo('Profile not found, creating default profile');
+          
           const { data: newProfile, error: createError } = await supabase
             .from('profiles')
             .insert({
               id: userId,
-              full_name: user?.user_metadata?.full_name || 'User',
+              full_name: user?.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
               user_role: 'student',
               display_mode: 'adult'
             })
@@ -157,52 +171,63 @@ export default function DashboardPage() {
             .single();
           
           if (createError) {
+            addDebugInfo(`Profile creation error: ${createError.message}`);
             console.error('Error creating profile:', createError);
           } else {
+            addDebugInfo('Default profile created successfully');
             setProfile(newProfile);
           }
         }
-      } else {
-        console.log('Profile loaded:', data);
+      } else if (data) {
+        addDebugInfo('Profile loaded successfully');
         setProfile(data);
+      } else {
+        addDebugInfo('No profile data returned, using defaults');
       }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
+    } catch (error: any) {
+      addDebugInfo(`Profile operation failed: ${error.message}`);
+      console.error('Error in fetchProfile:', error);
     }
   };
 
   useEffect(() => {
     const fetchExercises = async () => {
       try {
-        console.log('Fetching exercises...');
+        if (!user) {
+          addDebugInfo('Skipping exercise fetch - no user');
+          setExercisesLoading(false);
+          return;
+        }
+
+        addDebugInfo('Starting exercises fetch');
         const { data, error } = await supabase
           .from('exercises')
           .select('*')
           .order('level', { ascending: true });
 
         if (error) {
+          addDebugInfo(`Exercises fetch error: ${error.message}`);
           console.error('Error fetching exercises:', error);
+          // Don't treat this as a fatal error - exercises table might not exist yet
+          setExercises([]);
         } else {
-          console.log('Exercises loaded:', data?.length || 0);
+          addDebugInfo(`Exercises loaded: ${data?.length || 0} exercises`);
           setExercises(data || []);
         }
-      } catch (error) {
+      } catch (error: any) {
+        addDebugInfo(`Exercises fetch failed: ${error.message}`);
         console.error('Error fetching exercises:', error);
+        setExercises([]);
       } finally {
+        addDebugInfo('Exercises fetch complete');
         setExercisesLoading(false);
       }
     };
 
-    // Only fetch exercises if we have a user
-    if (user) {
-      fetchExercises();
-    } else {
-      setExercisesLoading(false);
-    }
+    fetchExercises();
   }, [supabase, user]);
   
-  // [FIX] This new useEffect block manages the theme class on the body element.
-  // This makes the theme switching between adult and kids mode more robust.
+  // Apply theme based on profile
   useEffect(() => {
     if (profile) {
       const isKids = profile.display_mode === 'kids';
@@ -212,7 +237,6 @@ export default function DashboardPage() {
       document.body.classList.add(modeClass);
       document.body.classList.remove(otherModeClass);
 
-      // Cleanup function to remove the class when the component unmounts
       return () => {
         document.body.classList.remove(modeClass);
       };
@@ -220,6 +244,7 @@ export default function DashboardPage() {
   }, [profile]);
 
   const handleSignOut = async () => {
+    addDebugInfo('User signing out');
     await supabase.auth.signOut();
     router.push('/');
   };
@@ -242,13 +267,24 @@ export default function DashboardPage() {
     window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
   };
 
-  // Show loading state
+  // Show loading state with debug info
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading dashboard...</p>
+        <div className="text-center max-w-md mx-auto">
+          <Loader2 className="h-16 w-16 text-primary animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground mb-4">Loading dashboard...</p>
+          
+          {/* Debug information */}
+          <div className="text-left bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-xs space-y-1">
+            <div className="font-semibold mb-2">Debug Log:</div>
+            {debugInfo.map((info, index) => (
+              <div key={index} className="text-gray-600 dark:text-gray-400">{info}</div>
+            ))}
+            {debugInfo.length === 0 && (
+              <div className="text-gray-500">Initializing...</div>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -258,12 +294,21 @@ export default function DashboardPage() {
   if (authError) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-500 mb-4">Authentication Error</div>
+        <div className="text-center max-w-md mx-auto">
+          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <div className="text-red-500 mb-4 font-semibold">Authentication Error</div>
           <p className="text-muted-foreground mb-4">{authError}</p>
           <Button onClick={() => router.push('/login')}>
             Go to Login
           </Button>
+          
+          {/* Debug information */}
+          <div className="text-left bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-xs space-y-1 mt-4">
+            <div className="font-semibold mb-2">Debug Log:</div>
+            {debugInfo.map((info, index) => (
+              <div key={index} className="text-gray-600 dark:text-gray-400">{info}</div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -283,8 +328,6 @@ export default function DashboardPage() {
     );
   }
   
-  // [FIX] Corrected typo from 'kid' to 'kids' to match file name 'globals-kids.css'
-  // This ensures the correct theme and animations are applied for kids' profiles.
   const isKidsMode = profile?.display_mode === 'kids';
 
   return (
@@ -317,6 +360,22 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Debug Panel (only show if there are debug messages and in development) */}
+        {debugInfo.length > 0 && process.env.NODE_ENV === 'development' && (
+          <Card className="mb-6 border-blue-200 bg-blue-50 dark:bg-blue-900/20">
+            <CardHeader>
+              <CardTitle className="text-sm text-blue-800 dark:text-blue-200">Debug Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xs space-y-1 text-blue-700 dark:text-blue-300">
+                {debugInfo.map((info, index) => (
+                  <div key={index}>{info}</div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Display Mode Indicator */}
         {isKidsMode && (
           <div className="mb-8 p-4 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 border-2 border-purple-200 dark:border-purple-800 rounded-2xl bounce-in">
@@ -342,7 +401,7 @@ export default function DashboardPage() {
               <BookOpen className={`h-4 w-4 text-muted-foreground ${isKidsMode ? 'icon' : ''}`} />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{exercises.length}</div>
+              <div className="text-2xl font-bold">{exercises.length || firstWorkbookExercises.length}</div>
               <p className="text-xs text-muted-foreground">
                 {isKidsMode ? 'Ready to have fun!' : 'Ready to practice'}
               </p>
@@ -400,7 +459,7 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* First Workbook Section - Enhanced */}
+        {/* First Workbook Section */}
         <div className="mb-8">
           <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
             <CardHeader>
@@ -547,7 +606,7 @@ export default function DashboardPage() {
               </CardTitle>
               <CardDescription>
                 {isKidsMode 
-                  ? 'Print fun worksheets to practice your handwriting! �️'
+                  ? 'Print fun worksheets to practice your handwriting! ✏️'
                   : 'Download and print interactive worksheets for offline practice'
                 }
               </CardDescription>
