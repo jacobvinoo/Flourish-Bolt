@@ -26,6 +26,15 @@ import {
 import Link from 'next/link';
 
 type Profile = Tables<'profiles'>;
+type UserRole = 'student' | 'parent' | 'therapist';
+type DisplayMode = 'adult' | 'kids';
+
+interface FormData {
+  full_name: string;
+  user_role: UserRole;
+  display_mode: DisplayMode;
+  avatar_url: string | null;
+}
 
 export default function ProfileSettingsPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -35,11 +44,11 @@ export default function ProfileSettingsPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   
   // Form state - separate from profile state for better control
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     full_name: '',
-    user_role: 'student' as 'student' | 'parent' | 'therapist',
-    display_mode: 'adult' as 'adult' | 'kids',
-    avatar_url: null as string | null
+    user_role: 'student',
+    display_mode: 'adult',
+    avatar_url: null
   });
 
   const supabase = createClientComponentClient<Database>();
@@ -66,6 +75,22 @@ export default function ProfileSettingsPage() {
   useEffect(() => {
     applyTheme(formData.display_mode);
   }, [formData.display_mode, applyTheme]);
+
+  // Helper function to safely cast user role
+  const getUserRole = (role: string | null | undefined): UserRole => {
+    if (role === 'parent' || role === 'therapist') {
+      return role;
+    }
+    return 'student';
+  };
+
+  // Helper function to safely cast display mode
+  const getDisplayMode = (mode: string | null | undefined): DisplayMode => {
+    if (mode === 'kids') {
+      return 'kids';
+    }
+    return 'adult';
+  };
 
   // Fetch or create profile
   const fetchOrCreateProfile = useCallback(async (user: User) => {
@@ -116,8 +141,8 @@ export default function ProfileSettingsPage() {
         // Update form data with loaded profile
         setFormData({
           full_name: profileData.full_name || '',
-          user_role: profileData.user_role || 'student',
-          display_mode: profileData.display_mode || 'adult',
+          user_role: getUserRole(profileData.user_role),
+          display_mode: getDisplayMode(profileData.display_mode),
           avatar_url: profileData.avatar_url || null,
         });
       } else {
@@ -216,13 +241,19 @@ export default function ProfileSettingsPage() {
   };
   
   // Handle form input changes
-  const handleInputChange = (field: keyof typeof formData, value: string | null) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (field: keyof FormData, value: string | null) => {
+    if (field === 'user_role' && value) {
+      setFormData(prev => ({ ...prev, [field]: getUserRole(value) }));
+    } else if (field === 'display_mode' && value) {
+      setFormData(prev => ({ ...prev, [field]: getDisplayMode(value) }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   // Handle display mode toggle
   const handleDisplayModeToggle = (checked: boolean) => {
-    const newMode = checked ? 'kids' : 'adult';
+    const newMode: DisplayMode = checked ? 'kids' : 'adult';
     setFormData(prev => ({
       ...prev,
       display_mode: newMode
