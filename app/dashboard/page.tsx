@@ -52,8 +52,6 @@ function Progress({ value, className = '' }: ProgressProps) {
   );
 }
 
-type Profile = Tables<'profiles'>;
-
 interface Achievement {
   id: string;
   title: string;
@@ -108,16 +106,6 @@ const mockAchievements: Achievement[] = [
     total: 26,
     unlocked: false,
     rarity: 'rare'
-  },
-  {
-    id: 'speed-demon',
-    title: 'Speed Demon',
-    description: 'Write 50 words per minute',
-    icon: '⚡',
-    progress: 0,
-    total: 1,
-    unlocked: false,
-    rarity: 'epic'
   }
 ];
 
@@ -157,18 +145,6 @@ const mockLearningPaths: LearningPath[] = [
     unlockedLessons: 0,
     nextLesson: 'Letter A',
     difficulty: 'intermediate'
-  },
-  {
-    id: 'cursive-writing',
-    title: 'Cursive Writing',
-    description: 'Flowing connected letters',
-    icon: '✍️',
-    color: 'from-pink-400 to-pink-600',
-    progress: 0,
-    totalLessons: 30,
-    unlockedLessons: 0,
-    nextLesson: 'Locked',
-    difficulty: 'advanced'
   }
 ];
 
@@ -177,10 +153,9 @@ export default function ModernDashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentStreak, setCurrentStreak] = useState(12);
-  const [longestStreak, setLongestStreak] = useState(28);
-  const [totalPracticeTime, setTotalPracticeTime] = useState(145); // minutes
-  const [weeklyGoal, setWeeklyGoal] = useState(150); // minutes
-  const [weeklyProgress, setWeeklyProgress] = useState(90); // minutes
+  const [totalPracticeTime, setTotalPracticeTime] = useState(145);
+  const [weeklyGoal, setWeeklyGoal] = useState(150);
+  const [weeklyProgress, setWeeklyProgress] = useState(90);
   const [level, setLevel] = useState(8);
   const [xp, setXp] = useState(2350);
   const [xpToNextLevel, setXpToNextLevel] = useState(650);
@@ -270,27 +245,27 @@ export default function ModernDashboard() {
   }
 
   return (
-    <div className={`min-h-screen transition-all duration-500 ${
-      isKidsMode 
-        ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
-        : 'bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800'
+    <div className={`min-h-screen transition-all duration-500 ${isKidsMode 
+      ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
+      : 'bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800'
     }`}>
       {/* Header */}
-      <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${
-        isKidsMode 
-          ? 'bg-white/80 border-purple-200' 
-          : 'bg-white/80 dark:bg-slate-900/80 border-border'
+      <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${isKidsMode 
+        ? 'bg-white/80 border-purple-200' 
+        : 'bg-white/80 dark:bg-slate-900/80 border-border'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                isKidsMode ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-primary'
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isKidsMode 
+                ? 'bg-gradient-to-r from-purple-500 to-pink-500' 
+                : 'bg-primary'
               }`}>
                 <PenTool className="h-5 w-5 text-white" />
               </div>
-              <h1 className={`text-xl font-bold ${
-                isKidsMode ? 'text-purple-700' : 'text-foreground'
+              <h1 className={`text-xl font-bold ${isKidsMode 
+                ? 'text-purple-700' 
+                : 'text-foreground'
               }`}>
                 {isKidsMode ? '✨ My Writing Adventure!' : 'Handwriting Mastery'}
               </h1>
@@ -334,8 +309,9 @@ export default function ModernDashboard() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className={`text-2xl font-bold ${
-                isKidsMode ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600' : 'text-foreground'
+              <h2 className={`text-2xl font-bold ${isKidsMode 
+                ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600' 
+                : 'text-foreground'
               }`}>
                 {isKidsMode 
                   ? `🌟 Welcome back, ${profile?.full_name || 'Superstar'}!` 
@@ -351,16 +327,13 @@ export default function ModernDashboard() {
             </div>
             
             {/* Level Badge */}
-            <div className={`flex items-center gap-3 px-4 py-2 rounded-full ${
-              isKidsMode 
-                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' 
-                : 'bg-primary text-primary-foreground'
+            <div className={`flex items-center gap-3 px-4 py-2 rounded-full ${isKidsMode 
+              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' 
+              : 'bg-primary text-primary-foreground'
             }`}>
               <Crown className="h-5 w-5" />
               <div className="text-center">
-                <div className="text-sm font-medium">
-                  {isKidsMode ? 'Level' : 'Level'}
-                </div>
+                <div className="text-sm font-medium">Level</div>
                 <div className="text-xl font-bold">{level}</div>
               </div>
             </div>
@@ -376,17 +349,17 @@ export default function ModernDashboard() {
                 {xp.toLocaleString()} / {(xp + xpToNextLevel).toLocaleString()} XP
               </span>
             </div>
-            <Progress 
-              value={levelProgress} 
-              className={`h-3 ${isKidsMode ? 'bg-purple-100' : ''}`}
-            />
+            <Progress value={levelProgress} className={`h-3 ${isKidsMode ? 'bg-purple-100' : ''}`} />
           </div>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {/* Current Streak */}
-          <Card className={`${isKidsMode ? 'border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-red-50' : 'border-0 shadow-lg'} transition-all duration-200 hover:scale-105`}>
+          <Card className={`${isKidsMode 
+            ? 'border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-red-50' 
+            : 'border-0 shadow-lg'
+          } transition-all duration-200 hover:scale-105`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -408,7 +381,10 @@ export default function ModernDashboard() {
           </Card>
 
           {/* Weekly Goal */}
-          <Card className={`${isKidsMode ? 'border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50' : 'border-0 shadow-lg'} transition-all duration-200 hover:scale-105`}>
+          <Card className={`${isKidsMode 
+            ? 'border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50' 
+            : 'border-0 shadow-lg'
+          } transition-all duration-200 hover:scale-105`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -431,7 +407,10 @@ export default function ModernDashboard() {
           </Card>
 
           {/* Total Practice Time */}
-          <Card className={`${isKidsMode ? 'border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50' : 'border-0 shadow-lg'} transition-all duration-200 hover:scale-105`}>
+          <Card className={`${isKidsMode 
+            ? 'border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50' 
+            : 'border-0 shadow-lg'
+          } transition-all duration-200 hover:scale-105`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -453,7 +432,10 @@ export default function ModernDashboard() {
           </Card>
 
           {/* Achievements */}
-          <Card className={`${isKidsMode ? 'border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50' : 'border-0 shadow-lg'} transition-all duration-200 hover:scale-105`}>
+          <Card className={`${isKidsMode 
+            ? 'border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50' 
+            : 'border-0 shadow-lg'
+          } transition-all duration-200 hover:scale-105`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -483,7 +465,10 @@ export default function ModernDashboard() {
                 {isKidsMode ? '🎮 Your Learning Adventure!' : 'Your Learning Path'}
               </h3>
               <Link href="/practice">
-                <Button className={isKidsMode ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600' : ''}>
+                <Button className={isKidsMode 
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600' 
+                  : ''
+                }>
                   {isKidsMode ? '🚀 Continue Adventure!' : 'Continue Learning'}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
@@ -542,7 +527,10 @@ export default function ModernDashboard() {
                           <div className="flex items-center gap-3">
                             <Progress value={path.progress} className="flex-1 h-2" />
                             <Link href="/practice">
-                              <Button size="sm" className={isKidsMode ? 'bg-gradient-to-r from-purple-500 to-pink-500' : ''}>
+                              <Button size="sm" className={isKidsMode 
+                                ? 'bg-gradient-to-r from-purple-500 to-pink-500' 
+                                : ''
+                              }>
                                 {isKidsMode ? '▶️ Play!' : 'Continue'}
                               </Button>
                             </Link>
@@ -565,7 +553,10 @@ export default function ModernDashboard() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Daily Challenge */}
-            <Card className={`${isKidsMode ? 'border-2 border-yellow-200 bg-gradient-to-br from-yellow-50 to-orange-50' : 'border-0 shadow-lg'}`}>
+            <Card className={`${isKidsMode 
+              ? 'border-2 border-yellow-200 bg-gradient-to-br from-yellow-50 to-orange-50' 
+              : 'border-0 shadow-lg'
+            }`}>
               <CardHeader>
                 <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-yellow-700' : ''}`}>
                   <Zap className="h-5 w-5 text-yellow-500" />
@@ -588,58 +579,20 @@ export default function ModernDashboard() {
                   <span className="text-sm text-yellow-600 font-medium">+50 XP</span>
                 </div>
                 <Progress value={70} className="mb-4" />
-                <Button className={`w-full ${isKidsMode ? 'bg-gradient-to-r from-yellow-500 to-orange-500' : ''}`}>
+                <Button className={`w-full ${isKidsMode 
+                  ? 'bg-gradient-to-r from-yellow-500 to-orange-500' 
+                  : ''
+                }`}>
                   {isKidsMode ? '🎯 Continue Challenge!' : 'Continue Challenge'}
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Recent Achievements */}
-            <Card className={`${isKidsMode ? 'border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50' : 'border-0 shadow-lg'}`}>
-              <CardHeader>
-                <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-purple-700' : ''}`}>
-                  <Award className="h-5 w-5" />
-                  {isKidsMode ? '🏆 My Awesome Badges!' : 'Recent Achievements'}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {mockAchievements.slice(0, 3).map((achievement) => (
-                    <div key={achievement.id} className={`p-3 rounded-lg border ${getRarityColor(achievement.rarity)} ${
-                      achievement.unlocked ? '' : 'opacity-60'
-                    }`}>
-                      <div className="flex items-center gap-3">
-                        <div className="text-2xl">{achievement.icon}</div>
-                        <div className="flex-1">
-                          <h5 className="font-medium text-sm">{achievement.title}</h5>
-                          <p className="text-xs text-muted-foreground">{achievement.description}</p>
-                          {!achievement.unlocked && (
-                            <div className="mt-2">
-                              <Progress 
-                                value={(achievement.progress / achievement.total) * 100} 
-                                className="h-1" 
-                              />
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {achievement.progress}/{achievement.total}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                        {achievement.unlocked && (
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Button variant="outline" className="w-full mt-4">
-                  {isKidsMode ? '👀 See All Badges!' : 'View All Achievements'}
-                </Button>
-              </CardContent>
-            </Card>
-
             {/* Quick Actions */}
-            <Card className={`${isKidsMode ? 'border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50' : 'border-0 shadow-lg'}`}>
+            <Card className={`${isKidsMode 
+              ? 'border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50' 
+              : 'border-0 shadow-lg'
+            }`}>
               <CardHeader>
                 <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-blue-700' : ''}`}>
                   <Sparkles className="h-5 w-5" />
@@ -648,97 +601,32 @@ export default function ModernDashboard() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <Link href="/practice" className="block">
-                  <Button variant="outline" className={`w-full justify-start ${isKidsMode ? 'border-pink-200 hover:bg-pink-50' : ''}`}>
+                  <Button variant="outline" className={`w-full justify-start ${isKidsMode 
+                    ? 'border-purple-200 hover:bg-purple-50' 
+                    : ''
+                  }`}>
+                    <Play className="h-4 w-4 mr-2" />
+                    {isKidsMode ? '🎮 Start Practice!' : 'Quick Practice'}
+                  </Button>
+                </Link>
+                
+                <Link href="/worksheets" className="block">
+                  <Button variant="outline" className={`w-full justify-start ${isKidsMode 
+                    ? 'border-green-200 hover:bg-green-50' 
+                    : ''
+                  }`}>
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    {isKidsMode ? '📄 Get Worksheets!' : 'Browse Worksheets'}
+                  </Button>
+                </Link>
+                
+                <Button variant="outline" className={`w-full justify-start ${isKidsMode 
+                  ? 'border-pink-200 hover:bg-pink-50' 
+                  : ''
+                }`}>
                   <TrendingUp className="h-4 w-4 mr-2" />
                   {isKidsMode ? '📊 See My Progress!' : 'View Progress'}
                 </Button>
-
-                <Button variant="outline" className={`w-full justify-start ${isKidsMode ? 'border-yellow-200 hover:bg-yellow-50' : ''}`}>
-                  <Users className="h-4 w-4 mr-2" />
-                  {isKidsMode ? '👥 Find Friends!' : 'Find Study Buddies'}
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Streak Protection */}
-            {currentStreak >= 3 && (
-              <Card className={`${isKidsMode ? 'border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-red-50' : 'border-0 shadow-lg bg-gradient-to-br from-orange-50 to-red-50'}`}>
-                <CardHeader>
-                  <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-orange-700' : 'text-orange-800'}`}>
-                    <Gift className="h-5 w-5" />
-                    {isKidsMode ? '🛡️ Streak Shield!' : 'Streak Protection'}
-                  </CardTitle>
-                  <CardDescription className={isKidsMode ? 'text-orange-600' : 'text-orange-700'}>
-                    {isKidsMode ? 'Protect your amazing streak!' : 'Don\'t lose your progress!'}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center mb-4">
-                    <div className="text-4xl mb-2">🔥</div>
-                    <p className="text-sm font-medium">
-                      You have a {currentStreak}-day streak!
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {isKidsMode ? 'Keep it going, superstar!' : 'Keep the momentum going'}
-                    </p>
-                  </div>
-                  <Button className={`w-full ${isKidsMode ? 'bg-gradient-to-r from-orange-500 to-red-500' : 'bg-orange-500 hover:bg-orange-600'} text-white`}>
-                    {isKidsMode ? '🔥 Practice Now!' : 'Practice Today'}
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Fun Fact / Tip */}
-            <Card className={`${isKidsMode ? 'border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50' : 'border-0 shadow-lg bg-gradient-to-br from-emerald-50 to-teal-50'}`}>
-              <CardHeader>
-                <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-green-700' : 'text-emerald-700'}`}>
-                  <Smile className="h-5 w-5" />
-                  {isKidsMode ? '🤓 Fun Fact!' : 'Writing Tip'}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center">
-                  <div className="text-3xl mb-3">✍️</div>
-                  <p className="text-sm font-medium mb-2">
-                    {isKidsMode 
-                      ? 'Did you know? The pencil was invented over 400 years ago!' 
-                      : 'Good handwriting can improve memory and comprehension!'
-                    }
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {isKidsMode 
-                      ? 'That\'s older than your great-great-great-great grandparents! 🤯'
-                      : 'Studies show that writing by hand activates different parts of the brain than typing.'
-                    }
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Level Up Progress */}
-            <Card className={`${isKidsMode ? 'border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50' : 'border-0 shadow-lg bg-gradient-to-br from-indigo-50 to-purple-50'}`}>
-              <CardHeader>
-                <CardTitle className={`flex items-center gap-2 ${isKidsMode ? 'text-purple-700' : 'text-indigo-700'}`}>
-                  <ArrowUp className="h-5 w-5" />
-                  {isKidsMode ? '⬆️ Level Up Soon!' : 'Almost There!'}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center mb-4">
-                  <div className="text-4xl mb-2">🎯</div>
-                  <p className="text-sm font-medium">
-                    {xpToNextLevel.toLocaleString()} XP to Level {level + 1}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {isKidsMode ? 'You\'re so close to leveling up!' : 'Complete a few more lessons!'}
-                  </p>
-                </div>
-                <Progress value={levelProgress} className="mb-4 h-3" />
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>Level {level}</span>
-                  <span>Level {level + 1}</span>
-                </div>
               </CardContent>
             </Card>
           </div>
@@ -746,7 +634,10 @@ export default function ModernDashboard() {
 
         {/* Footer CTA */}
         <div className="mt-12 text-center">
-          <Card className={`${isKidsMode ? 'border-2 border-purple-200 bg-gradient-to-r from-purple-100 to-pink-100' : 'border-0 shadow-lg bg-gradient-to-r from-blue-50 to-indigo-50'} p-8`}>
+          <Card className={`${isKidsMode 
+            ? 'border-2 border-purple-200 bg-gradient-to-r from-purple-100 to-pink-100' 
+            : 'border-0 shadow-lg bg-gradient-to-r from-blue-50 to-indigo-50'
+          } p-8`}>
             <div className="max-w-2xl mx-auto">
               <div className="text-4xl mb-4">
                 {isKidsMode ? '🌟' : '✨'}
@@ -762,13 +653,19 @@ export default function ModernDashboard() {
               </p>
               <div className="flex gap-4 justify-center">
                 <Link href="/practice">
-                  <Button size="lg" className={`px-8 ${isKidsMode ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg' : ''}`}>
+                  <Button size="lg" className={`px-8 ${isKidsMode 
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg' 
+                    : ''
+                  }`}>
                     <Play className="h-5 w-5 mr-2" />
                     {isKidsMode ? '🚀 Start Practicing!' : 'Start Practicing'}
                   </Button>
                 </Link>
                 <Link href="/worksheets">
-                  <Button variant="outline" size="lg" className={`px-8 ${isKidsMode ? 'border-purple-200 text-purple-700 hover:bg-purple-50' : ''}`}>
+                  <Button variant="outline" size="lg" className={`px-8 ${isKidsMode 
+                    ? 'border-purple-200 text-purple-700 hover:bg-purple-50' 
+                    : ''
+                  }`}>
                     <BookOpen className="h-5 w-5 mr-2" />
                     {isKidsMode ? '📄 Browse Worksheets' : 'Browse Worksheets'}
                   </Button>
@@ -780,17 +677,4 @@ export default function ModernDashboard() {
       </div>
     </div>
   );
-}border-purple-200 hover:bg-purple-50' : ''}`}>
-                    <Play className="h-4 w-4 mr-2" />
-                    {isKidsMode ? '🎮 Start Practice!' : 'Quick Practice'}
-                  </Button>
-                </Link>
-                
-                <Link href="/worksheets" className="block">
-                  <Button variant="outline" className={`w-full justify-start ${isKidsMode ? 'border-green-200 hover:bg-green-50' : ''}`}>
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    {isKidsMode ? '📄 Get Worksheets!' : 'Browse Worksheets'}
-                  </Button>
-                </Link>
-                
-                <Button variant="outline" className={`w-full justify-start ${isKidsMode ? '
+}
