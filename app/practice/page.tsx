@@ -11,23 +11,19 @@ import { Input } from '@/components/ui/input';
 import { Database, Tables } from '@/lib/database.types';
 import { 
   ArrowLeft, 
-  FileText, 
-  Download, 
   Upload, 
   Star,
   CheckCircle,
   AlertCircle,
-  BookOpen,
-  Target,
-  Zap,
-  Play,
   Eye,
   Printer,
-  Clock,
-  Award,
-  TrendingUp,
   X,
-  Image as ImageIcon
+  Image as ImageIcon,
+  ChevronLeft,
+  ChevronRight,
+  Trophy,
+  Heart,
+  Sparkles
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -36,11 +32,15 @@ type Profile = Tables<'profiles'>;
 interface WorksheetStep {
   id: string;
   title: string;
+  friendlyTitle: string;
   description: string;
+  kidsDescription: string;
   level: number;
   worksheetUrl: string;
   skills: string[];
   estimatedTime: string;
+  emoji: string;
+  color: string;
   completed?: boolean;
 }
 
@@ -48,65 +48,93 @@ const firstWorkbookSteps: WorksheetStep[] = [
   {
     id: 'vertical-lines',
     title: 'Worksheet 1.1: Vertical Lines',
+    friendlyTitle: 'Straight Up Lines!',
     description: 'Start with basic vertical lines from top to bottom. Master downward stroke control.',
+    kidsDescription: 'Draw straight lines going up and down, like tall trees or birthday candles! 🕯️',
     level: 1,
     worksheetUrl: '/worksheets/vertical-lines.html',
-    skills: ['Downward stroke control', 'Starting at the top', 'Motor control'],
-    estimatedTime: '10-15 minutes'
+    skills: ['Drawing straight', 'Top to bottom', 'Holding pencil'],
+    estimatedTime: '10-15 minutes',
+    emoji: '📏',
+    color: 'from-blue-400 to-blue-600'
   },
   {
     id: 'horizontal-lines',
     title: 'Worksheet 1.2: Horizontal Lines',
+    friendlyTitle: 'Side to Side Lines!',
     description: 'Practice horizontal lines from left to right. Build reading and writing flow.',
+    kidsDescription: 'Draw lines that go sideways, like a sleeping snake or a calm ocean! 🌊',
     level: 1,
     worksheetUrl: '/worksheets/horizontal-lines.html',
-    skills: ['Left-to-right progression', 'Reading flow', 'Line control'],
-    estimatedTime: '10-15 minutes'
+    skills: ['Left to right', 'Reading direction', 'Smooth lines'],
+    estimatedTime: '10-15 minutes',
+    emoji: '➡️',
+    color: 'from-green-400 to-green-600'
   },
   {
     id: 'circles',
     title: 'Worksheet 1.3: Circles',
+    friendlyTitle: 'Round and Round!',
     description: 'Learn circular motions essential for letters like o, a, and d.',
+    kidsDescription: 'Make perfect circles like bubbles, donuts, or the sun! Practice going round and round! ☀️',
     level: 1,
     worksheetUrl: '/worksheets/circles.html',
-    skills: ['Circular motor patterns', 'Hand-eye coordination', 'Smooth curves'],
-    estimatedTime: '15-20 minutes'
+    skills: ['Circular motions', 'Smooth curves', 'Hand control'],
+    estimatedTime: '15-20 minutes',
+    emoji: '⭕',
+    color: 'from-yellow-400 to-orange-500'
   },
   {
     id: 'diagonal-lines',
     title: 'Worksheet 1.4: Diagonal Lines',
+    friendlyTitle: 'Slanted Lines!',
     description: 'Master diagonal strokes for letters like A, V, X, and k.',
+    kidsDescription: 'Draw slanted lines like slides at the playground or roof tops! 🏠',
     level: 1,
     worksheetUrl: '/worksheets/diagonal-lines.html',
-    skills: ['Diagonal control', 'Letter preparation', 'Angle consistency'],
-    estimatedTime: '15-20 minutes'
+    skills: ['Diagonal drawing', 'Angles', 'Letter shapes'],
+    estimatedTime: '15-20 minutes',
+    emoji: '📐',
+    color: 'from-purple-400 to-purple-600'
   },
   {
     id: 'intersecting-lines',
     title: 'Worksheet 1.5: Intersecting Lines',
+    friendlyTitle: 'Crossing Lines!',
     description: 'Practice crosses and plus signs with precision.',
+    kidsDescription: 'Make crossing lines like a tic-tac-toe game or a treasure map X! 🗺️',
     level: 1,
     worksheetUrl: '/worksheets/intersecting-lines.html',
-    skills: ['Precision', 'Letter formation', 'Intersection control'],
-    estimatedTime: '15-20 minutes'
+    skills: ['Crossing lines', 'Precision', 'Plus signs'],
+    estimatedTime: '15-20 minutes',
+    emoji: '➕',
+    color: 'from-red-400 to-pink-500'
   },
   {
     id: 'basic-shapes',
     title: 'Worksheet 1.6: Basic Shapes',
+    friendlyTitle: 'Fun Shapes!',
     description: 'Combine strokes to create squares, triangles, and rectangles.',
+    kidsDescription: 'Draw squares like windows, triangles like pizza slices, and rectangles like doors! 🏠',
     level: 1,
     worksheetUrl: '/worksheets/basic-shapes.html',
-    skills: ['Shape recognition', 'Stroke combination', 'Geometric forms'],
-    estimatedTime: '20-25 minutes'
+    skills: ['Shape drawing', 'Combining lines', 'Geometric fun'],
+    estimatedTime: '20-25 minutes',
+    emoji: '🔷',
+    color: 'from-indigo-400 to-blue-500'
   },
   {
     id: 'continuous-curves',
     title: 'Worksheet 1.7: Continuous Curves',
+    friendlyTitle: 'Wavy Lines!',
     description: 'Develop fluidity with wavy lines and loops for cursive preparation.',
+    kidsDescription: 'Draw wavy lines like ocean waves, roller coasters, or a snake dancing! 🐍',
     level: 1,
     worksheetUrl: '/worksheets/continuous-curves.html',
-    skills: ['Fluidity of motion', 'Cursive preparation', 'Smooth transitions'],
-    estimatedTime: '20-25 minutes'
+    skills: ['Wavy lines', 'Smooth flow', 'Cursive prep'],
+    estimatedTime: '20-25 minutes',
+    emoji: '🌊',
+    color: 'from-teal-400 to-cyan-500'
   }
 ];
 
@@ -117,8 +145,7 @@ interface FileUploadProps {
   selectedFile: File | null;
   uploading: boolean;
   disabled?: boolean;
-  accept?: string;
-  maxSize?: number;
+  isKidsMode?: boolean;
 }
 
 function FileUpload({ 
@@ -127,8 +154,7 @@ function FileUpload({
   selectedFile, 
   uploading, 
   disabled = false,
-  accept = "image/jpeg,image/png,image/jpg",
-  maxSize = 10 
+  isKidsMode = false
 }: FileUploadProps) {
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -167,16 +193,14 @@ function FileUpload({
   const handleFileSelection = (file: File) => {
     setError(null);
     
-    // Validate file type
-    const validTypes = accept.split(',').map(t => t.trim());
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     if (!validTypes.includes(file.type)) {
-      setError('Please select a valid image file (JPEG, PNG, or JPG)');
+      setError(isKidsMode ? '😅 Oops! Please pick a photo file (JPG or PNG)' : 'Please select a valid image file (JPEG, PNG, or JPG)');
       return;
     }
     
-    // Validate file size (convert MB to bytes)
-    if (file.size > maxSize * 1024 * 1024) {
-      setError(`File size must be less than ${maxSize}MB`);
+    if (file.size > 10 * 1024 * 1024) {
+      setError(isKidsMode ? '😅 That photo is too big! Please pick a smaller one.' : 'File size must be less than 10MB');
       return;
     }
     
@@ -185,12 +209,24 @@ function FileUpload({
 
   if (selectedFile) {
     return (
-      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+      <div className={`border-2 border-dashed rounded-xl p-6 ${
+        isKidsMode 
+          ? 'border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50' 
+          : 'border-gray-300 bg-gray-50'
+      }`}>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <ImageIcon className="h-8 w-8 text-blue-500" />
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-full ${
+              isKidsMode ? 'bg-purple-200' : 'bg-blue-100'
+            }`}>
+              <ImageIcon className={`h-8 w-8 ${
+                isKidsMode ? 'text-purple-600' : 'text-blue-500'
+              }`} />
+            </div>
             <div>
-              <p className="font-medium">{selectedFile.name}</p>
+              <p className="font-medium text-lg">
+                {isKidsMode ? '📸 Your awesome photo!' : selectedFile.name}
+              </p>
               <p className="text-sm text-gray-500">
                 {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
               </p>
@@ -201,15 +237,27 @@ function FileUpload({
               onClick={onFileRemove}
               variant="outline"
               size="sm"
+              className={isKidsMode ? 'hover:bg-red-100' : ''}
             >
               <X className="h-4 w-4" />
+              {isKidsMode && <span className="ml-1">Remove</span>}
             </Button>
           )}
         </div>
         {uploading && (
-          <div className="mt-3">
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{ width: '70%' }}></div>
+          <div className="mt-4">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+              <span className="text-sm font-medium">
+                {isKidsMode ? '🚀 Uploading your amazing work...' : 'Uploading...'}
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div className={`h-3 rounded-full animate-pulse ${
+                isKidsMode 
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500' 
+                  : 'bg-blue-600'
+              }`} style={{ width: '70%' }}></div>
             </div>
           </div>
         )}
@@ -220,11 +268,15 @@ function FileUpload({
   return (
     <div className="space-y-3">
       <div
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+        className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer ${
           dragActive
-            ? 'border-blue-400 bg-blue-50'
-            : 'border-gray-300 hover:border-gray-400'
-        } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+            ? isKidsMode 
+              ? 'border-purple-400 bg-gradient-to-br from-purple-100 to-pink-100 scale-105' 
+              : 'border-blue-400 bg-blue-50'
+            : isKidsMode
+              ? 'border-purple-300 hover:border-purple-400 hover:bg-gradient-to-br hover:from-purple-50 hover:to-pink-50 hover:scale-102'
+              : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+        } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -235,21 +287,43 @@ function FileUpload({
           }
         }}
       >
-        <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-        <p className="text-lg font-medium mb-2">
-          {dragActive ? 'Drop your image here' : 'Upload worksheet image'}
+        <div className={`mx-auto mb-4 p-4 rounded-full ${
+          isKidsMode 
+            ? 'bg-gradient-to-br from-purple-200 to-pink-200' 
+            : 'bg-gray-100'
+        }`}>
+          <Upload className={`h-12 w-12 mx-auto ${
+            isKidsMode ? 'text-purple-600' : 'text-gray-400'
+          }`} />
+        </div>
+        <h3 className="text-xl font-bold mb-2">
+          {isKidsMode 
+            ? dragActive 
+              ? '📸 Drop your photo here!' 
+              : '📷 Add Your Worksheet Photo!'
+            : dragActive 
+              ? 'Drop your image here' 
+              : 'Upload worksheet image'
+          }
+        </h3>
+        <p className="text-gray-600 mb-4">
+          {isKidsMode 
+            ? 'Drag and drop your photo here, or click to choose one from your device! 🖱️'
+            : 'Drag and drop or click to select an image file'
+          }
         </p>
-        <p className="text-sm text-gray-500 mb-4">
-          Drag and drop or click to select an image file
-        </p>
-        <p className="text-xs text-gray-400">
-          Supports JPEG, PNG, JPG up to {maxSize}MB
-        </p>
+        <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm ${
+          isKidsMode 
+            ? 'bg-purple-100 text-purple-700 border border-purple-200'
+            : 'bg-gray-100 text-gray-600 border border-gray-200'
+        }`}>
+          {isKidsMode ? '✨ Photos (JPG, PNG) up to 10MB' : 'Supports JPEG, PNG up to 10MB'}
+        </div>
         
         <Input
           id="file-upload"
           type="file"
-          accept={accept}
+          accept="image/jpeg,image/png,image/jpg"
           onChange={handleChange}
           className="hidden"
           disabled={disabled || uploading}
@@ -257,9 +331,13 @@ function FileUpload({
       </div>
       
       {error && (
-        <div className="text-red-600 text-sm flex items-center gap-2">
-          <AlertCircle className="h-4 w-4" />
-          {error}
+        <div className={`p-3 rounded-lg flex items-center gap-2 ${
+          isKidsMode 
+            ? 'bg-red-50 border border-red-200' 
+            : 'bg-red-50 border border-red-200'
+        }`}>
+          <AlertCircle className="h-4 w-4 text-red-600" />
+          <span className="text-red-700 text-sm">{error}</span>
         </div>
       )}
     </div>
@@ -276,43 +354,25 @@ export default function PracticePage() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
-  const [debugInfo, setDebugInfo] = useState<string[]>([]);
   
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
-  // Debug logging function
-  const addDebugInfo = (info: string) => {
-    console.log('PRACTICE DEBUG:', info);
-    setDebugInfo(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${info}`]);
-  };
-
   useEffect(() => {
     const getUser = async () => {
       try {
-        addDebugInfo('Starting authentication check');
         const { data: { user }, error } = await supabase.auth.getUser();
         
-        if (error) {
-          addDebugInfo(`Auth error: ${error.message}`);
+        if (error || !user) {
           router.push('/login');
           return;
         }
         
-        if (!user) {
-          addDebugInfo('No user found, redirecting to login');
-          router.push('/login');
-          return;
-        }
-        
-        addDebugInfo(`User authenticated: ${user.email}`);
         setUser(user);
         await fetchProfile(user.id);
       } catch (error: any) {
-        addDebugInfo(`Unexpected error: ${error.message}`);
         router.push('/login');
       } finally {
-        addDebugInfo('Authentication complete');
         setLoading(false);
       }
     };
@@ -322,37 +382,27 @@ export default function PracticePage() {
 
   const fetchProfile = async (userId: string) => {
     try {
-      addDebugInfo('Fetching user profile');
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
 
-      if (error) {
-        addDebugInfo(`Profile fetch error: ${error.message}`);
-        console.error('Error fetching profile:', error);
-      } else if (data) {
-        addDebugInfo('Profile loaded successfully');
+      if (data) {
         setProfile(data);
-      } else {
-        addDebugInfo('No profile found, using defaults');
       }
     } catch (error: any) {
-      addDebugInfo(`Profile fetch failed: ${error.message}`);
       console.error('Error fetching profile:', error);
     }
   };
 
   const handleFileSelect = (file: File) => {
-    addDebugInfo(`File selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
     setSelectedFile(file);
     setUploadError(null);
     setUploadSuccess(false);
   };
 
   const handleFileRemove = () => {
-    addDebugInfo('File removed');
     setSelectedFile(null);
     setUploadError(null);
     setUploadSuccess(false);
@@ -360,25 +410,20 @@ export default function PracticePage() {
 
   const handleUpload = async () => {
     if (!selectedFile || !user) {
-      setUploadError('No file selected or user not authenticated');
+      setUploadError(isKidsMode ? '😅 Please pick a photo first!' : 'No file selected or user not authenticated');
       return;
     }
 
-    addDebugInfo('Starting file upload');
     setUploading(true);
     setUploadError(null);
     setUploadSuccess(false);
 
     try {
-      // Create a unique filename
       const timestamp = new Date().getTime();
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `${user.id}/${currentWorksheet.id}/${timestamp}.${fileExt}`;
-      
-      addDebugInfo(`Uploading file: ${fileName}`);
 
-      // Upload to Supabase Storage
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('submissions')
         .upload(fileName, selectedFile, {
           cacheControl: '3600',
@@ -386,58 +431,50 @@ export default function PracticePage() {
         });
 
       if (uploadError) {
-        addDebugInfo(`Upload error: ${uploadError.message}`);
-        throw new Error(`Upload failed: ${uploadError.message}`);
+        throw new Error(uploadError.message);
       }
-
-      addDebugInfo('File uploaded successfully to storage');
-
-      // Get the public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('submissions')
-        .getPublicUrl(fileName);
-
-      addDebugInfo(`File available at: ${publicUrl}`);
-
-      // For now, we'll just simulate saving to a submissions table
-      // In a real implementation, you'd save this to your database
-      addDebugInfo('Simulating database save (no submissions table yet)');
 
       setUploadSuccess(true);
       setSelectedFile(null);
       
-      // Mark current step as completed
       setCompletedSteps(prev => {
         const newSet = new Set(prev);
         newSet.add(firstWorkbookSteps[currentStep].id);
         return newSet;
       });
       
-      addDebugInfo(`Step ${currentStep + 1} marked as completed`);
-      
-      // Auto-advance to next step after a delay
       setTimeout(() => {
         if (currentStep < firstWorkbookSteps.length - 1) {
           setCurrentStep(currentStep + 1);
-          addDebugInfo(`Advanced to step ${currentStep + 2}`);
-        } else {
-          addDebugInfo('All steps completed!');
         }
         setUploadSuccess(false);
-      }, 3000);
+      }, 2000);
 
     } catch (error: any) {
-      addDebugInfo(`Upload failed: ${error.message}`);
       console.error('Upload error:', error);
-      setUploadError(error.message || 'An unexpected error occurred during upload');
+      setUploadError(isKidsMode 
+        ? '😞 Oops! Something went wrong. Can you try again?' 
+        : error.message || 'An unexpected error occurred during upload'
+      );
     } finally {
       setUploading(false);
     }
   };
 
   const openWorksheet = (worksheetUrl: string) => {
-    addDebugInfo(`Opening worksheet: ${worksheetUrl}`);
     window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const goToPreviousStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const goToNextStep = () => {
+    if (currentStep < firstWorkbookSteps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
   };
 
   const isKidsMode = profile?.display_mode === 'kids';
@@ -445,17 +482,9 @@ export default function PracticePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto">
+        <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground mb-4">Loading practice session...</p>
-          
-          {/* Debug information */}
-          <div className="text-left bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-xs space-y-1">
-            <div className="font-semibold mb-2">Debug Log:</div>
-            {debugInfo.map((info, index) => (
-              <div key={index} className="text-gray-600 dark:text-gray-400">{info}</div>
-            ))}
-          </div>
+          <p className="text-muted-foreground">Loading practice session...</p>
         </div>
       </div>
     );
@@ -466,185 +495,310 @@ export default function PracticePage() {
   }
 
   const currentWorksheet = firstWorkbookSteps[currentStep];
-  const progressPercentage = ((currentStep + (completedSteps.has(currentWorksheet.id) ? 1 : 0)) / firstWorkbookSteps.length) * 100;
+  const progressPercentage = ((completedSteps.size) / firstWorkbookSteps.length) * 100;
+  const isCompleted = completedSteps.has(currentWorksheet.id);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className={`min-h-screen transition-all duration-500 ${
+      isKidsMode 
+        ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
+        : 'bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800'
+    }`}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link href="/dashboard">
-            <Button variant="outline" size="sm" className={`hover:bg-primary/10 transition-colors ${isKidsMode ? 'button' : ''}`}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className={`${
+                isKidsMode 
+                  ? 'bg-white hover:bg-purple-50 border-purple-200 text-purple-700 hover:text-purple-800' 
+                  : 'hover:bg-primary/10'
+              } transition-all duration-200`}
+            >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              {isKidsMode ? 'Back to Dashboard 🏠' : 'Back to Dashboard'}
+              {isKidsMode ? '🏠 Back Home' : 'Back to Dashboard'}
             </Button>
           </Link>
           <div className="flex-1">
-            <h1 className={`text-3xl font-bold text-foreground ${isKidsMode ? 'wiggle' : ''}`}>
-              {isKidsMode ? '📚 First Workbook Practice! 🎨' : 'First Workbook Practice'}
+            <h1 className={`text-4xl font-bold ${
+              isKidsMode 
+                ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600' 
+                : 'text-foreground'
+            }`}>
+              {isKidsMode ? '🎨 Handwriting Adventure!' : 'First Workbook Practice'}
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className={`mt-2 text-lg ${
+              isKidsMode ? 'text-purple-700' : 'text-muted-foreground'
+            }`}>
               {isKidsMode 
-                ? 'Start your handwriting journey with fun exercises! 🚀'
+                ? 'Let\'s practice writing and have tons of fun! 🚀✨'
                 : 'Master the fundamentals with our structured practice program'
               }
             </p>
           </div>
         </div>
 
-        {/* Debug Panel (only in development) */}
-        {debugInfo.length > 0 && process.env.NODE_ENV === 'development' && (
-          <Card className="mb-6 border-blue-200 bg-blue-50 dark:bg-blue-900/20">
-            <CardHeader>
-              <CardTitle className="text-sm text-blue-800 dark:text-blue-200">Debug Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xs space-y-1 text-blue-700 dark:text-blue-300">
-                {debugInfo.map((info, index) => (
-                  <div key={index}>{info}</div>
+        {/* Progress Star Bar */}
+        {isKidsMode && (
+          <Card className="border-0 shadow-xl mb-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white overflow-hidden">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  <Trophy className="h-6 w-6" />
+                  Your Amazing Progress!
+                </h3>
+                <div className="text-right">
+                  <div className="text-2xl font-bold">{completedSteps.size} / {firstWorkbookSteps.length}</div>
+                  <div className="text-sm opacity-90">Steps Done!</div>
+                </div>
+              </div>
+              <div className="flex justify-between mb-3">
+                {firstWorkbookSteps.map((step, index) => (
+                  <div key={step.id} className="flex flex-col items-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-lg transition-all duration-300 ${
+                      completedSteps.has(step.id)
+                        ? 'bg-yellow-400 text-yellow-900 scale-110'
+                        : index === currentStep
+                        ? 'bg-white text-purple-600 scale-105'
+                        : 'bg-white/30 text-white/70'
+                    }`}>
+                      {completedSteps.has(step.id) ? '⭐' : step.emoji}
+                    </div>
+                    <div className="text-xs mt-1 opacity-90 hidden sm:block">{index + 1}</div>
+                  </div>
                 ))}
+              </div>
+              <div className="w-full bg-white/20 rounded-full h-2">
+                <div 
+                  className="h-2 rounded-full bg-gradient-to-r from-yellow-300 to-yellow-400 transition-all duration-500"
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Progress Bar */}
-        <Card className={`border-0 shadow-lg mb-8 ${isKidsMode ? 'card bounce-in' : ''}`}>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary" />
-              {isKidsMode ? '🎯 My Progress!' : 'Your Progress'}
-            </CardTitle>
-            <CardDescription>
-              {isKidsMode 
-                ? `You're on step ${currentStep + 1} of ${firstWorkbookSteps.length}! Keep going! 💪`
-                : `Step ${currentStep + 1} of ${firstWorkbookSteps.length} in the First Workbook`
-              }
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-4">
-              <div 
-                className={`h-3 rounded-full transition-all duration-500 ${
-                  isKidsMode 
-                    ? 'bg-gradient-to-r from-purple-500 to-pink-500' 
-                    : 'bg-primary'
-                }`}
-                style={{ width: `${progressPercentage}%` }}
-              ></div>
+        {/* Success Message */}
+        {uploadSuccess && (
+          <div className={`mb-6 p-6 rounded-xl flex items-center gap-4 animate-bounce ${
+            isKidsMode 
+              ? 'bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-300' 
+              : 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+          }`}>
+            <div className="flex-shrink-0">
+              {isKidsMode ? (
+                <div className="text-4xl">🎉</div>
+              ) : (
+                <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+              )}
             </div>
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>{isKidsMode ? 'Just started! 🌱' : 'Getting Started'}</span>
-              <span>{Math.round(progressPercentage)}% Complete</span>
-              <span>{isKidsMode ? 'Expert! 🏆' : 'Mastery'}</span>
+            <div>
+              <p className={`font-bold text-lg ${
+                isKidsMode ? 'text-green-800' : 'text-green-800 dark:text-green-200'
+              }`}>
+                {isKidsMode ? '🌟 Fantastic work! You\'re amazing!' : 'Upload Successful!'}
+              </p>
+              <p className={`${
+                isKidsMode ? 'text-green-700' : 'text-green-700 dark:text-green-300'
+              }`}>
+                {isKidsMode 
+                  ? 'Your beautiful work has been saved! Moving to the next adventure... 🚀'
+                  : 'Your worksheet has been uploaded successfully. Moving to next step...'
+                }
+              </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {uploadError && (
+          <div className={`mb-6 p-6 rounded-xl flex items-center gap-4 ${
+            isKidsMode 
+              ? 'bg-gradient-to-r from-red-100 to-pink-100 border-2 border-red-300' 
+              : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+          }`}>
+            <div className="flex-shrink-0">
+              {isKidsMode ? (
+                <div className="text-4xl">😅</div>
+              ) : (
+                <AlertCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
+              )}
+            </div>
+            <div>
+              <p className={`font-bold text-lg ${
+                isKidsMode ? 'text-red-800' : 'text-red-800 dark:text-red-200'
+              }`}>
+                {isKidsMode ? 'Oopsie! Let\'s try that again!' : 'Upload Failed'}
+              </p>
+              <p className={`${
+                isKidsMode ? 'text-red-700' : 'text-red-700 dark:text-red-300'
+              }`}>
+                {uploadError}
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Current Worksheet */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Success Message */}
-            {uploadSuccess && (
-              <div className={`p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-center gap-2 ${isKidsMode ? 'bounce-in' : ''}`}>
-                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
-                <div>
-                  <p className="text-green-800 dark:text-green-200 font-medium">
-                    {isKidsMode ? '🎉 Awesome work! Upload successful!' : 'Upload Successful!'}
-                  </p>
-                  <p className="text-green-700 dark:text-green-300 text-sm">
-                    {isKidsMode 
-                      ? 'Your worksheet is saved! Moving to the next step... 🚀'
-                      : 'Your worksheet has been uploaded successfully. Moving to next step...'
-                    }
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Error Message */}
-            {uploadError && (
-              <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
-                <div>
-                  <p className="text-red-800 dark:text-red-200 font-medium">
-                    {isKidsMode ? '😞 Oops! Upload failed' : 'Upload Failed'}
-                  </p>
-                  <p className="text-red-700 dark:text-red-300 text-sm">{uploadError}</p>
-                </div>
-              </div>
-            )}
-
+          {/* Main Content */}
+          <div className="lg:col-span-2">
             {/* Current Worksheet Card */}
-            <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-xl font-semibold text-primary">
-                      {isKidsMode ? `🎯 ${currentWorksheet.title}` : currentWorksheet.title}
-                    </CardTitle>
-                    <CardDescription className="mt-2">
-                      {currentWorksheet.description}
-                    </CardDescription>
+            <Card className={`border-0 shadow-xl mb-8 overflow-hidden ${
+              isKidsMode 
+                ? `bg-gradient-to-br ${currentWorksheet.color} text-white` 
+                : ''
+            }`}>
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className={`text-6xl ${isKidsMode ? 'animate-bounce' : ''}`}>
+                      {currentWorksheet.emoji}
+                    </div>
+                    <div>
+                      <CardTitle className={`text-2xl font-bold ${
+                        isKidsMode ? 'text-white' : 'text-primary'
+                      }`}>
+                        {isKidsMode ? currentWorksheet.friendlyTitle : currentWorksheet.title}
+                      </CardTitle>
+                      <CardDescription className={`mt-2 text-lg ${
+                        isKidsMode ? 'text-white/90' : ''
+                      }`}>
+                        {isKidsMode ? currentWorksheet.kidsDescription : currentWorksheet.description}
+                      </CardDescription>
+                    </div>
                   </div>
-                  <Badge className="ml-4">
-                    Level {currentWorksheet.level}
-                  </Badge>
+                  {isCompleted && (
+                    <div className="flex items-center gap-2 text-yellow-300">
+                      <Star className="h-6 w-6 fill-current" />
+                      <span className="font-bold">Completed!</span>
+                    </div>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex flex-wrap gap-2">
                   {currentWorksheet.skills.map((skill, index) => (
-                    <Badge key={index} variant="outline" className={`text-xs ${isKidsMode ? 'badge' : ''}`}>
+                    <Badge 
+                      key={index} 
+                      variant="outline" 
+                      className={`text-sm px-3 py-1 ${
+                        isKidsMode 
+                          ? 'bg-white/20 border-white/30 text-white hover:bg-white/30' 
+                          : ''
+                      }`}
+                    >
                       {skill}
                     </Badge>
                   ))}
                 </div>
 
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <BookOpen className="h-4 w-4" />
-                    <span>{currentWorksheet.estimatedTime}</span>
+                <div className="flex items-center gap-6">
+                  <div className={`flex items-center gap-2 ${
+                    isKidsMode ? 'text-white/90' : 'text-muted-foreground'
+                  }`}>
+                    <Heart className="h-5 w-5" />
+                    <span className="font-medium">{currentWorksheet.estimatedTime}</span>
                   </div>
-                  {completedSteps.has(currentWorksheet.id) && (
-                    <div className="flex items-center gap-1 text-green-600">
-                      <CheckCircle className="h-4 w-4" />
-                      <span>{isKidsMode ? 'Completed! 🎉' : 'Completed'}</span>
-                    </div>
-                  )}
+                  <div className={`flex items-center gap-2 ${
+                    isKidsMode ? 'text-white/90' : 'text-muted-foreground'
+                  }`}>
+                    <Sparkles className="h-5 w-5" />
+                    <span className="font-medium">Step {currentStep + 1} of {firstWorkbookSteps.length}</span>
+                  </div>
                 </div>
 
                 <div className="flex gap-3">
                   <Button
                     onClick={() => openWorksheet(currentWorksheet.worksheetUrl)}
-                    className={`flex-1 ${isKidsMode ? 'button big-button' : ''}`}
+                    className={`flex-1 h-12 text-lg font-bold ${
+                      isKidsMode 
+                        ? 'bg-white text-purple-600 hover:bg-gray-100 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200' 
+                        : ''
+                    }`}
                   >
-                    <Eye className="h-4 w-4 mr-2" />
-                    {isKidsMode ? 'Open Worksheet! 📄' : 'Open Worksheet'}
+                    <Eye className="h-5 w-5 mr-2" />
+                    {isKidsMode ? '📄 Open My Worksheet!' : 'Open Worksheet'}
                   </Button>
                   <Button
                     onClick={() => openWorksheet(currentWorksheet.worksheetUrl)}
-                    variant="outline"
+                    variant={isKidsMode ? "secondary" : "outline"}
                     size="icon"
-                    className={isKidsMode ? 'button' : ''}
+                    className={`h-12 w-12 ${
+                      isKidsMode 
+                        ? 'bg-white/20 border-white/30 text-white hover:bg-white/30 shadow-lg' 
+                        : ''
+                    }`}
                   >
-                    <Printer className="h-4 w-4" />
+                    <Printer className="h-5 w-5" />
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
+            {/* Navigation */}
+            <div className="flex items-center justify-between mb-8">
+              <Button
+                onClick={goToPreviousStep}
+                disabled={currentStep === 0}
+                variant="outline"
+                className={`h-12 px-6 ${
+                  isKidsMode 
+                    ? 'bg-white border-purple-200 text-purple-700 hover:bg-purple-50 disabled:opacity-50' 
+                    : ''
+                }`}
+              >
+                <ChevronLeft className="h-5 w-5 mr-2" />
+                {isKidsMode ? '⬅️ Previous' : 'Previous Step'}
+              </Button>
+
+              <div className={`text-center px-4 py-2 rounded-full ${
+                isKidsMode 
+                  ? 'bg-white/80 text-purple-700 font-bold' 
+                  : 'bg-primary/10 text-primary font-medium'
+              }`}>
+                {currentStep + 1} of {firstWorkbookSteps.length}
+              </div>
+
+              <Button
+                onClick={goToNextStep}
+                disabled={currentStep === firstWorkbookSteps.length - 1}
+                variant="outline"
+                className={`h-12 px-6 ${
+                  isKidsMode 
+                    ? 'bg-white border-purple-200 text-purple-700 hover:bg-purple-50 disabled:opacity-50' 
+                    : ''
+                }`}
+              >
+                {isKidsMode ? 'Next ➡️' : 'Next Step'}
+                <ChevronRight className="h-5 w-5 ml-2" />
+              </Button>
+            </div>
+
             {/* Upload Section */}
-            <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
+            <Card className={`border-0 shadow-xl ${
+              isKidsMode 
+                ? 'bg-gradient-to-br from-white to-purple-50 border-2 border-purple-200' 
+                : ''
+            }`}>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Upload className="h-5 w-5 text-primary" />
-                  {isKidsMode ? '📸 Upload Your Completed Work!' : 'Upload Your Completed Worksheet'}
+                <CardTitle className={`flex items-center gap-3 text-2xl ${
+                  isKidsMode ? 'text-purple-700' : 'text-primary'
+                }`}>
+                  <div className={`p-2 rounded-full ${
+                    isKidsMode ? 'bg-purple-100' : 'bg-primary/10'
+                  }`}>
+                    <Upload className="h-6 w-6" />
+                  </div>
+                  {isKidsMode ? '📸 Show Off Your Amazing Work!' : 'Upload Your Completed Worksheet'}
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className={`text-lg ${
+                  isKidsMode ? 'text-purple-600' : ''
+                }`}>
                   {isKidsMode 
-                    ? 'Take a photo of your finished worksheet and upload it here! 📱'
-                    : 'Take a clear photo or scan of your completed worksheet'
+                    ? 'Take a super cool photo of your finished worksheet and share it with us! We can\'t wait to see how awesome you did! 🌟'
+                    : 'Take a clear photo or scan of your completed worksheet for progress tracking'
                   }
                 </CardDescription>
               </CardHeader>
@@ -655,8 +809,7 @@ export default function PracticePage() {
                   selectedFile={selectedFile}
                   uploading={uploading}
                   disabled={uploadSuccess}
-                  accept="image/jpeg,image/png,image/jpg"
-                  maxSize={10}
+                  isKidsMode={isKidsMode}
                 />
 
                 {selectedFile && !uploadSuccess && (
@@ -664,18 +817,21 @@ export default function PracticePage() {
                     <Button
                       onClick={handleUpload}
                       disabled={uploading}
-                      className={`flex-1 ${isKidsMode ? 'button big-button' : ''}`}
-                      size="lg"
+                      className={`flex-1 h-14 text-lg font-bold ${
+                        isKidsMode 
+                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200' 
+                          : ''
+                      }`}
                     >
                       {uploading ? (
                         <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          {isKidsMode ? 'Uploading... 🚀' : 'Uploading...'}
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                          {isKidsMode ? '🚀 Uploading your masterpiece...' : 'Uploading...'}
                         </>
                       ) : (
                         <>
-                          <Upload className="h-4 w-4 mr-2" />
-                          {isKidsMode ? 'Submit Work! 🔍' : 'Submit Worksheet'}
+                          <Upload className="h-5 w-5 mr-3" />
+                          {isKidsMode ? '✨ Submit My Amazing Work!' : 'Submit Worksheet'}
                         </>
                       )}
                     </Button>
@@ -683,31 +839,76 @@ export default function PracticePage() {
                       onClick={handleFileRemove}
                       disabled={uploading}
                       variant="outline"
-                      className={isKidsMode ? 'button' : ''}
+                      className={`h-14 px-6 ${
+                        isKidsMode 
+                          ? 'border-purple-200 text-purple-700 hover:bg-purple-50' 
+                          : ''
+                      }`}
                     >
-                      Cancel
+                      {isKidsMode ? '❌ Remove' : 'Cancel'}
                     </Button>
                   </div>
                 )}
 
-                <div className={`p-4 rounded-lg border ${
+                {/* Photo Tips */}
+                <div className={`p-6 rounded-xl border-2 ${
                   isKidsMode 
-                    ? 'bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200' 
+                    ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200' 
                     : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
                 }`}>
-                  <h4 className={`font-medium mb-2 ${
-                    isKidsMode ? 'text-purple-800' : 'text-blue-800 dark:text-blue-200'
+                  <h4 className={`font-bold text-lg mb-4 flex items-center gap-2 ${
+                    isKidsMode ? 'text-orange-700' : 'text-blue-800 dark:text-blue-200'
                   }`}>
-                    {isKidsMode ? '📸 Photo Tips for Best Results! 🌟' : '📸 Photo Tips for Best Results'}
+                    {isKidsMode ? '📸 Super Photo Tips! 🌟' : '📸 Photo Tips for Best Results'}
                   </h4>
-                  <ul className={`text-sm space-y-1 ${
-                    isKidsMode ? 'text-purple-700' : 'text-blue-700 dark:text-blue-300'
+                  <div className={`grid md:grid-cols-2 gap-4 text-sm ${
+                    isKidsMode ? 'text-orange-700' : 'text-blue-700 dark:text-blue-300'
                   }`}>
-                    <li>• {isKidsMode ? '☀️ Make sure there\'s good light!' : 'Ensure good lighting - avoid shadows'}</li>
-                    <li>• {isKidsMode ? '📐 Take the photo straight on!' : 'Take the photo straight on (not at an angle)'}</li>
-                    <li>• {isKidsMode ? '🔍 Make sure everything is clear!' : 'Make sure all text is clearly visible'}</li>
-                    <li>• {isKidsMode ? '📄 Include the whole worksheet!' : 'Include the entire worksheet in the frame'}</li>
-                  </ul>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-lg ${
+                          isKidsMode ? 'bg-yellow-200' : 'bg-blue-100'
+                        }`}>
+                          ☀️
+                        </div>
+                        <span className="font-medium">
+                          {isKidsMode ? 'Use bright, happy light!' : 'Ensure good lighting'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-lg ${
+                          isKidsMode ? 'bg-yellow-200' : 'bg-blue-100'
+                        }`}>
+                          📐
+                        </div>
+                        <span className="font-medium">
+                          {isKidsMode ? 'Hold your camera straight!' : 'Take photo straight on'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-lg ${
+                          isKidsMode ? 'bg-yellow-200' : 'bg-blue-100'
+                        }`}>
+                          🔍
+                        </div>
+                        <span className="font-medium">
+                          {isKidsMode ? 'Make sure everything is clear!' : 'Ensure text is visible'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-lg ${
+                          isKidsMode ? 'bg-yellow-200' : 'bg-blue-100'
+                        }`}>
+                          📄
+                        </div>
+                        <span className="font-medium">
+                          {isKidsMode ? 'Include your whole worksheet!' : 'Include entire worksheet'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -715,157 +916,146 @@ export default function PracticePage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Navigation */}
-            <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
+            {/* Quick Steps Navigation */}
+            <Card className={`border-0 shadow-xl ${
+              isKidsMode 
+                ? 'bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200' 
+                : ''
+            }`}>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Zap className="h-5 w-5" />
-                  {isKidsMode ? '🎮 Worksheet Steps' : 'Worksheet Steps'}
+                <CardTitle className={`flex items-center gap-2 ${
+                  isKidsMode ? 'text-indigo-700' : ''
+                }`}>
+                  <div className={`p-2 rounded-full ${
+                    isKidsMode ? 'bg-indigo-100' : 'bg-primary/10'
+                  }`}>
+                    <Star className="h-5 w-5" />
+                  </div>
+                  {isKidsMode ? '🎮 Quick Jump!' : 'Quick Navigation'}
                 </CardTitle>
+                <CardDescription className={isKidsMode ? 'text-indigo-600' : ''}>
+                  {isKidsMode ? 'Jump to any step you want!' : 'Navigate between worksheets'}
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-2">
                 {firstWorkbookSteps.map((step, index) => (
-                  <div
+                  <button
                     key={step.id}
-                    className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                      index === currentStep
-                        ? 'border-primary bg-primary/5'
-                        : completedSteps.has(step.id)
-                        ? 'border-green-200 bg-green-50 dark:bg-green-900/20'
-                        : 'border-border hover:border-primary/50'
-                    } ${isKidsMode ? 'hover:scale-105' : ''}`}
                     onClick={() => setCurrentStep(index)}
+                    className={`w-full p-3 rounded-lg border-2 text-left transition-all duration-200 ${
+                      index === currentStep
+                        ? isKidsMode
+                          ? 'border-purple-400 bg-purple-100 text-purple-800 shadow-lg transform scale-105'
+                          : 'border-primary bg-primary/5 text-primary'
+                        : completedSteps.has(step.id)
+                        ? isKidsMode
+                          ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100'
+                          : 'border-green-200 bg-green-50 dark:bg-green-900/20 text-green-700'
+                        : isKidsMode
+                          ? 'border-gray-200 bg-white hover:border-purple-300 hover:bg-purple-50 text-gray-700'
+                          : 'border-border hover:border-primary/50 hover:bg-primary/5'
+                    }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                        index === currentStep
-                          ? 'bg-primary text-primary-foreground'
-                          : completedSteps.has(step.id)
-                          ? 'bg-green-500 text-white'
-                          : 'bg-muted text-muted-foreground'
+                      <div className={`text-2xl ${
+                        completedSteps.has(step.id) ? 'animate-bounce' : ''
                       }`}>
-                        {completedSteps.has(step.id) ? (
-                          <CheckCircle className="h-4 w-4" />
-                        ) : (
-                          index + 1
-                        )}
+                        {completedSteps.has(step.id) ? '⭐' : step.emoji}
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-sm">
-                          {isKidsMode ? step.title.replace('Worksheet ', '🎯 ') : step.title}
+                        <p className="font-semibold text-sm">
+                          {isKidsMode ? step.friendlyTitle : `Step ${index + 1}`}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs opacity-75">
                           {step.estimatedTime}
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </CardContent>
             </Card>
 
-            {/* Storage Bucket Setup Notice */}
-            <Card className={`border-0 shadow-lg ${
-              isKidsMode 
-                ? 'bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200 card bounce-in' 
-                : 'bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800'
-            }`}>
-              <CardHeader>
-                <CardTitle className={`${
-                  isKidsMode ? 'text-blue-800' : 'text-blue-800 dark:text-blue-200'
-                } flex items-center gap-2`}>
-                  <Upload className="h-5 w-5" />
-                  {isKidsMode ? '🔧 Setup Required!' : '🔧 Setup Required'}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className={`space-y-3 text-sm ${
-                  isKidsMode ? 'text-blue-700' : 'text-blue-700 dark:text-blue-300'
-                }`}>
-                  <p className="font-medium">To enable file uploads, create a Supabase storage bucket:</p>
-                  <ol className="list-decimal list-inside space-y-2 pl-2">
-                    <li>Go to your Supabase dashboard</li>
-                    <li>Navigate to Storage</li>
-                    <li>Create a new bucket named "submissions"</li>
-                    <li>Set it to public for easy access</li>
-                  </ol>
-                  <p className="text-xs opacity-75">
-                    Files will be uploaded to: submissions/[user-id]/[worksheet-id]/[timestamp].[ext]
+            {/* Encouragement Card */}
+            {isKidsMode && (
+              <Card className="border-0 shadow-xl bg-gradient-to-br from-pink-100 to-rose-100 border-2 border-pink-200">
+                <CardContent className="pt-6 text-center">
+                  <div className="text-4xl mb-3">🌟</div>
+                  <h3 className="font-bold text-lg text-pink-700 mb-2">
+                    You're Doing Amazing!
+                  </h3>
+                  <p className="text-pink-600 text-sm mb-4">
+                    Every line you draw makes you a better writer! Keep up the fantastic work!
                   </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Tips */}
-            <Card className={`border-0 shadow-lg ${
-              isKidsMode 
-                ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200 card bounce-in' 
-                : 'bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800'
-            }`}>
-              <CardHeader>
-                <CardTitle className={`${
-                  isKidsMode ? 'text-amber-800' : 'text-amber-800 dark:text-amber-200'
-                } flex items-center gap-2`}>
-                  <Star className="h-5 w-5" />
-                  {isKidsMode ? '💡 Super Tips!' : '💡 Practice Tips'}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className={`space-y-2 text-sm ${
-                  isKidsMode ? 'text-amber-700' : 'text-amber-700 dark:text-amber-300'
-                }`}>
-                  <li>• {isKidsMode ? '🪑 Find a comfy place to practice!' : 'Find a comfortable, well-lit workspace'}</li>
-                  <li>• {isKidsMode ? '✏️ Hold your pencil gently!' : 'Hold your pencil with a relaxed grip'}</li>
-                  <li>• {isKidsMode ? '⏰ Take breaks when you need them!' : 'Take breaks every 10-15 minutes'}</li>
-                  <li>• {isKidsMode ? '🎯 Focus on doing it right, not fast!' : 'Focus on accuracy over speed'}</li>
-                  <li>• {isKidsMode ? '🌟 Practice a little bit every day!' : 'Practice regularly for best results'}</li>
-                  <li>• {isKidsMode ? '📸 Upload your work to track progress!' : 'Upload completed worksheets to track progress'}</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Completed Steps Summary */}
-            {completedSteps.size > 0 && (
-              <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Award className="h-5 w-5 text-yellow-500" />
-                    {isKidsMode ? '🏆 My Achievements!' : 'Completed Steps'}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        {isKidsMode ? 'Steps Completed:' : 'Progress:'}
+                  <div className="flex justify-center gap-2">
+                    {['💪', '🎨', '✨', '🏆', '🌈'].map((emoji, index) => (
+                      <span 
+                        key={index} 
+                        className="text-xl animate-bounce" 
+                        style={{ animationDelay: `${index * 0.1}s` }}
+                      >
+                        {emoji}
                       </span>
-                      <Badge variant="secondary">
-                        {completedSteps.size} / {firstWorkbookSteps.length}
-                      </Badge>
-                    </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full transition-all duration-500 ${
-                          isKidsMode 
-                            ? 'bg-gradient-to-r from-green-400 to-blue-500' 
-                            : 'bg-green-500'
-                        }`}
-                        style={{ width: `${(completedSteps.size / firstWorkbookSteps.length) * 100}%` }}
-                      ></div>
-                    </div>
-                    {completedSteps.size === firstWorkbookSteps.length && (
-                      <div className={`text-center py-3 ${
-                        isKidsMode 
-                          ? 'text-green-700 font-bold' 
-                          : 'text-green-600 font-medium'
-                      }`}>
-                        {isKidsMode ? '🎉 Congratulations! You completed all steps! 🌟' : '🎉 Congratulations! All steps completed!'}
-                      </div>
-                    )}
+                    ))}
                   </div>
                 </CardContent>
               </Card>
             )}
+
+            {/* Tips Card */}
+            <Card className={`border-0 shadow-xl ${
+              isKidsMode 
+                ? 'bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200' 
+                : 'bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800'
+            }`}>
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 ${
+                  isKidsMode ? 'text-emerald-700' : 'text-amber-800 dark:text-amber-200'
+                }`}>
+                  <Star className="h-5 w-5" />
+                  {isKidsMode ? '💡 Super Secret Tips!' : '💡 Practice Tips'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className={`space-y-3 text-sm ${
+                  isKidsMode ? 'text-emerald-700' : 'text-amber-700 dark:text-amber-300'
+                }`}>
+                  {isKidsMode ? (
+                    <>
+                      <li className="flex items-center gap-3">
+                        <span className="text-lg">🪑</span>
+                        <span className="font-medium">Sit up tall like a superhero!</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <span className="text-lg">✏️</span>
+                        <span className="font-medium">Hold your pencil like you're holding a butterfly!</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <span className="text-lg">🐢</span>
+                        <span className="font-medium">Go slow and steady like a wise turtle!</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <span className="text-lg">🎉</span>
+                        <span className="font-medium">Celebrate every line you draw!</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <span className="text-lg">☀️</span>
+                        <span className="font-medium">Practice a little bit every sunny day!</span>
+                      </li>
+                    </>
+                  ) : (
+                    <>
+                      <li>• Find a comfortable, well-lit workspace</li>
+                      <li>• Hold your pencil with a relaxed grip</li>
+                      <li>• Take breaks every 10-15 minutes</li>
+                      <li>• Focus on accuracy over speed</li>
+                      <li>• Practice regularly for best results</li>
+                      <li>• Upload completed worksheets to track progress</li>
+                    </>
+                  )}
+                </ul>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
