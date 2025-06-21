@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Database, Tables, TablesUpdate } from '@/lib/database.types';
+import { Database, Tables } from '@/lib/database.types';
 import { 
   ArrowLeft, 
   User as UserIcon, 
@@ -28,7 +28,6 @@ import {
 import Link from 'next/link';
 
 type Profile = Tables<'profiles'>;
-// This type represents the fields we are editing in the form
 type ProfileFormData = Omit<Profile, 'id' | 'created_at' | 'updated_at'>;
 
 export default function ProfileSettingsPage() {
@@ -38,10 +37,9 @@ export default function ProfileSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   
-  // [FIX] Initialize formData with all required fields, including avatar_url
   const [formData, setFormData] = useState<ProfileFormData>({
     full_name: '',
-    avatar_url: null, // This was the missing field
+    avatar_url: null,
     user_role: 'student',
     display_mode: 'adult'
   });
@@ -81,7 +79,6 @@ export default function ProfileSettingsPage() {
 
       if (data) {
         setProfile(data);
-        // [FIX] Ensure all fetched data, including avatar_url, is populated into the form state
         setFormData({
           full_name: data.full_name || '',
           user_role: data.user_role || 'student',
@@ -118,7 +115,7 @@ export default function ProfileSettingsPage() {
 
   const handleSave = async () => {
     if (!user) {
-      setMessage({ type: 'error', text: 'No user found' });
+      setMessage({ type: 'error', text: 'User not found. Please log in again.' });
       return;
     }
 
@@ -126,9 +123,11 @@ export default function ProfileSettingsPage() {
     setSaving(true);
 
     try {
-      // [FIX] Include avatar_url in the data being sent to the database
-      const updateData: TablesUpdate<'profiles'> = {
-        id: user.id,
+      // [FIX] Construct the `updateData` object within the function scope.
+      // This ensures TypeScript knows `user.id` is a valid string
+      // because of the `!user` check above.
+      const updateData = {
+        id: user.id, // Guaranteed to be a string here
         full_name: formData.full_name,
         user_role: formData.user_role as 'student' | 'parent' | 'therapist',
         display_mode: formData.display_mode as 'adult' | 'kids',
@@ -138,7 +137,7 @@ export default function ProfileSettingsPage() {
 
       const { data, error } = await supabase
         .from('profiles')
-        .upsert(updateData)
+        .upsert(updateData) // This call now has the correct type
         .select()
         .single();
 
