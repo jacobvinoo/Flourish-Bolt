@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Database, Tables, TablesInsert } from '@/lib/database.types';
+import { Database, Tables } from '@/lib/database.types';
 import { 
   ArrowLeft, 
   User as UserIcon, 
@@ -19,16 +19,13 @@ import {
   CheckCircle, 
   AlertCircle,
   Loader2,
-  Sparkles,
   Baby,
   Briefcase,
-  Eye,
   Settings
 } from 'lucide-react';
 import Link from 'next/link';
 
 type Profile = Tables<'profiles'>;
-type ProfileFormData = Omit<Profile, 'id' | 'created_at' | 'updated_at'>;
 
 export default function ProfileSettingsPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -37,11 +34,12 @@ export default function ProfileSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   
-  const [formData, setFormData] = useState<ProfileFormData>({
+  // Form state - separate from profile state for better control
+  const [formData, setFormData] = useState({
     full_name: '',
-    avatar_url: null,
-    user_role: 'student',
-    display_mode: 'adult'
+    user_role: 'student' as 'student' | 'parent' | 'therapist',
+    display_mode: 'adult' as 'adult' | 'kids',
+    avatar_url: null as string | null
   });
 
   const supabase = createClientComponentClient<Database>();
@@ -56,6 +54,7 @@ export default function ProfileSettingsPage() {
     }
   }, []);
 
+  // Clear messages after 5 seconds
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(null), 5000);
@@ -63,40 +62,58 @@ export default function ProfileSettingsPage() {
     }
   }, [message]);
   
+  // Apply theme when display mode changes
   useEffect(() => {
-    applyTheme(formData.display_mode as 'adult' | 'kids');
+    applyTheme(formData.display_mode);
   }, [formData.display_mode, applyTheme]);
 
+  // Fetch or create profile
   const fetchOrCreateProfile = useCallback(async (user: User) => {
     try {
+      console.log('Fetching profile for user:', user.id);
+      
+      // First try to fetch existing profile
       let { data: profileData, error: fetchError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single();
 
+      // If profile doesn't exist, create one
       if (fetchError && fetchError.code === 'PGRST116') {
         console.log('No profile found, creating a new one...');
+        
+        const newProfileData = {
+          id: user.id,
+          full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || '',
+          avatar_url: user.user_metadata?.avatar_url || null,
+          user_role: 'student' as const,
+          display_mode: 'adult' as const
+        };
+        
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
-          .insert({
-            id: user.id,
-            full_name: user.user_metadata?.full_name || '',
-            avatar_url: user.user_metadata?.avatar_url || null,
-            user_role: 'student',
-            display_mode: 'adult'
-          })
+          .insert(newProfileData)
           .select()
           .single();
         
-        if (createError) throw createError;
+        if (createError) {
+          console.error('Error creating profile:', createError);
+          throw createError;
+        }
+        
         profileData = newProfile;
+        console.log('Created new profile:', profileData);
       } else if (fetchError) {
+        console.error('Error fetching profile:', fetchError);
         throw fetchError;
       }
       
       if (profileData) {
+        console.log('Profile loaded successfully:', profileData);
         setProfile(profileData);
+        
+        // Update form data with loaded profile
         setFormData({
           full_name: profileData.full_name || '',
           user_role: profileData.user_role || 'student',
@@ -108,28 +125,35 @@ export default function ProfileSettingsPage() {
       }
     } catch (error) {
       console.error("Error in fetchOrCreateProfile:", error);
-      setMessage({ type: 'error', text: 'Failed to load profile data.' });
+      setMessage({ type: 'error', text: 'Failed to load profile data. Please try refreshing the page.' });
     }
   }, [supabase]);
 
-  // [FIX] Restructured the main effect to use a try...finally block.
-  // This GUARANTEES that setLoading(false) is called, even if errors occur.
+  // Main effect to get user and profile
   useEffect(() => {
     const getUserAndProfile = async () => {
       try {
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-        if (authError || !user) {
+        if (authError) {
+          console.error('Auth error:', authError);
           router.push('/login');
           return;
         }
         
+        if (!user) {
+          console.log('No user found, redirecting to login');
+          router.push('/login');
+          return;
+        }
+        
+        console.log('User authenticated:', user.email);
         setUser(user);
         await fetchOrCreateProfile(user);
 
-      } catch (e) {
-        console.error("An unexpected error occurred while loading the page:", e);
-        setMessage({ type: 'error', text: 'An unexpected error occurred. Please refresh.' });
+      } catch (error) {
+        console.error("An unexpected error occurred while loading the page:", error);
+        setMessage({ type: 'error', text: 'An unexpected error occurred. Please refresh the page.' });
       } finally {
         setLoading(false);
       }
@@ -137,9 +161,11 @@ export default function ProfileSettingsPage() {
     
     getUserAndProfile();
 
+    // Cleanup theme on unmount
     return () => applyTheme(null);
   }, [supabase, router, fetchOrCreateProfile, applyTheme]);
 
+  // Save profile changes
   const handleSave = async () => {
     if (!user) {
       setMessage({ type: 'error', text: 'User not found. Please log in again.' });
@@ -150,42 +176,56 @@ export default function ProfileSettingsPage() {
     setSaving(true);
 
     try {
+      console.log('Saving profile with data:', formData);
+      
       const updateData = {
         id: user.id,
-        full_name: formData.full_name,
-        user_role: formData.user_role as 'student' | 'parent' | 'therapist',
-        display_mode: formData.display_mode as 'adult' | 'kids',
+        full_name: formData.full_name.trim(),
+        user_role: formData.user_role,
+        display_mode: formData.display_mode,
         avatar_url: formData.avatar_url,
         updated_at: new Date().toISOString()
       };
 
       const { data, error } = await supabase
         .from('profiles')
-        .upsert(updateData)
+        .upsert(updateData, {
+          onConflict: 'id'
+        })
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error saving profile:', error);
+        throw error;
+      }
       
+      console.log('Profile saved successfully:', data);
       setProfile(data);
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
       
     } catch (error: any) {
       console.error('Error saving profile:', error);
-      setMessage({ type: 'error', text: error.message || 'Failed to update profile' });
+      setMessage({ 
+        type: 'error', 
+        text: error.message || 'Failed to update profile. Please try again.' 
+      });
     } finally {
       setSaving(false);
     }
   };
   
-  const handleInputChange = (field: keyof ProfileFormData, value: string | null) => {
+  // Handle form input changes
+  const handleInputChange = (field: keyof typeof formData, value: string | null) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // Handle display mode toggle
   const handleDisplayModeToggle = (checked: boolean) => {
+    const newMode = checked ? 'kids' : 'adult';
     setFormData(prev => ({
       ...prev,
-      display_mode: checked ? 'kids' : 'adult'
+      display_mode: newMode
     }));
   };
 
@@ -280,7 +320,7 @@ export default function ProfileSettingsPage() {
                   <Input
                     id="full_name"
                     type="text"
-                    value={formData.full_name || ''}
+                    value={formData.full_name}
                     onChange={(e) => handleInputChange('full_name', e.target.value)}
                     placeholder="Enter your full name"
                     className={isKidsMode ? 'form-input' : ''}
