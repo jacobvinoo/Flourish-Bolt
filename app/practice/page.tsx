@@ -7,9 +7,8 @@ import { User } from '@supabase/supabase-js';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { FileUpload } from '@/components/ui/file-upload';
-import { Database, Tables, TablesInsert } from '@/lib/database.types';
-import { storageService } from '@/lib/storage';
+import { Input } from '@/components/ui/input';
+import { Database, Tables } from '@/lib/database.types';
 import { 
   ArrowLeft, 
   FileText, 
@@ -26,12 +25,13 @@ import {
   Printer,
   Clock,
   Award,
-  TrendingUp
+  TrendingUp,
+  X,
+  Image as ImageIcon
 } from 'lucide-react';
 import Link from 'next/link';
 
 type Profile = Tables<'profiles'>;
-type SubmissionInsert = TablesInsert<'submissions'>;
 
 interface WorksheetStep {
   id: string;
@@ -110,6 +110,162 @@ const firstWorkbookSteps: WorksheetStep[] = [
   }
 ];
 
+// Simple File Upload Component
+interface FileUploadProps {
+  onFileSelect: (file: File) => void;
+  onFileRemove: () => void;
+  selectedFile: File | null;
+  uploading: boolean;
+  disabled?: boolean;
+  accept?: string;
+  maxSize?: number;
+}
+
+function FileUpload({ 
+  onFileSelect, 
+  onFileRemove, 
+  selectedFile, 
+  uploading, 
+  disabled = false,
+  accept = "image/jpeg,image/png,image/jpg",
+  maxSize = 10 
+}: FileUploadProps) {
+  const [dragActive, setDragActive] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (disabled || uploading) return;
+    
+    const files = e.dataTransfer.files;
+    handleFileSelection(files[0]);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (disabled || uploading) return;
+    
+    const files = e.target.files;
+    if (files && files[0]) {
+      handleFileSelection(files[0]);
+    }
+  };
+
+  const handleFileSelection = (file: File) => {
+    setError(null);
+    
+    // Validate file type
+    const validTypes = accept.split(',').map(t => t.trim());
+    if (!validTypes.includes(file.type)) {
+      setError('Please select a valid image file (JPEG, PNG, or JPG)');
+      return;
+    }
+    
+    // Validate file size (convert MB to bytes)
+    if (file.size > maxSize * 1024 * 1024) {
+      setError(`File size must be less than ${maxSize}MB`);
+      return;
+    }
+    
+    onFileSelect(file);
+  };
+
+  if (selectedFile) {
+    return (
+      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <ImageIcon className="h-8 w-8 text-blue-500" />
+            <div>
+              <p className="font-medium">{selectedFile.name}</p>
+              <p className="text-sm text-gray-500">
+                {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+              </p>
+            </div>
+          </div>
+          {!uploading && !disabled && (
+            <Button
+              onClick={onFileRemove}
+              variant="outline"
+              size="sm"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+        {uploading && (
+          <div className="mt-3">
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{ width: '70%' }}></div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <div
+        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+          dragActive
+            ? 'border-blue-400 bg-blue-50'
+            : 'border-gray-300 hover:border-gray-400'
+        } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
+        onClick={() => {
+          if (!disabled && !uploading) {
+            document.getElementById('file-upload')?.click();
+          }
+        }}
+      >
+        <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+        <p className="text-lg font-medium mb-2">
+          {dragActive ? 'Drop your image here' : 'Upload worksheet image'}
+        </p>
+        <p className="text-sm text-gray-500 mb-4">
+          Drag and drop or click to select an image file
+        </p>
+        <p className="text-xs text-gray-400">
+          Supports JPEG, PNG, JPG up to {maxSize}MB
+        </p>
+        
+        <Input
+          id="file-upload"
+          type="file"
+          accept={accept}
+          onChange={handleChange}
+          className="hidden"
+          disabled={disabled || uploading}
+        />
+      </div>
+      
+      {error && (
+        <div className="text-red-600 text-sm flex items-center gap-2">
+          <AlertCircle className="h-4 w-4" />
+          {error}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function PracticePage() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -120,23 +276,45 @@ export default function PracticePage() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
-  const [submissions, setSubmissions] = useState<any[]>([]);
-  const [analysisResults, setAnalysisResults] = useState<any[]>([]);
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
+  // Debug logging function
+  const addDebugInfo = (info: string) => {
+    console.log('PRACTICE DEBUG:', info);
+    setDebugInfo(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${info}`]);
+  };
+
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.push('/login');
-      } else {
+      try {
+        addDebugInfo('Starting authentication check');
+        const { data: { user }, error } = await supabase.auth.getUser();
+        
+        if (error) {
+          addDebugInfo(`Auth error: ${error.message}`);
+          router.push('/login');
+          return;
+        }
+        
+        if (!user) {
+          addDebugInfo('No user found, redirecting to login');
+          router.push('/login');
+          return;
+        }
+        
+        addDebugInfo(`User authenticated: ${user.email}`);
         setUser(user);
         await fetchProfile(user.id);
-        await fetchProgress(user.id);
-        await fetchSubmissions(user.id);
+      } catch (error: any) {
+        addDebugInfo(`Unexpected error: ${error.message}`);
+        router.push('/login');
+      } finally {
+        addDebugInfo('Authentication complete');
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     getUser();
@@ -144,160 +322,112 @@ export default function PracticePage() {
 
   const fetchProfile = async (userId: string) => {
     try {
+      addDebugInfo('Fetching user profile');
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
+        addDebugInfo(`Profile fetch error: ${error.message}`);
         console.error('Error fetching profile:', error);
-      } else {
+      } else if (data) {
+        addDebugInfo('Profile loaded successfully');
         setProfile(data);
+      } else {
+        addDebugInfo('No profile found, using defaults');
       }
-    } catch (error) {
+    } catch (error: any) {
+      addDebugInfo(`Profile fetch failed: ${error.message}`);
       console.error('Error fetching profile:', error);
     }
   };
 
-  const fetchProgress = async (userId: string) => {
-    try {
-      // Fetch completed submissions to track progress
-      const { data, error } = await supabase
-        .from('submissions')
-        .select('exercise_id, status')
-        .eq('user_id', userId)
-        .eq('status', 'complete');
-
-      if (error) {
-        console.error('Error fetching progress:', error);
-      } else {
-        // For now, we'll track by worksheet ID in a simple way
-        // In a real implementation, you'd map exercise_id to worksheet steps
-        const completed = new Set<string>();
-        setCompletedSteps(completed);
-      }
-    } catch (error) {
-      console.error('Error fetching progress:', error);
-    }
-  };
-
-  const fetchSubmissions = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('submissions')
-        .select(`
-          *,
-          exercises (
-            title,
-            description,
-            level
-          ),
-          analysis_results (
-            *
-          )
-        `)
-        .eq('user_id', userId)
-        .order('submitted_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching submissions:', error);
-      } else {
-        setSubmissions(data || []);
-      }
-    } catch (error) {
-      console.error('Error fetching submissions:', error);
-    }
-  };
-
   const handleFileSelect = (file: File) => {
+    addDebugInfo(`File selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
     setSelectedFile(file);
     setUploadError(null);
     setUploadSuccess(false);
   };
 
   const handleFileRemove = () => {
+    addDebugInfo('File removed');
     setSelectedFile(null);
     setUploadError(null);
     setUploadSuccess(false);
   };
 
   const handleUpload = async () => {
-    if (!selectedFile || !user) return;
+    if (!selectedFile || !user) {
+      setUploadError('No file selected or user not authenticated');
+      return;
+    }
 
+    addDebugInfo('Starting file upload');
     setUploading(true);
     setUploadError(null);
     setUploadSuccess(false);
 
     try {
-      // Create a submission for the current worksheet step
-      // For now, we'll use a placeholder exercise_id (1)
-      // In a real implementation, you'd create exercises for each worksheet
-      const submissionData: SubmissionInsert = {
-        user_id: user.id,
-        exercise_id: 1, // Placeholder - would map to actual exercise
-        image_url: '', // Will be updated after upload
-        status: 'pending'
-      };
+      // Create a unique filename
+      const timestamp = new Date().getTime();
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${user.id}/${currentWorksheet.id}/${timestamp}.${fileExt}`;
+      
+      addDebugInfo(`Uploading file: ${fileName}`);
 
-      const { data: submission, error: submissionError } = await supabase
+      // Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('submissions')
-        .insert(submissionData)
-        .select()
-        .single();
+        .upload(fileName, selectedFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
-      if (submissionError) {
-        throw new Error(`Failed to create submission: ${submissionError.message}`);
+      if (uploadError) {
+        addDebugInfo(`Upload error: ${uploadError.message}`);
+        throw new Error(`Upload failed: ${uploadError.message}`);
       }
 
-      // Upload the file to storage
-      const uploadResult = await storageService.uploadSubmissionImage(
-        selectedFile,
-        user.id,
-        submission.id.toString()
-      );
+      addDebugInfo('File uploaded successfully to storage');
 
-      if (!uploadResult) {
-        // Clean up the submission record if upload failed
-        await supabase.from('submissions').delete().eq('id', submission.id);
-        throw new Error('Failed to upload image to storage');
-      }
-
-      // Update the submission with the image URL
-      const { error: updateError } = await supabase
+      // Get the public URL
+      const { data: { publicUrl } } = supabase.storage
         .from('submissions')
-        .update({ image_url: uploadResult.url })
-        .eq('id', submission.id);
+        .getPublicUrl(fileName);
 
-      if (updateError) {
-        // Clean up the uploaded file if database update failed
-        await storageService.deleteSubmissionImage(uploadResult.path);
-        await supabase.from('submissions').delete().eq('id', submission.id);
-        throw new Error(`Failed to update submission: ${updateError.message}`);
-      }
+      addDebugInfo(`File available at: ${publicUrl}`);
+
+      // For now, we'll just simulate saving to a submissions table
+      // In a real implementation, you'd save this to your database
+      addDebugInfo('Simulating database save (no submissions table yet)');
 
       setUploadSuccess(true);
       setSelectedFile(null);
       
-      // Mark current step as completed - Fixed TypeScript error
+      // Mark current step as completed
       setCompletedSteps(prev => {
         const newSet = new Set(prev);
         newSet.add(firstWorkbookSteps[currentStep].id);
         return newSet;
       });
       
-      // Refresh submissions to show the new one
-      await fetchSubmissions(user.id);
+      addDebugInfo(`Step ${currentStep + 1} marked as completed`);
       
       // Auto-advance to next step after a delay
       setTimeout(() => {
         if (currentStep < firstWorkbookSteps.length - 1) {
           setCurrentStep(currentStep + 1);
+          addDebugInfo(`Advanced to step ${currentStep + 2}`);
+        } else {
+          addDebugInfo('All steps completed!');
         }
         setUploadSuccess(false);
       }, 3000);
 
     } catch (error: any) {
+      addDebugInfo(`Upload failed: ${error.message}`);
       console.error('Upload error:', error);
       setUploadError(error.message || 'An unexpected error occurred during upload');
     } finally {
@@ -306,43 +436,26 @@ export default function PracticePage() {
   };
 
   const openWorksheet = (worksheetUrl: string) => {
+    addDebugInfo(`Opening worksheet: ${worksheetUrl}`);
     window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'complete':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'processing':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'error':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      default:
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'complete':
-        return <CheckCircle className="h-4 w-4" />;
-      case 'processing':
-        return <Clock className="h-4 w-4 animate-spin" />;
-      case 'error':
-        return <AlertCircle className="h-4 w-4" />;
-      default:
-        return <Upload className="h-4 w-4" />;
-    }
-  };
-
-  const isKidsMode = profile?.display_mode === 'kid';
+  const isKidsMode = profile?.display_mode === 'kids';
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center max-w-md mx-auto">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading practice session...</p>
+          <p className="text-muted-foreground mb-4">Loading practice session...</p>
+          
+          {/* Debug information */}
+          <div className="text-left bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-xs space-y-1">
+            <div className="font-semibold mb-2">Debug Log:</div>
+            {debugInfo.map((info, index) => (
+              <div key={index} className="text-gray-600 dark:text-gray-400">{info}</div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -378,6 +491,22 @@ export default function PracticePage() {
             </p>
           </div>
         </div>
+
+        {/* Debug Panel (only in development) */}
+        {debugInfo.length > 0 && process.env.NODE_ENV === 'development' && (
+          <Card className="mb-6 border-blue-200 bg-blue-50 dark:bg-blue-900/20">
+            <CardHeader>
+              <CardTitle className="text-sm text-blue-800 dark:text-blue-200">Debug Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xs space-y-1 text-blue-700 dark:text-blue-300">
+                {debugInfo.map((info, index) => (
+                  <div key={index}>{info}</div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Progress Bar */}
         <Card className={`border-0 shadow-lg mb-8 ${isKidsMode ? 'card bounce-in' : ''}`}>
@@ -425,8 +554,8 @@ export default function PracticePage() {
                   </p>
                   <p className="text-green-700 dark:text-green-300 text-sm">
                     {isKidsMode 
-                      ? 'Your worksheet is being analyzed! Moving to the next step... 🚀'
-                      : 'Your worksheet has been submitted for analysis. Moving to next step...'
+                      ? 'Your worksheet is saved! Moving to the next step... 🚀'
+                      : 'Your worksheet has been uploaded successfully. Moving to next step...'
                     }
                   </p>
                 </div>
@@ -515,7 +644,7 @@ export default function PracticePage() {
                 <CardDescription>
                   {isKidsMode 
                     ? 'Take a photo of your finished worksheet and upload it here! 📱'
-                    : 'Take a clear photo or scan of your completed worksheet for AI analysis'
+                    : 'Take a clear photo or scan of your completed worksheet'
                   }
                 </CardDescription>
               </CardHeader>
@@ -546,7 +675,7 @@ export default function PracticePage() {
                       ) : (
                         <>
                           <Upload className="h-4 w-4 mr-2" />
-                          {isKidsMode ? 'Submit for Analysis! 🔍' : 'Submit for Analysis'}
+                          {isKidsMode ? 'Submit Work! 🔍' : 'Submit Worksheet'}
                         </>
                       )}
                     </Button>
@@ -582,62 +711,6 @@ export default function PracticePage() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Recent Submissions */}
-            {submissions.length > 0 && (
-              <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-primary" />
-                    {isKidsMode ? '📊 My Recent Work!' : 'Recent Submissions'}
-                  </CardTitle>
-                  <CardDescription>
-                    {isKidsMode 
-                      ? 'Check out your latest uploads and see how you\'re doing! 🌟'
-                      : 'View your recent worksheet submissions and analysis results'
-                    }
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4 max-h-64 overflow-y-auto">
-                    {submissions.slice(0, 5).map((submission) => (
-                      <div key={submission.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <Badge className={getStatusColor(submission.status)}>
-                              {getStatusIcon(submission.status)}
-                              <span className="ml-1 capitalize">{submission.status}</span>
-                            </Badge>
-                            <span className="text-sm text-muted-foreground">
-                              {new Date(submission.submitted_at).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <p className="text-sm font-medium mt-1">
-                            {submission.exercises?.title || 'Practice Exercise'}
-                          </p>
-                          {submission.analysis_results && submission.analysis_results.length > 0 && (
-                            <div className="flex items-center gap-2 mt-1">
-                              <Award className="h-4 w-4 text-yellow-500" />
-                              <span className="text-sm text-muted-foreground">
-                                Score: {Math.round(submission.analysis_results[0].overall_score || 0)}%
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        {submission.status === 'complete' && submission.analysis_results && submission.analysis_results.length > 0 && (
-                          <Link href={`/submission/${submission.id}/results`}>
-                            <Button size="sm" variant="outline">
-                              <Eye className="h-4 w-4 mr-1" />
-                              {isKidsMode ? 'See Results! 🎯' : 'View Results'}
-                            </Button>
-                          </Link>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
 
           {/* Sidebar */}
@@ -691,6 +764,38 @@ export default function PracticePage() {
               </CardContent>
             </Card>
 
+            {/* Storage Bucket Setup Notice */}
+            <Card className={`border-0 shadow-lg ${
+              isKidsMode 
+                ? 'bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200 card bounce-in' 
+                : 'bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800'
+            }`}>
+              <CardHeader>
+                <CardTitle className={`${
+                  isKidsMode ? 'text-blue-800' : 'text-blue-800 dark:text-blue-200'
+                } flex items-center gap-2`}>
+                  <Upload className="h-5 w-5" />
+                  {isKidsMode ? '🔧 Setup Required!' : '🔧 Setup Required'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className={`space-y-3 text-sm ${
+                  isKidsMode ? 'text-blue-700' : 'text-blue-700 dark:text-blue-300'
+                }`}>
+                  <p className="font-medium">To enable file uploads, create a Supabase storage bucket:</p>
+                  <ol className="list-decimal list-inside space-y-2 pl-2">
+                    <li>Go to your Supabase dashboard</li>
+                    <li>Navigate to Storage</li>
+                    <li>Create a new bucket named "submissions"</li>
+                    <li>Set it to public for easy access</li>
+                  </ol>
+                  <p className="text-xs opacity-75">
+                    Files will be uploaded to: submissions/[user-id]/[worksheet-id]/[timestamp].[ext]
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Tips */}
             <Card className={`border-0 shadow-lg ${
               isKidsMode 
@@ -714,10 +819,53 @@ export default function PracticePage() {
                   <li>• {isKidsMode ? '⏰ Take breaks when you need them!' : 'Take breaks every 10-15 minutes'}</li>
                   <li>• {isKidsMode ? '🎯 Focus on doing it right, not fast!' : 'Focus on accuracy over speed'}</li>
                   <li>• {isKidsMode ? '🌟 Practice a little bit every day!' : 'Practice regularly for best results'}</li>
-                  <li>• {isKidsMode ? '📸 Upload your work to get feedback!' : 'Upload your completed worksheets for AI analysis'}</li>
+                  <li>• {isKidsMode ? '📸 Upload your work to track progress!' : 'Upload completed worksheets to track progress'}</li>
                 </ul>
               </CardContent>
             </Card>
+
+            {/* Completed Steps Summary */}
+            {completedSteps.size > 0 && (
+              <Card className={`border-0 shadow-lg ${isKidsMode ? 'card bounce-in' : ''}`}>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="h-5 w-5 text-yellow-500" />
+                    {isKidsMode ? '🏆 My Achievements!' : 'Completed Steps'}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">
+                        {isKidsMode ? 'Steps Completed:' : 'Progress:'}
+                      </span>
+                      <Badge variant="secondary">
+                        {completedSteps.size} / {firstWorkbookSteps.length}
+                      </Badge>
+                    </div>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-500 ${
+                          isKidsMode 
+                            ? 'bg-gradient-to-r from-green-400 to-blue-500' 
+                            : 'bg-green-500'
+                        }`}
+                        style={{ width: `${(completedSteps.size / firstWorkbookSteps.length) * 100}%` }}
+                      ></div>
+                    </div>
+                    {completedSteps.size === firstWorkbookSteps.length && (
+                      <div className={`text-center py-3 ${
+                        isKidsMode 
+                          ? 'text-green-700 font-bold' 
+                          : 'text-green-600 font-medium'
+                      }`}>
+                        {isKidsMode ? '🎉 Congratulations! You completed all steps! 🌟' : '🎉 Congratulations! All steps completed!'}
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
