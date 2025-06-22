@@ -184,8 +184,8 @@ export default function Home() {
           </svg>
         </div>
 
-        {/* Book */}
-        <div className="absolute bottom-56 right-14 w-16 h-16 animate-float-slow z-10">
+        {/* Book - moved to middle right */}
+        <div className="absolute top-1/2 right-20 transform -translate-y-8 w-16 h-16 animate-float-slow z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-purple-500 drop-shadow-lg">
             <path fill="currentColor" d="M19,2L14,6.5V17.5L19,13V2M6.5,5C4.55,5 2.45,5.4 1,6.5V21.16C1,21.41 1.25,21.66 1.5,21.66C1.6,21.66 1.65,21.59 1.75,21.59C3.1,20.94 5.05,20.68 6.5,20.68C8.45,20.68 10.55,21.1 12,22C13.35,21.15 15.8,20.68 17.5,20.68C19.15,20.68 20.85,21.1 22.25,21.81C22.35,21.86 22.4,21.91 22.5,21.91C22.75,21.91 23,21.66 23,21.41V6.5C22.4,6.05 21.75,5.75 21,5.5V19C19.9,18.65 18.7,18.5 17.5,18.5C15.8,18.5 13.35,18.9 12,19.81V6.5C10.55,5.4 8.45,5 6.5,5Z" />
           </svg>
