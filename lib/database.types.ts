@@ -67,4 +67,7 @@ export interface Database {
     }
   }
 }
+
+// Export type aliases for easier access
 export type Tables = Database['public']['Tables'];
+export type Profile = Tables['profiles']['Row'];
