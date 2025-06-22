@@ -27,8 +27,13 @@ type AnalysisResult = {
   id: number;
   submission_id: number;
   overall_score: number;
+  formation_score?: number;
+  spacing_score?: number;
+  consistency_score?: number;
+  alignment_score?: number;
   letter_scores: any; // JSON data
   feedback: string;
+  feedback_json?: any; // Add this missing property
   strengths: string[];
   areas_for_improvement: string[];
   created_at: string;
@@ -42,6 +47,7 @@ type Submission = {
   status: string;
   score?: number;
   feedback?: string;
+  submitted_at?: string; // Add this property as it's used in the JSX
   created_at: string;
   updated_at: string;
 };
@@ -171,7 +177,7 @@ export default function ResultsPage() {
     fetchAnalysisData();
   }, [supabase, submissionId, user, router]);
 
-  const getScoreColor = (score: number | null) => {
+  const getScoreColor = (score: number | null | undefined) => {
     if (!score) return 'text-gray-500';
     if (score >= 80) return 'text-green-600 dark:text-green-400';
     if (score >= 60) return 'text-yellow-600 dark:text-yellow-400';
@@ -179,7 +185,7 @@ export default function ResultsPage() {
     return 'text-red-600 dark:text-red-400';
   };
 
-  const getScoreBadgeColor = (score: number | null) => {
+  const getScoreBadgeColor = (score: number | null | undefined) => {
     if (!score) return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
     if (score >= 80) return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
     if (score >= 60) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
@@ -297,7 +303,7 @@ export default function ResultsPage() {
           <div className="flex-1">
             <h1 className="text-3xl font-bold text-foreground">Analysis Results</h1>
             <p className="text-muted-foreground mt-1">
-              {exercise.title} • Submitted {new Date(submission.submitted_at || '').toLocaleDateString()}
+              {exercise.title} • Submitted {new Date(submission.submitted_at || submission.created_at).toLocaleDateString()}
             </p>
           </div>
           <div className="flex gap-2">
