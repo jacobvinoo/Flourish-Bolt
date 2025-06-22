@@ -148,56 +148,79 @@ export default function SignUpPage() {
     return null;
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
+  // Updated handleSignUp function for your signup page
 
-    // Validate passwords match
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
-      return;
-    }
+const handleSignUp = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
+  setSuccess(null);
 
-    // Validate password strength
-    const passwordError = validatePassword(password);
-    if (passwordError) {
-      setError(passwordError);
-      setLoading(false);
-      return;
-    }
+  // Validate passwords match
+  if (password !== confirmPassword) {
+    setError('Passwords do not match');
+    setLoading(false);
+    return;
+  }
 
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
+  // Validate password strength
+  const passwordError = validatePassword(password);
+  if (passwordError) {
+    setError(passwordError);
+    setLoading(false);
+    return;
+  }
+
+  try {
+    // Step 1: Sign up the user
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+          selected_plan: selectedPlan,
+        },
+      },
+    });
+
+    if (error) {
+      setError(error.message);
+    } else if (data.user) {
+      // Step 2: If user is created and confirmed, update their profile
+      if (data.user.email_confirmed_at) {
+        // User is immediately confirmed
+        // Update the profile with the selected plan
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            id: data.user.id,
+            email: data.user.email,
             full_name: fullName,
             selected_plan: selectedPlan,
-          },
-        },
-      });
+            subscription_status: 'active',
+            trial_end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
 
-      if (error) {
-        setError(error.message);
-      } else if (data.user) {
-        if (data.user.email_confirmed_at) {
-          // User is immediately confirmed, redirect to dashboard
-          router.push('/dashboard');
-        } else {
-          // User needs to confirm email
-          setSuccess(`Account created successfully! Please check your email for a confirmation link. Your ${plans.find(p => p.id === selectedPlan)?.name} plan will be activated after confirmation.`);
+        if (profileError) {
+          console.error('Profile update error:', profileError);
         }
+        
+        // Redirect to dashboard
+        router.push('/dashboard');
+      } else {
+        // User needs to confirm email
+        setSuccess(`Account created successfully! Please check your email for a confirmation link. Your ${plans.find(p => p.id === selectedPlan)?.name} plan will be activated after confirmation.`);
       }
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (err) {
+    setError('An unexpected error occurred. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleGoogleSignUp = async () => {
     setLoading(true);
