@@ -7,6 +7,15 @@ import { User } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Database, Tables } from '@/lib/database.types';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
+import { User } from '@supabase/supabase-js';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Database, Tables } from '@/lib/database.types';
 import { 
   ArrowLeft, 
   Upload, 
@@ -23,7 +32,14 @@ import {
   Heart,
   Sparkles,
   PenTool,
-  Award
+  Award,
+  AlignLeft,
+  ArrowRight,
+  Circle,
+  TrendingUp,
+  Plus,
+  Square,
+  Waves
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -101,6 +117,7 @@ interface WorksheetStep {
   skills: string[];
   estimatedTime: string;
   emoji: string;
+  icon: string;  // Add this line
   color: string;
   completed?: boolean;
 }
@@ -111,12 +128,12 @@ const firstWorkbookSteps: WorksheetStep[] = [
     title: 'Worksheet 1.1: Vertical Lines',
     friendlyTitle: 'Straight Up Lines!',
     description: 'Start with basic vertical lines from top to bottom. Master downward stroke control.',
-    kidsDescription: 'Draw straight lines going up and down, like tall trees or birthday candles! 🕯️',
+    kidsDescription: 'Draw straight lines going up and down, like tall trees or birthday candles!',
     level: 1,
     worksheetUrl: '/worksheets/vertical-lines.html',
     skills: ['Drawing straight', 'Top to bottom', 'Holding pencil'],
     estimatedTime: '10-15 minutes',
-    emoji: '📏',
+    icon: 'AlignLeft',  // Clean vertical alignment icon
     color: 'from-blue-400 to-blue-600'
   },
   {
@@ -124,12 +141,12 @@ const firstWorkbookSteps: WorksheetStep[] = [
     title: 'Worksheet 1.2: Horizontal Lines',
     friendlyTitle: 'Side to Side Lines!',
     description: 'Practice horizontal lines from left to right. Build reading and writing flow.',
-    kidsDescription: 'Draw lines that go sideways, like a sleeping snake or a calm ocean! 🌊',
+    kidsDescription: 'Draw lines that go sideways, like a sleeping snake or a calm ocean!',
     level: 1,
     worksheetUrl: '/worksheets/horizontal-lines.html',
     skills: ['Left to right', 'Reading direction', 'Smooth lines'],
     estimatedTime: '10-15 minutes',
-    emoji: '➡️',
+    icon: 'ArrowRight',  // Clean horizontal direction
     color: 'from-green-400 to-green-600'
   },
   {
@@ -137,12 +154,12 @@ const firstWorkbookSteps: WorksheetStep[] = [
     title: 'Worksheet 1.3: Circles',
     friendlyTitle: 'Round and Round!',
     description: 'Learn circular motions essential for letters like o, a, and d.',
-    kidsDescription: 'Make perfect circles like bubbles, donuts, or the sun! Practice going round and round! ☀️',
+    kidsDescription: 'Make perfect circles like bubbles, donuts, or the sun! Practice going round and round!',
     level: 1,
     worksheetUrl: '/worksheets/circles.html',
     skills: ['Circular motions', 'Smooth curves', 'Hand control'],
     estimatedTime: '15-20 minutes',
-    emoji: '⭕',
+    icon: 'Circle',  // Perfect circle icon
     color: 'from-yellow-400 to-orange-500'
   },
   {
@@ -150,12 +167,12 @@ const firstWorkbookSteps: WorksheetStep[] = [
     title: 'Worksheet 1.4: Diagonal Lines',
     friendlyTitle: 'Slanted Lines!',
     description: 'Master diagonal strokes for letters like A, V, X, and k.',
-    kidsDescription: 'Draw slanted lines like slides at the playground or roof tops! 🏠',
+    kidsDescription: 'Draw slanted lines like slides at the playground or roof tops!',
     level: 1,
     worksheetUrl: '/worksheets/diagonal-lines.html',
     skills: ['Diagonal drawing', 'Angles', 'Letter shapes'],
     estimatedTime: '15-20 minutes',
-    emoji: '📐',
+    icon: 'TrendingUp',  // Clean diagonal line
     color: 'from-purple-400 to-purple-600'
   },
   {
@@ -163,12 +180,12 @@ const firstWorkbookSteps: WorksheetStep[] = [
     title: 'Worksheet 1.5: Intersecting Lines',
     friendlyTitle: 'Crossing Lines!',
     description: 'Practice crosses and plus signs with precision.',
-    kidsDescription: 'Make crossing lines like a tic-tac-toe game or a treasure map X! 🗺️',
+    kidsDescription: 'Make crossing lines like a tic-tac-toe game or a treasure map X!',
     level: 1,
     worksheetUrl: '/worksheets/intersecting-lines.html',
     skills: ['Crossing lines', 'Precision', 'Plus signs'],
     estimatedTime: '15-20 minutes',
-    emoji: '➕',
+    icon: 'Plus',  // Clean plus/cross symbol
     color: 'from-red-400 to-pink-500'
   },
   {
@@ -176,12 +193,12 @@ const firstWorkbookSteps: WorksheetStep[] = [
     title: 'Worksheet 1.6: Basic Shapes',
     friendlyTitle: 'Fun Shapes!',
     description: 'Combine strokes to create squares, triangles, and rectangles.',
-    kidsDescription: 'Draw squares like windows, triangles like pizza slices, and rectangles like doors! 🏠',
+    kidsDescription: 'Draw squares like windows, triangles like pizza slices, and rectangles like doors!',
     level: 1,
     worksheetUrl: '/worksheets/basic-shapes.html',
     skills: ['Shape drawing', 'Combining lines', 'Geometric fun'],
     estimatedTime: '20-25 minutes',
-    emoji: '🔷',
+    icon: 'Square',  // Clean geometric square
     color: 'from-indigo-400 to-blue-500'
   },
   {
@@ -189,12 +206,12 @@ const firstWorkbookSteps: WorksheetStep[] = [
     title: 'Worksheet 1.7: Continuous Curves',
     friendlyTitle: 'Wavy Lines!',
     description: 'Develop fluidity with wavy lines and loops for cursive preparation.',
-    kidsDescription: 'Draw wavy lines like ocean waves, roller coasters, or a snake dancing! 🐍',
+    kidsDescription: 'Draw wavy lines like ocean waves, roller coasters, or a snake dancing!',
     level: 1,
     worksheetUrl: '/worksheets/continuous-curves.html',
     skills: ['Wavy lines', 'Smooth flow', 'Cursive prep'],
     estimatedTime: '20-25 minutes',
-    emoji: '🌊',
+    icon: 'Waves',  // Modern wave icon
     color: 'from-teal-400 to-cyan-500'
   }
 ];
