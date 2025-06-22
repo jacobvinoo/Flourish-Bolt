@@ -16,9 +16,8 @@ import {
   Briefcase,
   Settings
 } from 'lucide-react';
-import { Database, Tables } from '@/lib/database.types';
+import { Database, Profile } from '@/lib/database.types';
 
-type Profile = Tables<'profiles'>;
 type UserRole = 'student' | 'parent' | 'therapist';
 type DisplayMode = 'adult' | 'kids';
 
