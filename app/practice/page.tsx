@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Database, Tables } from '@/lib/database.types';
+import { Database, Profile } from '@/lib/database.types';
 import { 
   ArrowLeft, 
   Upload, 
