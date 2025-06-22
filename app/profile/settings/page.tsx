@@ -193,7 +193,7 @@ export default function ProfileSettingsPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Link href="/">
+          <Link href="/dashboard">
             <button className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors font-medium ${
               isKidsMode 
                 ? 'text-purple-700 hover:bg-purple-100 border border-purple-200' 
