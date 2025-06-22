@@ -1,24 +1,196 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { 
+  Target, 
+  Trophy, 
+  Flame, 
+  Star, 
+  Crown, 
+  Zap, 
+  Clock,
+  TrendingUp,
+  Settings,
+  Play,
+  ChevronRight,
+  Users,
+  BookOpen,
+  Sparkles,
+  CheckCircle,
+  Lock,
+  PenTool,
+  User,
+  LogOut,
+  Bell,
+  Search,
+  Menu,
+  X,
+  Award,
+  Calendar,
+  ArrowRight
+} from 'lucide-react';
+
+import { Database, Profile } from '@/lib/database.types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Database } from '@/lib/database.types';
-import { 
-  User, Settings, LogOut, BookOpen, Trophy, Target, Flame, Clock, 
-  Crown, Zap, ArrowRight, Play, Calendar, Award, TrendingUp,
-  Bell, Search, Menu, X
-} from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
-// ... (keep all the existing interfaces and data)
+// Add animations styles
+const animationStyles = `
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-10px) rotate(1deg); }
+    66% { transform: translateY(-5px) rotate(-1deg); }
+  }
+  
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(2deg); }
+  }
+  
+  @keyframes float-delay {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-8px) rotate(-1deg); }
+    66% { transform: translateY(-12px) rotate(1deg); }
+  }
+  
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  
+  @keyframes twinkle-delay {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+  }
+  
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  @keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+  }
+  
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+  .animate-float-delay { animation: float-delay 7s ease-in-out infinite; }
+  .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
+  .animate-twinkle-delay { animation: twinkle-delay 4s ease-in-out infinite; }
+  .animate-bounce-slow { animation: bounce-slow 4s ease-in-out infinite; }
+  .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+  .animate-spin-reverse { animation: spin-reverse 25s linear infinite; }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = animationStyles;
+  document.head.appendChild(style);
+}
 
 export default function DashboardPage() {
-  // ... (keep all existing state and functions)
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  
+  // Dashboard stats
+  const [currentStreak] = useState(12);
+  const [totalPracticeTime] = useState(145);
+  const [weeklyGoal] = useState(150);
+  const [weeklyProgress] = useState(90);
+  const [currentLevel] = useState(8);
+  const [xp] = useState(2350);
+  const [xpToNextLevel] = useState(650);
+  const [achievements] = useState(3);
+  const [totalAchievements] = useState(10);
+
+  const supabase = createClientComponentClient<Database>();
+  const router = useRouter();
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        
+        if (error || !user) {
+          router.push('/login');
+          return;
+        }
+        
+        setUser(user);
+        await fetchProfile(user.id);
+      } catch (error: any) {
+        router.push('/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getUser();
+  }, []);
+
+  const fetchProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (data) {
+        setProfile(data);
+      }
+    } catch (error: any) {
+      console.error('Error fetching profile:', error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.push('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  const levelProgress = (xp / (xp + xpToNextLevel)) * 100;
+  const weeklyGoalProgress = (weeklyProgress / weeklyGoal) * 100;
+  const isKidsMode = profile?.display_mode === 'kids';
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className={`min-h-screen transition-all duration-500 relative overflow-hidden ${
