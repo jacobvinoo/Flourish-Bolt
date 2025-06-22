@@ -88,7 +88,7 @@ if (typeof document !== 'undefined') {
   document.head.appendChild(style);
 }
 
-type Profile = Tables<'profiles'>;
+import { Database, Tables, Profile } from '@/lib/database.types';
 
 function Progress({ value, className = '' }: { value: number; className?: string }) {
   return (
