@@ -107,8 +107,9 @@ interface WorksheetStep {
   worksheetUrl: string;
   skills: string[];
   estimatedTime: string;
-  icon: string;  // Add this line
+  icon: string;
   color: string;
+  emoji: string;
   completed?: boolean;
 }
 
@@ -123,8 +124,9 @@ const firstWorkbookSteps: WorksheetStep[] = [
     worksheetUrl: '/worksheets/vertical-lines.html',
     skills: ['Drawing straight', 'Top to bottom', 'Holding pencil'],
     estimatedTime: '10-15 minutes',
-    icon: 'AlignLeft',  // Clean vertical alignment icon
-    color: 'from-blue-400 to-blue-600'
+    icon: 'AlignLeft',
+    color: 'from-blue-400 to-blue-600',
+    emoji: '📏'
   },
   {
     id: 'horizontal-lines',
@@ -136,8 +138,9 @@ const firstWorkbookSteps: WorksheetStep[] = [
     worksheetUrl: '/worksheets/horizontal-lines.html',
     skills: ['Left to right', 'Reading direction', 'Smooth lines'],
     estimatedTime: '10-15 minutes',
-    icon: 'ArrowRight',  // Clean horizontal direction
-    color: 'from-green-400 to-green-600'
+    icon: 'ArrowRight',
+    color: 'from-green-400 to-green-600',
+    emoji: '➡️'
   },
   {
     id: 'circles',
@@ -149,8 +152,9 @@ const firstWorkbookSteps: WorksheetStep[] = [
     worksheetUrl: '/worksheets/circles.html',
     skills: ['Circular motions', 'Smooth curves', 'Hand control'],
     estimatedTime: '15-20 minutes',
-    icon: 'Circle',  // Perfect circle icon
-    color: 'from-yellow-400 to-orange-500'
+    icon: 'Circle',
+    color: 'from-yellow-400 to-orange-500',
+    emoji: '⭕'
   },
   {
     id: 'diagonal-lines',
@@ -162,8 +166,9 @@ const firstWorkbookSteps: WorksheetStep[] = [
     worksheetUrl: '/worksheets/diagonal-lines.html',
     skills: ['Diagonal drawing', 'Angles', 'Letter shapes'],
     estimatedTime: '15-20 minutes',
-    icon: 'TrendingUp',  // Clean diagonal line
-    color: 'from-purple-400 to-purple-600'
+    icon: 'TrendingUp',
+    color: 'from-purple-400 to-purple-600',
+    emoji: '📐'
   },
   {
     id: 'intersecting-lines',
@@ -175,8 +180,9 @@ const firstWorkbookSteps: WorksheetStep[] = [
     worksheetUrl: '/worksheets/intersecting-lines.html',
     skills: ['Crossing lines', 'Precision', 'Plus signs'],
     estimatedTime: '15-20 minutes',
-    icon: 'Plus',  // Clean plus/cross symbol
-    color: 'from-red-400 to-pink-500'
+    icon: 'Plus',
+    color: 'from-red-400 to-pink-500',
+    emoji: '✖️'
   },
   {
     id: 'basic-shapes',
@@ -188,8 +194,9 @@ const firstWorkbookSteps: WorksheetStep[] = [
     worksheetUrl: '/worksheets/basic-shapes.html',
     skills: ['Shape drawing', 'Combining lines', 'Geometric fun'],
     estimatedTime: '20-25 minutes',
-    icon: 'Square',  // Clean geometric square
-    color: 'from-indigo-400 to-blue-500'
+    icon: 'Square',
+    color: 'from-indigo-400 to-blue-500',
+    emoji: '🔺'
   },
   {
     id: 'continuous-curves',
@@ -201,8 +208,9 @@ const firstWorkbookSteps: WorksheetStep[] = [
     worksheetUrl: '/worksheets/continuous-curves.html',
     skills: ['Wavy lines', 'Smooth flow', 'Cursive prep'],
     estimatedTime: '20-25 minutes',
-    icon: 'Waves',  // Modern wave icon
-    color: 'from-teal-400 to-cyan-500'
+    icon: 'Waves',
+    color: 'from-teal-400 to-cyan-500',
+    emoji: '🌊'
   }
 ];
 
@@ -646,20 +654,20 @@ export default function PracticePage() {
   };
 
   const openWorksheet = (worksheetUrl: string) => {
-  window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
-};
+    window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
+  };
 
-const goToPreviousStep = () => {
-  if (currentStep > 0) {
-    setCurrentStep(currentStep - 1);
-  }
-};
+  const goToPreviousStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
 
-const goToNextStep = () => {
-  if (currentStep < firstWorkbookSteps.length - 1) {
-    setCurrentStep(currentStep + 1);
-  }
-};
+  const goToNextStep = () => {
+    if (currentStep < firstWorkbookSteps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
 
   const isKidsMode = profile?.display_mode === 'kids';
 
@@ -689,7 +697,7 @@ const goToNextStep = () => {
         : 'bg-gray-50'
     }`}>
 
-  {/* Animated Background Elements */}
+      {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Left Wavy Edge */}
         <div className="absolute left-0 top-0 h-full w-80 opacity-70">
@@ -751,35 +759,9 @@ const goToNextStep = () => {
           </svg>
         </div>
 
-        {/* Wavy Background Patterns */}
-        <div className="absolute -top-32 -left-32 w-96 h-96 opacity-20">
-          <svg viewBox="0 0 200 200" className="w-full h-full animate-spin-slow">
-            <defs>
-              <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor={isKidsMode ? "#ec4899" : "#3b82f6"} />
-                <stop offset="100%" stopColor={isKidsMode ? "#8b5cf6" : "#1e40af"} />
-              </linearGradient>
-            </defs>
-            <path d="M20,100 Q100,20 180,100 Q100,180 20,100" fill="url(#gradient1)" opacity="0.3" />
-          </svg>
-        </div>
-
-        <div className="absolute -bottom-32 -right-32 w-80 h-80 opacity-15">
-          <svg viewBox="0 0 200 200" className="w-full h-full animate-spin-reverse">
-            <defs>
-              <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor={isKidsMode ? "#06b6d4" : "#10b981"} />
-                <stop offset="100%" stopColor={isKidsMode ? "#3b82f6" : "#059669"} />
-              </linearGradient>
-            </defs>
-            <circle cx="100" cy="100" r="80" fill="url(#gradient2)" opacity="0.4" />
-          </svg>
-        </div>
-
-        {/* Floating Animated Elements */}
+        {/* Kids Mode Floating Elements */}
         {isKidsMode && (
           <>
-            {/* Left Side Elements */}
             {/* Pencil */}
             <div className="absolute top-20 left-20 w-20 h-20 animate-float z-10">
               <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-500 drop-shadow-lg">
@@ -794,28 +776,6 @@ const goToNextStep = () => {
               </div>
             </div>
 
-            {/* Cursive lowercase "a" */}
-            <div className="absolute top-96 left-24 w-20 h-20 animate-bounce-slow z-10">
-              <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-lg">
-                <path d="M20,40 Q35,20 50,40 Q65,60 50,80 Q35,60 20,40 M50,40 Q65,30 80,50 Q75,70 60,80" stroke="#8b5cf6" strokeWidth="6" fill="none" strokeLinecap="round"/>
-              </svg>
-            </div>
-
-            {/* Number 1 */}
-            <div className="absolute top-32 left-16 w-14 h-14 animate-twinkle z-10">
-              <div className="w-full h-full bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
-                1
-              </div>
-            </div>
-
-            {/* Cursive "hello" */}
-            <div className="absolute top-40 left-8 w-24 h-12 animate-float-slow z-10">
-              <svg viewBox="0 0 120 40" className="w-full h-full drop-shadow-lg">
-                <path d="M5,20 Q15,10 25,20 Q35,30 25,35 M25,20 Q35,15 45,25 Q40,35 30,35 M45,20 Q55,10 65,20 Q75,30 65,35 M65,20 Q75,10 85,20 Q95,30 85,35 M85,20 Q95,10 105,20 Q115,30 105,35" stroke="#ec4899" strokeWidth="3" fill="none" strokeLinecap="round"/>
-              </svg>
-            </div>
-
-            {/* Right Side Elements */}
             {/* Stars */}
             <div className="absolute top-32 right-20 w-12 h-12 animate-twinkle z-10">
               <svg viewBox="0 0 24 24" className="w-full h-full text-pink-400 drop-shadow-lg">
@@ -830,20 +790,21 @@ const goToNextStep = () => {
               </div>
             </div>
 
-            {/* Cursive "cat" */}
-            <div className="absolute top-80 right-20 w-22 h-12 animate-float-delay z-10">
-              <svg viewBox="0 0 100 40" className="w-full h-full drop-shadow-lg">
-                <path d="M10,20 Q20,10 30,20 Q25,30 15,30 M30,20 Q40,10 50,20 Q60,30 50,35 M50,20 Q60,10 70,20 Q80,30 70,35 Q60,40 50,35" stroke="#06b6d4" strokeWidth="3" fill="none" strokeLinecap="round"/>
-              </svg>
-            </div>
-
-            {/* Number 2 */}
-            <div className="absolute top-112 right-12 w-14 h-14 animate-twinkle-delay z-10">
-              <div className="w-full h-full bg-gradient-to-br from-purple-400 to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
-                2
+            {/* Number 1 */}
+            <div className="absolute top-32 left-16 w-14 h-14 animate-twinkle z-10">
+              <div className="w-full h-full bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
+                1
               </div>
             </div>
 
+            {/* Book */}
+            <div className="absolute top-1/2 right-14 w-16 h-16 animate-float-slow z-10">
+              <svg viewBox="0 0 24 24" className="w-full h-full text-green-500 drop-shadow-lg">
+                <path fill="currentColor" d="M19,2L14,6.5V17.5L19,13V2M6.5,5C4.55,5 2.45,5.4 1,6.5V21.16C1,21.41 1.25,21.66 1.5,21.66C1.6,21.66 1.65,21.59 1.75,21.59C3.1,20.94 5.05,20.68 6.5,20.68C8.45,20.68 10.55,21.1 12,22C13.35,21.15 15.8,20.68 17.5,20.68C19.15,20.68 20.85,21.1 22.25,21.81C22.35,21.86 22.4,21.91 22.5,21.91C22.75,21.91 23,21.66 23,21.41V6.5C22.4,6.05 21.75,5.75 21,5.5V19C19.9,18.65 18.7,18.5 17.5,18.5C15.8,18.5 13.35,18.9 12,19.81V6.5C10.55,5.4 8.45,5 6.5,5Z" />
+              </svg>
+            </div>
+
+            {/* Additional floating elements */}
             <div className="absolute bottom-32 left-24 w-8 h-8 animate-twinkle-delay z-10">
               <svg viewBox="0 0 24 24" className="w-full h-full text-blue-400 drop-shadow-lg">
                 <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
@@ -856,115 +817,8 @@ const goToNextStep = () => {
                 C
               </div>
             </div>
-
-            {/* Cursive "dog" */}
-            <div className="absolute bottom-80 left-28 w-22 h-12 animate-float z-10">
-              <svg viewBox="0 0 100 40" className="w-full h-full drop-shadow-lg">
-                <path d="M10,20 Q20,10 30,20 Q35,30 25,35 Q15,30 10,20 M30,20 Q40,10 50,20 Q60,30 50,35 M50,15 Q60,5 70,15 Q80,25 70,30 Q60,35 50,30" stroke="#f59e0b" strokeWidth="3" fill="none" strokeLinecap="round"/>
-              </svg>
-            </div>
-
-            {/* Book */}
-            <div className="absolute top-1/2 right-14 w-16 h-16 animate-float-slow z-10">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-green-500 drop-shadow-lg">
-                <path fill="currentColor" d="M19,2L14,6.5V17.5L19,13V2M6.5,5C4.55,5 2.45,5.4 1,6.5V21.16C1,21.41 1.25,21.66 1.5,21.66C1.6,21.66 1.65,21.59 1.75,21.59C3.1,20.94 5.05,20.68 6.5,20.68C8.45,20.68 10.55,21.1 12,22C13.35,21.15 15.8,20.68 17.5,20.68C19.15,20.68 20.85,21.1 22.25,21.81C22.35,21.86 22.4,21.91 22.5,21.91C22.75,21.91 23,21.66 23,21.41V6.5C22.4,6.05 21.75,5.75 21,5.5V19C19.9,18.65 18.7,18.5 17.5,18.5C15.8,18.5 13.35,18.9 12,19.81V6.5C10.55,5.4 8.45,5 6.5,5Z" />
-              </svg>
-            </div>
-
-            {/* Trophy */}
-            <div className="absolute bottom-20 right-36 w-14 h-14 animate-bounce-slow z-10">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-amber-500 drop-shadow-lg">
-                <path fill="currentColor" d="M7.5,14H16.5L16,12.5L15.5,11H8.5L8,12.5L7.5,14M12,3.8C9.68,3.8 7.8,5.68 7.8,8C7.8,8.76 8,9.47 8.34,10.1L9.5,12.5V21H14.5V12.5L15.66,10.1C16,9.47 16.2,8.76 16.2,8C16.2,5.68 14.32,3.8 12,3.8M5.91,6.41A1,1 0 0,1 6.84,6.48L7.5,7.13A1,1 0 0,1 6.13,8.5L5.48,7.84A1,1 0 0,1 5.41,6.91M18.09,6.41A1,1 0 0,1 18.52,7.84L17.87,8.5A1,1 0 0,1 16.5,7.13L17.16,6.48A1,1 0 0,1 18.09,6.41Z" />
-              </svg>
-            </div>
-
-            {/* Colorful shapes with letters */}
-            <div className="absolute top-1/4 left-1/3 w-12 h-12 bg-pink-400 rounded-full animate-float opacity-80 flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">D</div>
-            <div className="absolute bottom-1/3 left-1/4 w-10 h-10 bg-blue-400 transform rotate-45 animate-float-delay opacity-80 shadow-xl z-10"></div>
-            <div className="absolute top-2/3 right-1/4 w-12 h-12 bg-yellow-400 rounded-full animate-twinkle opacity-80 flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">E</div>
-            
-            {/* Cursive practice lines */}
-            <div className="absolute top-20 left-36 w-32 h-8 animate-float-slow opacity-60 z-10">
-              <svg viewBox="0 0 150 20" className="w-full h-full drop-shadow-lg">
-                <path d="M5,10 Q25,5 45,10 Q65,15 85,10 Q105,5 125,10 Q145,15 150,10" stroke="#8b5cf6" strokeWidth="2" fill="none" strokeLinecap="round"/>
-              </svg>
-            </div>
-            
-            <div className="absolute bottom-40 right-32 w-32 h-8 animate-float-delay opacity-60 z-10">
-              <svg viewBox="0 0 150 20" className="w-full h-full drop-shadow-lg">
-                <path d="M5,15 Q25,10 45,15 Q65,20 85,15 Q105,10 125,15 Q145,20 150,15" stroke="#ec4899" strokeWidth="2" fill="none" strokeLinecap="round"/>
-              </svg>
-            </div>
-
-            {/* Additional scattered letters */}
-            <div className="absolute top-1/3 left-12 w-14 h-14 animate-twinkle z-10">
-              <div className="w-full h-full bg-gradient-to-br from-teal-400 to-blue-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
-                F
-              </div>
-            </div>
-
-            <div className="absolute bottom-1/4 right-20 w-14 h-14 animate-float-slow z-10">
-              <div className="w-full h-full bg-gradient-to-br from-violet-400 to-purple-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
-                G
-              </div>
-            </div>
-
-            {/* Number 3 */}
-            <div className="absolute top-2/3 left-20 w-12 h-12 animate-bounce-slow z-10">
-              <div className="w-full h-full bg-gradient-to-br from-rose-400 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
-                3
-              </div>
-            </div>
-
-            {/* Additional scattered letters */}
-            <div className="absolute top-1/3 left-12 w-14 h-14 animate-twinkle z-10">
-              <div className="w-full h-full bg-gradient-to-br from-teal-400 to-blue-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
-                F
-              </div>
-            </div>
-
-            <div className="absolute bottom-1/4 right-20 w-14 h-14 animate-float-slow z-10">
-              <div className="w-full h-full bg-gradient-to-br from-violet-400 to-purple-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
-                G
-              </div>
-            </div>
-
-            {/* Number 3 */}
-            <div className="absolute top-2/3 left-20 w-12 h-12 animate-bounce-slow z-10">
-              <div className="w-full h-full bg-gradient-to-br from-rose-400 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
-                3
-              </div>
-            </div>
           </>
         )}
-
-        {/* Adult mode subtle elements */}
-        {!isKidsMode && (
-          <>
-            <div className="absolute top-20 right-20 w-8 h-8 opacity-20 animate-float">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-blue-600">
-                <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-              </svg>
-            </div>
-            <div className="absolute bottom-32 left-16 w-6 h-6 opacity-15 animate-float-slow">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-green-600">
-                <path fill="currentColor" d="M9,5V9H15V5M9,11V15H15V11M9,17V21H15V17M5,5V9H7V5M5,11V15H7V11M5,17V21H7V17M17,5V9H19V5M17,11V15H19V11M17,17V21H19V17Z" />
-              </svg>
-            </div>
-          </>
-        )}
-
-        {/* Wavy lines overlay */}
-        <div className="absolute inset-0 opacity-10">
-          <svg width="100%" height="100%" viewBox="0 0 1200 600" className="absolute inset-0">
-            <defs>
-              <pattern id="wave" x="0" y="0" width="200" height="100" patternUnits="userSpaceOnUse">
-                <path d="M0,50 Q50,0 100,50 T200,50" stroke={isKidsMode ? "#ec4899" : "#3b82f6"} strokeWidth="2" fill="none" opacity="0.3" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#wave)" />
-          </svg>
-        </div>
       </div>
       
       {/* Header with Logo */}
@@ -1052,7 +906,7 @@ const goToNextStep = () => {
                         ? 'bg-white text-purple-600 scale-105'
                         : 'bg-white/30 text-white/70'
                     }`}>
-                      {completedSteps.has(step.id) ? '⭐' }
+                      {completedSteps.has(step.id) ? '⭐' : index + 1}
                     </div>
                     <div className="text-xs mt-1 opacity-90 hidden sm:block">{index + 1}</div>
                   </div>
@@ -1208,6 +1062,8 @@ const goToNextStep = () => {
             </div>
           </div>
         )}
+
+        {/* Upload Error */}
         {uploadError && (
           <div className={`mb-6 p-6 rounded-2xl flex items-center gap-4 shadow-lg ${
             isKidsMode 
