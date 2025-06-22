@@ -791,6 +791,5 @@ export default function LoginPage() {
           </Card>
         </div>
       </div>
-    </div>
   );
 }
