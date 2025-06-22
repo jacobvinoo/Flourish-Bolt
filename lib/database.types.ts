@@ -71,3 +71,5 @@ export interface Database {
 // Export type aliases for easier access
 export type Tables = Database['public']['Tables'];
 export type Profile = Tables['profiles']['Row'];
+export type TablesInsert<T extends keyof Tables> = Tables[T]['Insert'];
+export type TablesUpdate<T extends keyof Tables> = Tables[T]['Update'];
