@@ -194,8 +194,8 @@ export default function Home() {
         {/* Letter L */}
         <div className="absolute top-1/4 left-1/3 w-12 h-12 bg-cyan-500 rounded-full animate-float flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">L</div>
         
-        {/* Letter O */}
-        <div className="absolute top-2/3 right-1/4 w-12 h-12 bg-violet-500 rounded-full animate-twinkle flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">O</div>
+        {/* Letter O - moved to right side */}
+        <div className="absolute bottom-1/2 right-32 w-12 h-12 bg-violet-500 rounded-full animate-twinkle flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">O</div>
 
         {/* Letter U */}
         <div className="absolute top-1/3 right-12 w-14 h-14 animate-twinkle z-10">
