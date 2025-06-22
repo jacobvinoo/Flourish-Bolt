@@ -23,9 +23,39 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-type AnalysisResult = Tables<'analysis_results'>;
-type Submission = Tables<'submissions'>;
-type Exercise = Tables<'exercises'>;
+type AnalysisResult = {
+  id: number;
+  submission_id: number;
+  overall_score: number;
+  letter_scores: any; // JSON data
+  feedback: string;
+  strengths: string[];
+  areas_for_improvement: string[];
+  created_at: string;
+};
+
+type Submission = {
+  id: number;
+  user_id: string;
+  exercise_id: number;
+  image_url: string;
+  status: string;
+  score?: number;
+  feedback?: string;
+  created_at: string;
+  updated_at: string;
+};
+
+type Exercise = {
+  id: number;
+  title: string;
+  description: string;
+  level: number;
+  font_style?: string;
+  worksheet_pdf_url?: string;
+  created_at: string;
+  updated_at: string;
+};
 
 interface AnalysisData {
   analysis: AnalysisResult;
