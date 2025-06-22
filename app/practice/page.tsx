@@ -107,7 +107,6 @@ interface WorksheetStep {
   worksheetUrl: string;
   skills: string[];
   estimatedTime: string;
-  emoji: string;
   icon: string;  // Add this line
   color: string;
   completed?: boolean;
