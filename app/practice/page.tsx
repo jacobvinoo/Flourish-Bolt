@@ -692,12 +692,28 @@ const goToNextStep = () => {
                 <stop offset="50%" stopColor={isKidsMode ? "#8b5cf6" : "#6366f1"} />
                 <stop offset="100%" stopColor={isKidsMode ? "#06b6d4" : "#1e40af"} />
               </linearGradient>
+              <animateTransform
+                attributeName="transform"
+                attributeType="XML"
+                type="translate"
+                values="0,0; 0,-10; 0,0; 0,5; 0,0"
+                dur="8s"
+                repeatCount="indefinite"
+              />
             </defs>
             <path 
               d="M0,0 L0,800 L120,800 Q160,720 120,640 Q80,560 120,480 Q160,400 120,320 Q80,240 120,160 Q160,80 120,0 Z" 
-              fill="url(#leftWave)" 
-              className="animate-float-slow"
-            />
+              fill="url(#leftWave)"
+            >
+              <animateTransform
+                attributeName="transform"
+                attributeType="XML"
+                type="translate"
+                values="0,0; 0,-8; 0,0; 0,4; 0,0"
+                dur="6s"
+                repeatCount="indefinite"
+              />
+            </path>
           </svg>
         </div>
 
@@ -713,9 +729,17 @@ const goToNextStep = () => {
             </defs>
             <path 
               d="M200,0 L200,800 L80,800 Q40,720 80,640 Q120,560 80,480 Q40,400 80,320 Q120,240 80,160 Q40,80 80,0 Z" 
-              fill="url(#rightWave)" 
-              className="animate-float-delay"
-            />
+              fill="url(#rightWave)"
+            >
+              <animateTransform
+                attributeName="transform"
+                attributeType="XML"
+                type="translate"
+                values="0,0; 0,6; 0,0; 0,-4; 0,0"
+                dur="7s"
+                repeatCount="indefinite"
+              />
+            </path>
           </svg>
         </div>
 
