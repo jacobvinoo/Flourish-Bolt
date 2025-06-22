@@ -26,8 +26,8 @@ import {
   LogOut,
   Tables as TablesIcon
 } from 'lucide-react';
-import { Database, Tables } from '@/lib/database.types';
 
+import { Database, Profile } from '@/lib/database.types';
 // Add animations styles
 const animationStyles = `
   @keyframes float {
@@ -88,8 +88,6 @@ if (typeof document !== 'undefined') {
   style.textContent = animationStyles;
   document.head.appendChild(style);
 }
-
-import { Database, Tables, Profile } from '@/lib/database.types';
 
 function Progress({ value, className = '' }: { value: number; className?: string }) {
   return (
