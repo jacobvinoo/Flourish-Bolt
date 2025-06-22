@@ -23,7 +23,8 @@ import {
   Lock,
   PenTool,
   User,
-  LogOut
+  LogOut,
+  Tables as TablesIcon
 } from 'lucide-react';
 import { Database, Tables } from '@/lib/database.types';
 
