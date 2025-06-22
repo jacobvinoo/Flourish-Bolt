@@ -223,26 +223,36 @@ const handleSignUp = async (e: React.FormEvent) => {
 };
 
   const handleGoogleSignUp = async () => {
-    setLoading(true);
-    setError(null);
+  setLoading(true);
+  setError(null);
 
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback?plan=${selectedPlan}`,
+  try {
+    // Store the selected plan in localStorage temporarily
+    // This will be retrieved in the auth callback
+    localStorage.setItem('pendingPlan', selectedPlan);
+    
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback?plan=${selectedPlan}`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
         },
-      });
+      },
+    });
 
-      if (error) {
-        setError(error.message);
-        setLoading(false);
-      }
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+    if (error) {
+      setError(error.message);
       setLoading(false);
+      localStorage.removeItem('pendingPlan');
     }
-  };
+  } catch (err) {
+    setError('An unexpected error occurred. Please try again.');
+    setLoading(false);
+    localStorage.removeItem('pendingPlan');
+  }
+};
 
   return (
     <div className="min-h-screen transition-all duration-500 relative overflow-hidden bg-gray-50">
