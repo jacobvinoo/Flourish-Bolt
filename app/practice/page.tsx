@@ -7,15 +7,6 @@ import { User } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Database, Tables } from '@/lib/database.types';
-'use client';
-
-import { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { useRouter } from 'next/navigation';
-import { User } from '@supabase/supabase-js';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Database, Tables } from '@/lib/database.types';
 import { 
   ArrowLeft, 
   Upload, 
