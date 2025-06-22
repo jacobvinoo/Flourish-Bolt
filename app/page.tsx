@@ -148,104 +148,104 @@ export default function Home() {
           </svg>
         </div>
 
-        {/* Floating Educational Elements - Centered */}
-        {/* Pencil - center left */}
-        <div className="absolute top-1/4 left-1/2 transform -translate-x-32 w-20 h-20 animate-float z-10">
+        {/* Floating Educational Elements - Scattered */}
+        {/* Pencil */}
+        <div className="absolute top-20 left-20 w-20 h-20 animate-float z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-500 drop-shadow-lg">
             <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
           </svg>
         </div>
 
-        {/* Letter A - center top */}
-        <div className="absolute top-20 left-1/2 transform -translate-x-8 w-16 h-16 animate-float-delay z-10">
+        {/* Letter A */}
+        <div className="absolute top-64 left-12 w-16 h-16 animate-float-delay z-10">
           <div className="w-full h-full bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-4xl shadow-xl">
             A
           </div>
         </div>
 
-        {/* Document icon - center right */}
-        <div className="absolute top-32 left-1/2 transform translate-x-16 w-12 h-12 animate-twinkle z-10">
+        {/* Document icon */}
+        <div className="absolute top-32 right-20 w-12 h-12 animate-twinkle z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-emerald-500 drop-shadow-lg">
             <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
           </svg>
         </div>
 
-        {/* Letter F - center */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-8 -translate-y-8 w-16 h-16 animate-float z-10">
+        {/* Letter F */}
+        <div className="absolute top-56 right-16 w-16 h-16 animate-float z-10">
           <div className="w-full h-full bg-gradient-to-br from-lime-500 to-green-500 rounded-xl flex items-center justify-center text-white font-bold text-4xl shadow-xl">
             F
           </div>
         </div>
 
-        {/* Chart/Analytics icon - center bottom */}
-        <div className="absolute bottom-32 left-1/2 transform -translate-x-6 w-14 h-14 animate-twinkle z-10">
+        {/* Chart/Analytics icon */}
+        <div className="absolute bottom-32 left-16 w-14 h-14 animate-twinkle z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-blue-500 drop-shadow-lg">
             <path fill="currentColor" d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21Z" />
           </svg>
         </div>
 
-        {/* Book - center */}
-        <div className="absolute top-2/3 left-1/2 transform translate-x-12 w-16 h-16 animate-float-slow z-10">
+        {/* Book */}
+        <div className="absolute bottom-56 right-14 w-16 h-16 animate-float-slow z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-purple-500 drop-shadow-lg">
             <path fill="currentColor" d="M19,2L14,6.5V17.5L19,13V2M6.5,5C4.55,5 2.45,5.4 1,6.5V21.16C1,21.41 1.25,21.66 1.5,21.66C1.6,21.66 1.65,21.59 1.75,21.59C3.1,20.94 5.05,20.68 6.5,20.68C8.45,20.68 10.55,21.1 12,22C13.35,21.15 15.8,20.68 17.5,20.68C19.15,20.68 20.85,21.1 22.25,21.81C22.35,21.86 22.4,21.91 22.5,21.91C22.75,21.91 23,21.66 23,21.41V6.5C22.4,6.05 21.75,5.75 21,5.5V19C19.9,18.65 18.7,18.5 17.5,18.5C15.8,18.5 13.35,18.9 12,19.81V6.5C10.55,5.4 8.45,5 6.5,5Z" />
           </svg>
         </div>
 
-        {/* Letter L - center left */}
-        <div className="absolute top-1/3 left-1/2 transform -translate-x-24 w-12 h-12 bg-cyan-500 rounded-full animate-float flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">L</div>
+        {/* Letter L */}
+        <div className="absolute top-1/4 left-1/3 w-12 h-12 bg-cyan-500 rounded-full animate-float flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">L</div>
         
-        {/* Letter O - center right */}
-        <div className="absolute bottom-1/3 left-1/2 transform translate-x-20 w-12 h-12 bg-violet-500 rounded-full animate-twinkle flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">O</div>
+        {/* Letter O */}
+        <div className="absolute top-2/3 right-1/4 w-12 h-12 bg-violet-500 rounded-full animate-twinkle flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">O</div>
 
-        {/* Letter U - center top right */}
-        <div className="absolute top-1/4 left-1/2 transform translate-x-24 w-14 h-14 animate-twinkle z-10">
+        {/* Letter U */}
+        <div className="absolute top-1/3 right-12 w-14 h-14 animate-twinkle z-10">
           <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
             U
           </div>
         </div>
 
-        {/* Letter R - center bottom left */}
-        <div className="absolute bottom-1/4 left-1/2 transform -translate-x-20 w-14 h-14 animate-bounce-slow z-10">
+        {/* Letter R */}
+        <div className="absolute bottom-1/4 left-20 w-14 h-14 animate-bounce-slow z-10">
           <div className="w-full h-full bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
             R
           </div>
         </div>
 
-        {/* Star icons - center area */}
-        <div className="absolute top-1/2 left-1/2 transform translate-x-8 translate-y-12 w-10 h-10 animate-twinkle-delay z-10">
+        {/* Star icons */}
+        <div className="absolute top-80 left-40 w-10 h-10 animate-twinkle-delay z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-400 drop-shadow-lg">
             <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
           </svg>
         </div>
 
-        <div className="absolute top-1/3 left-1/2 transform -translate-x-12 translate-y-8 w-8 h-8 animate-twinkle z-10">
+        <div className="absolute bottom-80 right-40 w-8 h-8 animate-twinkle z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-pink-400 drop-shadow-lg">
             <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
           </svg>
         </div>
 
-        {/* Number elements - center area */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-16 translate-y-20 w-12 h-12 animate-bounce-slow z-10">
+        {/* Number elements */}
+        <div className="absolute top-1/2 left-8 w-12 h-12 animate-bounce-slow z-10">
           <div className="w-full h-full bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
             1
           </div>
         </div>
 
-        <div className="absolute top-2/3 left-1/2 transform translate-x-8 -translate-y-4 w-12 h-12 animate-float z-10">
+        <div className="absolute bottom-60 right-8 w-12 h-12 animate-float z-10">
           <div className="w-full h-full bg-gradient-to-br from-rose-500 to-red-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
             2
           </div>
         </div>
 
-        {/* Geometric shapes - moved to sides */}
-        {/* Orange square - left side */}
-        <div className="absolute top-1/2 left-16 w-10 h-10 bg-orange-500 transform rotate-45 animate-float-delay shadow-xl z-10"></div>
+        {/* Geometric shapes - positioned to the sides */}
+        {/* Orange square - moved to side */}
+        <div className="absolute bottom-1/3 right-1/4 w-10 h-10 bg-orange-500 transform rotate-45 animate-float-delay shadow-xl z-10"></div>
         
-        {/* Additional geometric shapes on the sides */}
+        {/* Additional side shapes */}
         <div className="absolute top-1/4 left-8 w-8 h-8 bg-pink-500 rounded-full animate-twinkle shadow-xl z-10"></div>
         <div className="absolute bottom-1/3 left-12 w-12 h-12 bg-blue-500 transform rotate-12 animate-float shadow-xl z-10"></div>
         
-        <div className="absolute top-1/3 right-8 w-8 h-8 bg-green-500 rounded-full animate-bounce-slow shadow-xl z-10"></div>
+        <div className="absolute top-1/3 right-8 w-8 h-8 bg-lime-500 rounded-full animate-bounce-slow shadow-xl z-10"></div>
         <div className="absolute bottom-1/4 right-12 w-10 h-10 bg-purple-500 transform rotate-45 animate-twinkle shadow-xl z-10"></div>
         <div className="absolute top-2/3 right-16 w-6 h-6 bg-yellow-500 rounded-full animate-float-delay shadow-xl z-10"></div>
 
