@@ -1052,7 +1052,7 @@ const goToNextStep = () => {
                         ? 'bg-white text-purple-600 scale-105'
                         : 'bg-white/30 text-white/70'
                     }`}>
-                      {completedSteps.has(step.id) ? '⭐' : step.emoji}
+                      {completedSteps.has(step.id) ? '⭐' }
                     </div>
                     <div className="text-xs mt-1 opacity-90 hidden sm:block">{index + 1}</div>
                   </div>
