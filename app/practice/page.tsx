@@ -983,7 +983,7 @@ const goToNextStep = () => {
               </h1>
             </div>
             
-            <Link href="/">
+            <Link href="/dashboard">
               <Button 
                 variant="ghost" 
                 size="sm" 
