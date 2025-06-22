@@ -681,7 +681,8 @@ const goToNextStep = () => {
         ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
         : 'bg-gray-50'
     }`}>
-{/* Animated Background Elements */}
+
+  {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Left Wavy Edge */}
         <div className="absolute left-0 top-0 h-full w-80 opacity-70">
@@ -958,6 +959,7 @@ const goToNextStep = () => {
           </svg>
         </div>
       </div>
+      
       {/* Header with Logo */}
       <header className={`${
         isKidsMode 
