@@ -8,26 +8,17 @@ import {
   Target, 
   Trophy, 
   Flame, 
-  Star, 
   Crown, 
   Zap, 
   Clock,
   TrendingUp,
   Settings,
   Play,
-  ChevronRight,
-  Users,
   BookOpen,
-  Sparkles,
-  CheckCircle,
-  Lock,
-  PenTool,
   User,
   LogOut,
   Bell,
   Search,
-  Menu,
-  X,
   Award,
   Calendar,
   ArrowRight
@@ -38,79 +29,76 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
-// Add animations styles
-const animationStyles = `
-  @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    33% { transform: translateY(-10px) rotate(1deg); }
-    66% { transform: translateY(-5px) rotate(-1deg); }
-  }
-  
-  @keyframes float-slow {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-15px) rotate(2deg); }
-  }
-  
-  @keyframes float-delay {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    33% { transform: translateY(-8px) rotate(-1deg); }
-    66% { transform: translateY(-12px) rotate(1deg); }
-  }
-  
-  @keyframes twinkle {
-    0%, 100% { opacity: 0.6; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.2); }
-  }
-  
-  @keyframes twinkle-delay {
-    0%, 100% { opacity: 0.4; transform: scale(1); }
-    50% { opacity: 0.8; transform: scale(1.1); }
-  }
-  
-  @keyframes bounce-slow {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
-  
-  @keyframes spin-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  
-  @keyframes spin-reverse {
-    from { transform: rotate(360deg); }
-    to { transform: rotate(0deg); }
-  }
-  
-  .animate-float { animation: float 6s ease-in-out infinite; }
-  .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
-  .animate-float-delay { animation: float-delay 7s ease-in-out infinite; }
-  .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
-  .animate-twinkle-delay { animation: twinkle-delay 4s ease-in-out infinite; }
-  .animate-bounce-slow { animation: bounce-slow 4s ease-in-out infinite; }
-  .animate-spin-slow { animation: spin-slow 20s linear infinite; }
-  .animate-spin-reverse { animation: spin-reverse 25s linear infinite; }
-`;
-
-// Inject styles
+// Add animations styles - injected into document head
 if (typeof document !== 'undefined') {
-  const style = document.createElement('style');
-  style.textContent = animationStyles;
-  document.head.appendChild(style);
+  const animationStyles = `
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-10px) rotate(1deg); }
+      66% { transform: translateY(-5px) rotate(-1deg); }
+    }
+    
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(2deg); }
+    }
+    
+    @keyframes float-delay {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-8px) rotate(-1deg); }
+      66% { transform: translateY(-12px) rotate(1deg); }
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    
+    @keyframes twinkle-delay {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.1); }
+    }
+    
+    @keyframes bounce-slow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes spin-reverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+    
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+    .animate-float-delay { animation: float-delay 7s ease-in-out infinite; }
+    .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
+    .animate-twinkle-delay { animation: twinkle-delay 4s ease-in-out infinite; }
+    .animate-bounce-slow { animation: bounce-slow 4s ease-in-out infinite; }
+    .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+    .animate-spin-reverse { animation: spin-reverse 25s linear infinite; }
+  `;
+
+  // Only add styles once
+  if (!document.getElementById('dashboard-animations')) {
+    const style = document.createElement('style');
+    style.id = 'dashboard-animations';
+    style.textContent = animationStyles;
+    document.head.appendChild(style);
+  }
 }
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   
   // Dashboard stats
   const [currentStreak] = useState(12);
@@ -146,7 +134,7 @@ export default function DashboardPage() {
     };
 
     getUser();
-  }, []);
+  }, [router, supabase.auth]);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -356,27 +344,43 @@ export default function DashboardPage() {
               <Button variant="ghost" size="sm">
                 <Search className="h-4 w-4" />
               </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    <span className="hidden sm:inline">{profile?.full_name || 'User'}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile/settings" className="flex items-center gap-2">
+              
+              {/* Simple user menu */}
+              <div className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="flex items-center gap-2"
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                >
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">{profile?.full_name || 'User'}</span>
+                </Button>
+                
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+                    <Link 
+                      href="/profile/settings" 
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      onClick={() => setShowUserMenu(false)}
+                    >
                       <Settings className="h-4 w-4" />
                       Settings
                     </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 text-red-600">
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <hr className="my-1" />
+                    <button 
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        handleSignOut();
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-50 w-full text-left"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -865,6 +869,14 @@ export default function DashboardPage() {
           </div>
         </div>
       </main>
+      
+      {/* Click outside to close user menu */}
+      {showUserMenu && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowUserMenu(false)}
+        />
+      )}
     </div>
   );
 }
