@@ -238,8 +238,11 @@ export default function Home() {
         </div>
 
         {/* Geometric shapes - positioned to the sides */}
-        {/* Orange square - moved to side */}
-        <div className="absolute bottom-1/3 right-1/4 w-10 h-10 bg-orange-500 transform rotate-45 animate-float-delay shadow-xl z-10"></div>
+        {/* Orange square - moved to left side */}
+        <div className="absolute top-2/3 left-24 w-10 h-10 bg-orange-500 transform rotate-45 animate-float-delay shadow-xl z-10"></div>
+        
+        {/* Purple circle - moved to left side */}
+        <div className="absolute top-1/2 left-32 w-12 h-12 bg-violet-500 rounded-full animate-twinkle flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">O</div>
         
         {/* Additional side shapes */}
         <div className="absolute top-1/4 left-8 w-8 h-8 bg-pink-500 rounded-full animate-twinkle shadow-xl z-10"></div>
