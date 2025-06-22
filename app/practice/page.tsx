@@ -95,7 +95,7 @@ if (typeof document !== 'undefined') {
   document.head.appendChild(style);
 }
 
-type Profile = Tables<'profiles'>;
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 interface WorksheetStep {
   id: string;
