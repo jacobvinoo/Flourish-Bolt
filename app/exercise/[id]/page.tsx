@@ -7,14 +7,44 @@ import { User } from '@supabase/supabase-js';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileUpload } from '@/components/ui/file-upload';
-import { Database, Tables, TablesInsert } from '@/lib/database.types';
+import { Database } from '@/lib/database.types';
 import { storageService } from '@/lib/storage';
 import { ArrowLeft, Download, Upload, Star, Clock, BookOpen, FileText, Target, Zap, CheckCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
-type Exercise = Tables<'exercises'>;
-type SubmissionInsert = TablesInsert<'submissions'>;
+// Define types locally until they're added to database.types.ts
+type Exercise = {
+  id: number;
+  title: string;
+  description: string | null;
+  level: number;
+  font_style: string | null;
+  worksheet_pdf_url: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
 
+type SubmissionInsert = {
+  id?: number;
+  user_id: string;
+  exercise_id: number;
+  image_url: string;
+  status?: string;
+  score?: number | null;
+  feedback?: string | null;
+  created_at?: string;
+};
+type Submission = {
+  id: number;
+  user_id: string;
+  exercise_id: number;
+  image_url: string;
+  status: string;
+  score: number | null;
+  feedback: string | null;
+  created_at: string;
+  updated_at: string;
+};
 export default function ExercisePage() {
   const [user, setUser] = useState<User | null>(null);
   const [exercise, setExercise] = useState<Exercise | null>(null);
