@@ -278,101 +278,98 @@ export default function SignUpPage() {
           </svg>
         </div>
 
-        {/* Floating Educational Elements - Evenly Distributed */}
-        {/* Top Left Area */}
-        <div className="absolute top-16 left-16 w-20 h-20 animate-float z-10">
+        {/* Floating Educational Elements - Moved to Far Edges Only */}
+        {/* Far Left Edge */}
+        <div className="absolute top-16 left-8 w-20 h-20 animate-float z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-500 drop-shadow-lg">
             <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
           </svg>
         </div>
 
-        <div className="absolute top-32 left-8 w-16 h-16 animate-float-delay z-10">
+        <div className="absolute top-1/4 left-4 w-16 h-16 animate-float-delay z-10">
           <div className="w-full h-full bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-4xl shadow-xl">
             S
           </div>
         </div>
 
-        <div className="absolute top-80 left-24 w-12 h-12 bg-cyan-500 rounded-full animate-float flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">G</div>
+        <div className="absolute top-1/2 left-8 w-12 h-12 bg-cyan-500 rounded-full animate-float flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">G</div>
 
-        {/* Middle Left Area */}
-        <div className="absolute top-1/2 left-12 transform -translate-y-8 w-14 h-14 animate-bounce-slow z-10">
+        <div className="absolute top-3/4 left-4 w-14 h-14 animate-bounce-slow z-10">
           <div className="w-full h-full bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
             P
           </div>
         </div>
 
-        <div className="absolute bottom-40 left-16 w-14 h-14 animate-twinkle z-10">
+        <div className="absolute bottom-20 left-8 w-14 h-14 animate-twinkle z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-blue-500 drop-shadow-lg">
             <path fill="currentColor" d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21Z" />
           </svg>
         </div>
 
-        {/* Bottom Left Area */}
-        <div className="absolute bottom-16 left-20 w-12 h-12 bg-violet-500 rounded-full animate-twinkle flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">U</div>
+        <div className="absolute bottom-1/3 left-12 w-12 h-12 bg-violet-500 rounded-full animate-twinkle flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">U</div>
 
-        <div className="absolute bottom-32 left-8 w-8 h-8 bg-pink-500 rounded-full animate-twinkle shadow-xl z-10"></div>
+        <div className="absolute bottom-8 left-4 w-8 h-8 bg-pink-500 rounded-full animate-twinkle shadow-xl z-10"></div>
 
-        {/* Top Right Area */}
-        <div className="absolute top-24 right-16 w-12 h-12 animate-twinkle z-10">
+        {/* Far Right Edge */}
+        <div className="absolute top-20 right-8 w-12 h-12 animate-twinkle z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-emerald-500 drop-shadow-lg">
             <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
           </svg>
         </div>
 
-        <div className="absolute top-40 right-20 w-16 h-16 animate-float z-10">
+        <div className="absolute top-1/4 right-4 w-16 h-16 animate-float z-10">
           <div className="w-full h-full bg-gradient-to-br from-lime-500 to-green-500 rounded-xl flex items-center justify-center text-white font-bold text-4xl shadow-xl">
             I
           </div>
         </div>
 
-        <div className="absolute top-16 right-8 w-14 h-14 animate-twinkle z-10">
+        <div className="absolute top-1/3 right-8 w-14 h-14 animate-twinkle z-10">
           <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
             N
           </div>
         </div>
 
-        {/* Middle Right Area */}
-        <div className="absolute top-1/2 right-12 transform -translate-y-8 w-16 h-16 animate-float-slow z-10">
+        <div className="absolute top-2/3 right-4 w-16 h-16 animate-float-slow z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-purple-500 drop-shadow-lg">
             <path fill="currentColor" d="M19,2L14,6.5V17.5L19,13V2M6.5,5C4.55,5 2.45,5.4 1,6.5V21.16C1,21.41 1.25,21.66 1.5,21.66C1.6,21.66 1.65,21.59 1.75,21.59C3.1,20.94 5.05,20.68 6.5,20.68C8.45,20.68 10.55,21.1 12,22C13.35,21.15 15.8,20.68 17.5,20.68C19.15,20.68 20.85,21.1 22.25,21.81C22.35,21.86 22.4,21.91 22.5,21.91C22.75,21.91 23,21.66 23,21.41V6.5C22.4,6.05 21.75,5.75 21,5.5V19C19.9,18.65 18.7,18.5 17.5,18.5C15.8,18.5 13.35,18.9 12,19.81V6.5C10.55,5.4 8.45,5 6.5,5Z" />
           </svg>
         </div>
 
-        <div className="absolute top-2/3 right-24 w-12 h-12 bg-violet-500 rounded-full animate-twinkle flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">O</div>
+        <div className="absolute bottom-1/4 right-8 w-12 h-12 bg-violet-500 rounded-full animate-twinkle flex items-center justify-center text-white font-bold text-xl shadow-xl z-10">O</div>
 
-        {/* Bottom Right Area */}
-        <div className="absolute bottom-20 right-16 w-8 h-8 bg-lime-500 rounded-full animate-bounce-slow shadow-xl z-10"></div>
+        <div className="absolute bottom-20 right-4 w-8 h-8 bg-lime-500 rounded-full animate-bounce-slow shadow-xl z-10"></div>
 
-        <div className="absolute bottom-40 right-8 w-10 h-10 bg-orange-500 transform rotate-45 animate-float-delay shadow-xl z-10"></div>
+        <div className="absolute bottom-8 right-8 w-10 h-10 bg-orange-500 transform rotate-45 animate-float-delay shadow-xl z-10"></div>
 
-        {/* Center White Space Area - Around Form */}
-        <div className="absolute top-1/4 left-1/2 transform -translate-x-40 -translate-y-8 w-14 h-14 animate-float-delay z-10">
+        {/* Top Corners Only */}
+        <div className="absolute top-8 left-1/4 w-14 h-14 animate-float-delay z-10">
           <div className="w-full h-full bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
             T
           </div>
         </div>
 
-        <div className="absolute top-1/3 left-1/2 transform translate-x-32 -translate-y-4 w-12 h-12 animate-bounce-slow z-10">
+        <div className="absolute top-12 right-1/4 w-12 h-12 animate-bounce-slow z-10">
           <div className="w-full h-full bg-gradient-to-br from-rose-500 to-red-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
             R
           </div>
         </div>
 
-        <div className="absolute bottom-1/4 left-1/2 transform -translate-x-36 translate-y-8 w-10 h-10 animate-twinkle z-10">
+        {/* Bottom Corners Only */}
+        <div className="absolute bottom-12 left-1/4 w-10 h-10 animate-twinkle z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-pink-400 drop-shadow-lg">
             <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
           </svg>
         </div>
 
-        <div className="absolute bottom-1/3 left-1/2 transform translate-x-28 translate-y-12 w-8 h-8 animate-float z-10">
+        <div className="absolute bottom-16 right-1/4 w-8 h-8 animate-float z-10">
           <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-400 drop-shadow-lg">
             <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
           </svg>
         </div>
 
-        {/* Additional scattered elements for balance */}
-        <div className="absolute top-1/2 left-1/4 w-6 h-6 bg-blue-400 rounded-full animate-twinkle shadow-xl z-10"></div>
-        <div className="absolute top-3/4 right-1/4 w-8 h-8 bg-green-400 transform rotate-12 animate-float shadow-xl z-10"></div>
+        {/* Very edge tiny elements */}
+        <div className="absolute top-1/2 left-0 w-6 h-6 bg-blue-400 rounded-full animate-twinkle shadow-xl z-10 ml-2"></div>
+        <div className="absolute top-1/2 right-0 w-6 h-6 bg-green-400 rounded-full animate-float shadow-xl z-10 mr-2"></div>
       </div>
 
       {/* Header */}
