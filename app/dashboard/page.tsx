@@ -51,7 +51,7 @@ export default function DashboardPage() {
       setUser({ id: '123', email: 'user@example.com' });
       setProfile({
         id: '123',
-        username: 'DemoUser',
+        email: 'user@example.com',
         full_name: 'Alex Doe',
         avatar_url: null,
         website: null,
