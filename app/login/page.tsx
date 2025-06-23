@@ -26,9 +26,23 @@ export default function LoginPage() {
   // Check if user is already authenticated
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        window.location.href = '/dashboard';
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        console.log('Login page: Auth check result:', { user: !!user, error });
+        
+        if (error) {
+          console.log('Login page: Auth error, staying on login page:', error.message);
+          return;
+        }
+        
+        if (user) {
+          console.log('Login page: User already authenticated, redirecting to dashboard');
+          window.location.href = '/dashboard';
+        } else {
+          console.log('Login page: No user found, staying on login page');
+        }
+      } catch (err) {
+        console.log('Login page: Error checking auth, staying on login page:', err);
       }
     };
     checkAuth();
@@ -41,14 +55,20 @@ export default function LoginPage() {
     setSuccess(false);
 
     try {
+      console.log('Login: Attempting to sign in with:', email);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: password,
       });
 
+      console.log('Login: Sign in result:', { user: !!data.user, error });
+
       if (error) {
+        console.log('Login: Sign in error:', error.message);
         setError(error.message);
       } else if (data.user) {
+        console.log('Login: Sign in successful, redirecting to dashboard');
         setSuccess(true);
         // Use window.location.href for reliable redirect
         setTimeout(() => {
@@ -56,9 +76,23 @@ export default function LoginPage() {
         }, 1000);
       }
     } catch (err: any) {
+      console.log('Login: Unexpected error:', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      console.log('Login: Signing out current user...');
+      await supabase.auth.signOut();
+      setError(null);
+      setSuccess(false);
+      // Refresh the page to clear any cached state
+      window.location.reload();
+    } catch (err) {
+      console.error('Error signing out:', err);
     }
   };
 
@@ -107,6 +141,19 @@ export default function LoginPage() {
               <CardDescription>
                 Enter your credentials to access your account
               </CardDescription>
+              
+              {/* Debug Info - Show if user is already authenticated */}
+              <div className="mt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSignOut}
+                  className="text-xs"
+                >
+                  🔄 Clear Session & Retry
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLogin} className="space-y-4">
