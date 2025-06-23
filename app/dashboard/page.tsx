@@ -11,20 +11,20 @@ import {
 } from 'lucide-react';
 import { Database, Profile } from '@/lib/database.types';
 
-// --- Mocked Components for Environment Compatibility ---
+// --- Mocked Components for Environment Compatibility with Correct Types ---
 // In a real Next.js app, these would be the actual UI components.
-const Card = ({ children, className = '' }) => <div className={`border rounded-lg ${className}`}>{children}</div>;
-const CardHeader = ({ children, className = '' }) => <div className={`p-6 border-b ${className}`}>{children}</div>;
-const CardTitle = ({ children, className = '' }) => <h3 className={`font-bold text-lg ${className}`}>{children}</h3>;
-const CardDescription = ({ children, className = '' }) => <p className={`text-sm text-gray-500 ${className}`}>{children}</p>;
-const CardContent = ({ children, className = '' }) => <div className={`p-6 ${className}`}>{children}</div>;
-const Button = ({ children, className = '', ...props }) => <button className={`px-4 py-2 rounded-md ${className}`} {...props}>{children}</button>;
-const Progress = ({ value, className = '' }) => (
+const Card = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <div className={`border rounded-lg ${className}`}>{children}</div>;
+const CardHeader = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <div className={`p-6 border-b ${className}`}>{children}</div>;
+const CardTitle = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <h3 className={`font-bold text-lg ${className}`}>{children}</h3>;
+const CardDescription = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <p className={`text-sm text-gray-500 ${className}`}>{children}</p>;
+const CardContent = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <div className={`p-6 ${className}`}>{children}</div>;
+const Button = ({ children, className = '', ...props }: { children: React.ReactNode, className?: string, onClick?: () => void }) => <button className={`px-4 py-2 rounded-md ${className}`} {...props}>{children}</button>;
+const Progress = ({ value, className = '' }: { value: number, className?: string }) => (
   <div className={`w-full bg-gray-200 rounded-full h-2.5 ${className}`}>
     <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${value}%` }}></div>
   </div>
 );
-const Badge = ({ children, className = '' }) => <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full ${className}`}>{children}</span>;
+const Badge = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full ${className}`}>{children}</span>;
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
@@ -42,13 +42,8 @@ export default function DashboardPage() {
   const achievements = 3;
   const totalAchievements = 10;
 
-  // Since we can't use the router, we'll simulate the sign-out
-  // const supabase = createClientComponentClient<Database>();
-  // const router = useRouter();
-
   useEffect(() => {
     const getMockData = () => {
-      // Simulate fetching user and profile
       setUser({ id: '123', email: 'user@example.com' });
       setProfile({
         id: '123',
@@ -57,7 +52,7 @@ export default function DashboardPage() {
         avatar_url: null,
         website: null,
         updated_at: null,
-        display_mode: 'kids' // Toggle between 'kids' and 'adult' to see UI changes
+        display_mode: 'kids'
       });
       setLoading(false);
     };
@@ -66,13 +61,6 @@ export default function DashboardPage() {
 
   const handleSignOut = () => {
     alert('Simulating Sign Out. In a real app, this would redirect to /login.');
-    // In a real app:
-    // try {
-    //   await supabase.auth.signOut();
-    //   router.push('/login');
-    // } catch (error) {
-    //   console.error('Error signing out:', error);
-    // }
   };
 
   const levelProgress = (xp / (xp + xpToNextLevel)) * 100;
@@ -91,17 +79,15 @@ export default function DashboardPage() {
   }
 
   if (!user) {
-    return null; // Or a redirect simulation
+    return null;
   }
 
-  // Corrected the root div's className attribute.
   return (
     <div className={`min-h-screen transition-all duration-500 relative ${
       isKidsMode 
         ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
         : 'bg-gray-50'
     }`}>
-      {/* Navigation Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -113,24 +99,20 @@ export default function DashboardPage() {
                 {isKidsMode ? 'Flourish! ✨' : 'Flourish'}
               </h1>
             </div>
-            
             <div className="flex items-center gap-4">
               <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${isKidsMode ? 'bg-orange-400 text-white' : 'bg-orange-500 text-white'}`}>
                 <Flame className="h-4 w-4" />
                 <span className="font-bold text-sm">{currentStreak}</span>
               </div>
-              
               <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${isKidsMode ? 'bg-yellow-400 text-yellow-900' : 'bg-yellow-500 text-white'}`}>
                 <Star className="h-4 w-4" />
                 <span className="font-bold text-sm">{xp.toLocaleString()}</span>
               </div>
-
               <a href="/profile/settings">
                 <button className={`p-2 rounded-lg transition-colors ${isKidsMode ? 'text-purple-600 hover:text-purple-800 hover:bg-purple-100' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}`}>
                   <Settings className="h-4 w-4" />
                 </button>
               </a>
-
               <button 
                 onClick={handleSignOut}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${isKidsMode ? 'text-purple-700 hover:bg-purple-100' : 'text-gray-700 hover:bg-gray-100'}`}
@@ -142,9 +124,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        {/* Welcome Section */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -166,7 +146,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Level Progress */}
           <div className={`rounded-2xl p-6 ${isKidsMode ? 'bg-gradient-to-r from-purple-100 to-pink-100 border border-purple-200' : 'bg-white border border-gray-200'} shadow-sm`}>
             <div className="flex justify-between items-center mb-2">
               <p className={`font-medium ${isKidsMode ? 'text-purple-700' : 'text-gray-700'}`}>
@@ -179,10 +158,20 @@ export default function DashboardPage() {
             <Progress value={levelProgress} className="h-3 bg-white/50" />
           </div>
         </div>
-
-        {/* The rest of the page content (Stats Grid, Learning Path, etc.) would follow here... */}
-        {/* All the child components have been verified and should work correctly with the mocked data */}
-      </div>
+        
+        {/* Stats Grid and other components would continue here... */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {/* All stat cards */}
+        </div>
+        <div className="grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-6">
+                {/* Learning Path and Lesson Cards */}
+            </div>
+            <div className="space-y-6">
+                {/* Sidebar Cards */}
+            </div>
+        </div>
+      </main>
     </div>
   );
 }
