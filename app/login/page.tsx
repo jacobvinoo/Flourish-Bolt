@@ -28,11 +28,11 @@ export default function LoginPage() {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        router.push('/dashboard');
+        window.location.href = '/dashboard';
       }
     };
     checkAuth();
-  }, [supabase, router]);
+  }, [supabase]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,9 +50,9 @@ export default function LoginPage() {
         setError(error.message);
       } else if (data.user) {
         setSuccess(true);
-        // Small delay to show success state before redirect
+        // Use window.location.href for reliable redirect
         setTimeout(() => {
-          router.push('/dashboard');
+          window.location.href = '/dashboard';
         }, 1000);
       }
     } catch (err: any) {
@@ -70,7 +70,7 @@ export default function LoginPage() {
 
   return (
     <PageLayout
-      headerVariant="minimal"
+      headerVariant="landing"
       backgroundVariant="full"
       containerWidth="max-w-4xl"
       showBackgroundElements={true}
