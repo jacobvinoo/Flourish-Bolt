@@ -17,8 +17,6 @@ import {
   BookOpen,
   User,
   LogOut,
-  Bell,
-  Search,
   Award,
   Calendar,
   ArrowRight,
@@ -31,86 +29,21 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 
-// Add animations styles - injected into document head
-if (typeof document !== 'undefined') {
-  const animationStyles = `
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      33% { transform: translateY(-10px) rotate(1deg); }
-      66% { transform: translateY(-5px) rotate(-1deg); }
-    }
-    
-    @keyframes float-slow {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-15px) rotate(2deg); }
-    }
-    
-    @keyframes float-delay {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      33% { transform: translateY(-8px) rotate(-1deg); }
-      66% { transform: translateY(-12px) rotate(1deg); }
-    }
-    
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-    
-    @keyframes twinkle-delay {
-      0%, 100% { opacity: 0.4; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(1.1); }
-    }
-    
-    @keyframes bounce-slow {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-    
-    @keyframes spin-slow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    
-    @keyframes spin-reverse {
-      from { transform: rotate(360deg); }
-      to { transform: rotate(0deg); }
-    }
-    
-    .animate-float { animation: float 6s ease-in-out infinite; }
-    .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
-    .animate-float-delay { animation: float-delay 7s ease-in-out infinite; }
-    .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
-    .animate-twinkle-delay { animation: twinkle-delay 4s ease-in-out infinite; }
-    .animate-bounce-slow { animation: bounce-slow 4s ease-in-out infinite; }
-    .animate-spin-slow { animation: spin-slow 20s linear infinite; }
-    .animate-spin-reverse { animation: spin-reverse 25s linear infinite; }
-  `;
-
-  // Only add styles once
-  if (!document.getElementById('dashboard-animations')) {
-    const style = document.createElement('style');
-    style.id = 'dashboard-animations';
-    style.textContent = animationStyles;
-    document.head.appendChild(style);
-  }
-}
-
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showUserMenu, setShowUserMenu] = useState(false);
   
   // Dashboard stats
-  const [currentStreak] = useState(12);
-  const [totalPracticeTime] = useState(145);
-  const [weeklyGoal] = useState(150);
-  const [weeklyProgress] = useState(90);
-  const [currentLevel] = useState(8);
-  const [xp] = useState(2350);
-  const [xpToNextLevel] = useState(650);
-  const [achievements] = useState(3);
-  const [totalAchievements] = useState(10);
+  const currentStreak = 12;
+  const totalPracticeTime = 145;
+  const weeklyGoal = 150;
+  const weeklyProgress = 90;
+  const currentLevel = 8;
+  const xp = 2350;
+  const xpToNextLevel = 650;
+  const achievements = 3;
+  const totalAchievements = 10;
 
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
@@ -182,141 +115,11 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className={`min-h-screen transition-all duration-500 relative overflow-hidden ${
+    <div className={`min-h-screen transition-all duration-500 relative ${
       isKidsMode 
         ? 'bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-50' 
         : 'bg-gray-50'
     }`}>
-
-      {/* Fixed Animated Background Elements - Contained within viewport */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        {/* Left Wavy Edge - Properly contained */}
-        <div className="absolute left-0 top-0 h-full w-16 opacity-30">
-          <svg viewBox="0 0 64 800" className="w-full h-full" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="leftWave" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor={isKidsMode ? "#ec4899" : "#3b82f6"} />
-                <stop offset="50%" stopColor={isKidsMode ? "#8b5cf6" : "#6366f1"} />
-                <stop offset="100%" stopColor={isKidsMode ? "#06b6d4" : "#1e40af"} />
-              </linearGradient>
-            </defs>
-            <path 
-              d="M0,0 L0,800 L40,800 Q60,720 40,640 Q20,560 40,480 Q60,400 40,320 Q20,240 40,160 Q60,80 40,0 Z" 
-              fill="url(#leftWave)"
-            >
-              <animateTransform
-                attributeName="transform"
-                attributeType="XML"
-                type="translate"
-                values="0,0; 0,-8; 0,0; 0,4; 0,0"
-                dur="6s"
-                repeatCount="indefinite"
-              />
-            </path>
-          </svg>
-        </div>
-
-        {/* Right Wavy Edge - Properly contained */}
-        <div className="absolute right-0 top-0 h-full w-16 opacity-30">
-          <svg viewBox="0 0 64 800" className="w-full h-full" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="rightWave" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor={isKidsMode ? "#06b6d4" : "#10b981"} />
-                <stop offset="50%" stopColor={isKidsMode ? "#3b82f6" : "#059669"} />
-                <stop offset="100%" stopColor={isKidsMode ? "#ec4899" : "#3b82f6"} />
-              </linearGradient>
-            </defs>
-            <path 
-              d="M64,0 L64,800 L24,800 Q4,720 24,640 Q44,560 24,480 Q4,400 24,320 Q44,240 24,160 Q4,80 24,0 Z" 
-              fill="url(#rightWave)"
-            >
-              <animateTransform
-                attributeName="transform"
-                attributeType="XML"
-                type="translate"
-                values="0,0; 0,6; 0,0; 0,-4; 0,0"
-                dur="7s"
-                repeatCount="indefinite"
-              />
-            </path>
-          </svg>
-        </div>
-
-        {/* Subtle background patterns - Contained within viewport */}
-        <div className="absolute top-16 left-16 w-32 h-32 opacity-10">
-          <svg viewBox="0 0 200 200" className="w-full h-full animate-spin-slow">
-            <defs>
-              <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor={isKidsMode ? "#ec4899" : "#3b82f6"} />
-                <stop offset="100%" stopColor={isKidsMode ? "#8b5cf6" : "#1e40af"} />
-              </linearGradient>
-            </defs>
-            <path d="M20,100 Q100,20 180,100 Q100,180 20,100" fill="url(#gradient1)" opacity="0.3" />
-          </svg>
-        </div>
-
-        <div className="absolute bottom-16 right-16 w-32 h-32 opacity-10">
-          <svg viewBox="0 0 200 200" className="w-full h-full animate-spin-reverse">
-            <defs>
-              <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor={isKidsMode ? "#06b6d4" : "#10b981"} />
-                <stop offset="100%" stopColor={isKidsMode ? "#3b82f6" : "#059669"} />
-              </linearGradient>
-            </defs>
-            <circle cx="100" cy="100" r="80" fill="url(#gradient2)" opacity="0.4" />
-          </svg>
-        </div>
-
-        {/* Kids Mode Floating Elements - Contained within safe margins */}
-        {isKidsMode && (
-          <>
-            {/* Left side elements - Safe positioning */}
-            <div className="absolute top-20 left-20 w-12 h-12 animate-float opacity-70">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-500 drop-shadow-lg">
-                <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-              </svg>
-            </div>
-
-            <div className="absolute top-64 left-24 w-12 h-12 animate-float-delay opacity-70">
-              <div className="w-full h-full bg-gradient-to-br from-red-400 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
-                A
-              </div>
-            </div>
-
-            <div className="absolute bottom-32 left-20 w-10 h-10 animate-twinkle-delay opacity-70">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-blue-400 drop-shadow-lg">
-                <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
-              </svg>
-            </div>
-
-            {/* Right side elements - Safe positioning */}
-            <div className="absolute top-32 right-20 w-12 h-12 animate-twinkle opacity-70">
-              <svg viewBox="0 0 24 24" className="w-full h-full text-pink-400 drop-shadow-lg">
-                <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
-              </svg>
-            </div>
-
-            <div className="absolute top-56 right-24 w-12 h-12 animate-float opacity-70">
-              <div className="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
-                B
-              </div>
-            </div>
-
-            <div className="absolute bottom-56 right-20 w-12 h-12 animate-bounce-slow opacity-70">
-              <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
-                C
-              </div>
-            </div>
-
-            <div className="absolute bottom-20 right-24 w-12 h-12 animate-bounce-slow opacity-70">
-              <div className="w-full h-full bg-gradient-to-br from-purple-400 to-violet-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
-                D
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-
       {/* Navigation Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -382,7 +185,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Main Content - Constrained width with proper centering */}
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Welcome Section */}
         <div className="mb-8">
@@ -394,9 +197,9 @@ export default function DashboardPage() {
                   : 'text-gray-900'
               }`}>
                 {isKidsMode ? (
-                  <>🌟 Hi there, <span className="text-purple-600">{profile?.full_name}</span>!</>
+                  <span>🌟 Hi there, {profile?.full_name}!</span>
                 ) : (
-                  <>Welcome back, <span className="text-green-700">{profile?.full_name || 'demo'}</span></>
+                  <span>Welcome back, {profile?.full_name || 'demo'}</span>
                 )}
               </h2>
               <p className={`text-lg mt-1 ${
@@ -622,9 +425,7 @@ export default function DashboardPage() {
                     <span className={isKidsMode ? 'text-purple-700' : 'text-gray-700'}>
                       {isKidsMode ? 'Next: Continuous Curves 🌊' : 'Next: Continuous Curves'}
                     </span>
-                    <span className={`font-medium ${
-                      isKidsMode ? 'text-green-600' : 'text-green-600'
-                    }`}>85% complete</span>
+                    <span className="font-medium text-green-600">85% complete</span>
                   </div>
                   <Progress value={85} className="h-2" />
                 </div>
@@ -689,7 +490,7 @@ export default function DashboardPage() {
             }`}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Zap className={`h-5 w-5 ${isKidsMode ? 'text-orange-600' : 'text-orange-600'}`} />
+                  <Zap className="h-5 w-5 text-orange-600" />
                   {isKidsMode ? '⚡ Daily Challenge' : 'Daily Challenge'}
                 </CardTitle>
                 <CardDescription>
@@ -709,7 +510,7 @@ export default function DashboardPage() {
                         {isKidsMode ? '✍️ Perfect 10 Letters' : 'Perfect 10 Letters'}
                       </h4>
                       <p className="text-sm opacity-90">
-                        {isKidsMode ? 'Write 10 letters with 100% accuracy' : 'Write 10 letters with 100% accuracy'}
+                        Write 10 letters with 100% accuracy
                       </p>
                     </div>
                   </div>
@@ -719,9 +520,7 @@ export default function DashboardPage() {
                     <span className={isKidsMode ? 'text-orange-700' : 'text-gray-700'}>
                       Progress: 7/10
                     </span>
-                    <span className={`font-medium ${
-                      isKidsMode ? 'text-orange-600' : 'text-orange-600'
-                    }`}>+50 XP</span>
+                    <span className="font-medium text-orange-600">+50 XP</span>
                   </div>
                   <Progress value={70} className="h-2" />
                 </div>
@@ -745,7 +544,7 @@ export default function DashboardPage() {
             }`}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Zap className={`h-5 w-5 ${isKidsMode ? 'text-blue-600' : 'text-blue-600'}`} />
+                  <Zap className="h-5 w-5 text-blue-600" />
                   {isKidsMode ? '🚀 Quick Actions' : 'Quick Actions'}
                 </CardTitle>
               </CardHeader>
@@ -817,11 +616,12 @@ export default function DashboardPage() {
             }`}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className={`h-5 w-5 ${isKidsMode ? 'text-green-600' : 'text-green-600'}`} />
+                  <Calendar className="h-5 w-5 text-green-600" />
                   {isKidsMode ? '📅 Recent Activity' : 'Recent Activity'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-white/50">
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-white/50">
                   <div className={`w-2 h-2 rounded-full ${
                     isKidsMode ? 'bg-green-400' : 'bg-green-500'
