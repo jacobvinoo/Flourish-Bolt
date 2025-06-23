@@ -21,7 +21,8 @@ import {
   Search,
   Award,
   Calendar,
-  ArrowRight
+  ArrowRight,
+  Star
 } from 'lucide-react';
 
 import { Database, Profile } from '@/lib/database.types';
@@ -338,71 +339,73 @@ export default function DashboardPage() {
             </div>
             
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm">
-                <Bell className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm">
-                <Search className="h-4 w-4" />
-              </Button>
-              
-              {/* Simple user menu */}
-              <div className="relative">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="flex items-center gap-2"
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                >
-                  <User className="h-4 w-4" />
-                  <span className="hidden sm:inline">{profile?.full_name || 'User'}</span>
-                </Button>
-                
-                {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
-                    <Link 
-                      href="/profile/settings" 
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      <Settings className="h-4 w-4" />
-                      Settings
-                    </Link>
-                    <hr className="my-1" />
-                    <button 
-                      onClick={() => {
-                        setShowUserMenu(false);
-                        handleSignOut();
-                      }}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-50 w-full text-left"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      Sign Out
-                    </button>
-                  </div>
-                )}
+              <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${
+                isKidsMode 
+                  ? 'bg-orange-400 text-white' 
+                  : 'bg-orange-500 text-white'
+              }`}>
+                <Flame className="h-4 w-4" />
+                <span className="font-bold text-sm">{currentStreak}</span>
               </div>
+              
+              <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${
+                isKidsMode 
+                  ? 'bg-yellow-400 text-yellow-900' 
+                  : 'bg-orange-500 text-white'
+              }`}>
+                <Star className="h-4 w-4" />
+                <span className="font-bold text-sm">{xp.toLocaleString()}</span>
+              </div>
+
+              <Link href="/profile/settings">
+                <button className={`p-2 rounded-lg transition-colors ${
+                  isKidsMode 
+                    ? 'text-purple-600 hover:text-purple-800 hover:bg-purple-100' 
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                }`}>
+                  <Settings className="h-4 w-4" />
+                </button>
+              </Link>
+
+              <button 
+                onClick={handleSignOut}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  isKidsMode 
+                    ? 'text-purple-700 hover:bg-purple-100' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                {isKidsMode ? '👋 Bye!' : 'Sign Out'}
+              </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content - Properly contained */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Content - Constrained width with proper centering */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Welcome Section */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className={`text-3xl font-bold ${
                 isKidsMode 
                   ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600' 
                   : 'text-gray-900'
               }`}>
-                {isKidsMode ? `Welcome back, ${profile?.full_name?.split(' ')[0] || 'friend'}! 🌟` : `Welcome back, ${profile?.full_name || 'demo'}`}
+                {isKidsMode ? (
+                  <>🌟 Hi there, <span className="text-purple-600">{profile?.full_name}</span>!</>
+                ) : (
+                  <>Welcome back, <span className="text-green-700">{profile?.full_name || 'demo'}</span></>
+                )}
               </h2>
-              <p className={`text-lg ${
+              <p className={`text-lg mt-1 ${
                 isKidsMode ? 'text-purple-700' : 'text-gray-600'
               }`}>
-                {isKidsMode ? 'Ready for some awesome handwriting fun?' : 'Continue your handwriting journey'}
+                {isKidsMode 
+                  ? 'Ready for some handwriting fun?' 
+                  : 'Continue your handwriting journey'
+                }
               </p>
             </div>
             <div className={`rounded-2xl p-4 text-center ${
@@ -868,15 +871,7 @@ export default function DashboardPage() {
             </Card>
           </div>
         </div>
-      </main>
-      
-      {/* Click outside to close user menu */}
-      {showUserMenu && (
-        <div 
-          className="fixed inset-0 z-40" 
-          onClick={() => setShowUserMenu(false)}
-        />
-      )}
+      </div>
     </div>
   );
 }
