@@ -53,11 +53,11 @@ export default function DashboardPage() {
         id: '123', 
         email: 'user@example.com', 
         full_name: 'Alex Doe', 
-        avatar_url: string | null, 
+        avatar_url: null, 
         user_role: null,
         display_mode: 'adult', 
         selected_plan: 'Basic', 
-        subscription_status: 'Active' 
+        subscription_status: 'Active', 
         trial_end_date: null, 
         created_at: new Date().toISOString(), 
         updated_at: new Date().toISOString()
