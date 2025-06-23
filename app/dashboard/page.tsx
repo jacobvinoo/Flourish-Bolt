@@ -54,8 +54,6 @@ export default function DashboardPage() {
         email: 'user@example.com',
         full_name: 'Alex Doe',
         avatar_url: null,
-        website: null,
-        // Corrected: `updated_at` is a string, not null, to match the type.
         updated_at: new Date().toISOString(), 
         display_mode: 'kids' // Toggle to 'adult' to see UI changes
       });
