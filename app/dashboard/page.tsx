@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-// Imports are simulated for this environment.
+// Imports are simulated for this environment to ensure compatibility.
+// In a real Next.js project, you would use the actual library imports.
 // import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 // import { useRouter } from 'next/navigation';
 // import Link from 'next/link';
@@ -9,29 +10,31 @@ import {
   Target, Trophy, Flame, Crown, Zap, Clock, TrendingUp, Settings,
   Play, BookOpen, User, LogOut, Award, Calendar, ArrowRight, Star
 } from 'lucide-react';
+// Assuming `database.types.ts` is available for type definitions
 import { Database, Profile } from '@/lib/database.types';
 
 // --- Mocked Components for Environment Compatibility with Correct Types ---
-// In a real Next.js app, these would be the actual UI components.
+// These stand-ins allow the component to render without the actual UI library.
 const Card = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <div className={`border rounded-lg ${className}`}>{children}</div>;
 const CardHeader = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <div className={`p-6 border-b ${className}`}>{children}</div>;
 const CardTitle = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <h3 className={`font-bold text-lg ${className}`}>{children}</h3>;
 const CardDescription = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <p className={`text-sm text-gray-500 ${className}`}>{children}</p>;
 const CardContent = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <div className={`p-6 ${className}`}>{children}</div>;
-const Button = ({ children, className = '', ...props }: { children: React.ReactNode, className?: string, onClick?: () => void }) => <button className={`px-4 py-2 rounded-md ${className}`} {...props}>{children}</button>;
+const Button = ({ children, className = '', asChild, ...props }: { children: React.ReactNode, className?: string, asChild?: boolean, onClick?: () => void }) => <button className={`px-4 py-2 rounded-md ${className}`} {...props}>{children}</button>;
 const Progress = ({ value, className = '' }: { value: number, className?: string }) => (
   <div className={`w-full bg-gray-200 rounded-full h-2.5 ${className}`}>
     <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${value}%` }}></div>
   </div>
 );
-const Badge = ({ children, className = '' }: { children: React.ReactNode, className?: string }) => <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full ${className}`}>{children}</span>;
+const Badge = ({ children, className = '', variant }: { children: React.ReactNode, className?: string, variant?: string }) => <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full ${className}`}>{children}</span>;
+
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   
-  // Dashboard stats
+  // Static dashboard stats for demonstration
   const currentStreak = 12;
   const totalPracticeTime = 145; // in minutes
   const weeklyGoal = 150; // in minutes
@@ -43,6 +46,7 @@ export default function DashboardPage() {
   const totalAchievements = 10;
 
   useEffect(() => {
+    // Simulate fetching user and profile data to make the component self-contained
     const getMockData = () => {
       setUser({ id: '123', email: 'user@example.com' });
       setProfile({
@@ -51,8 +55,9 @@ export default function DashboardPage() {
         full_name: 'Alex Doe',
         avatar_url: null,
         website: null,
-        updated_at: null,
-        display_mode: 'kids'
+        // Corrected: `updated_at` is a string, not null, to match the type.
+        updated_at: new Date().toISOString(), 
+        display_mode: 'kids' // Toggle to 'adult' to see UI changes
       });
       setLoading(false);
     };
@@ -113,12 +118,12 @@ export default function DashboardPage() {
                   <Settings className="h-4 w-4" />
                 </button>
               </a>
-              <button 
+              <Button 
                 onClick={handleSignOut}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${isKidsMode ? 'text-purple-700 hover:bg-purple-100' : 'text-gray-700 hover:bg-gray-100'}`}
               >
                 {isKidsMode ? '👋 Bye!' : 'Sign Out'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -159,16 +164,18 @@ export default function DashboardPage() {
           </div>
         </div>
         
-        {/* Stats Grid and other components would continue here... */}
+        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* All stat cards */}
+            {/* Cards for Stats like Streak, Weekly Goal, etc. */}
         </div>
+
+        {/* Learning Path */}
         <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-                {/* Learning Path and Lesson Cards */}
+                {/* Cards for current and next lessons */}
             </div>
             <div className="space-y-6">
-                {/* Sidebar Cards */}
+                {/* Cards for sidebar content like Daily Challenge */}
             </div>
         </div>
       </main>
