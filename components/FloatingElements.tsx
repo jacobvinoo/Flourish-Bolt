@@ -54,7 +54,8 @@ export default function FloatingElements({
 
     return {
       key: i,
-      style: `top-[${topPercent}%] ${horizontal} animate-float`,
+      topPercent,
+      horizontal,
       isIcon: variant === 'full',
       Icon,
       label,
@@ -65,8 +66,12 @@ export default function FloatingElements({
 
   return (
     <div className={clsx(!showOnMobile && 'hidden sm:block')}>
-      {elements.map(({ key, style, isIcon, Icon, label }) => (
-        <div key={key} className={clsx(baseStyle, style, bgColor, 'opacity-80')}>
+      {elements.map(({ key, topPercent, horizontal, isIcon, Icon, label }) => (
+        <div
+          key={key}
+          className={clsx(baseStyle, horizontal, 'animate-float', bgColor, 'opacity-80')}
+          style={{ top: `${topPercent}%` }}
+        >
           {isIcon ? <Icon className="w-5 h-5" /> : label}
         </div>
       ))}
