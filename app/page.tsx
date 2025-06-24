@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 
 import AnimatedBackground from '@/components/AnimatedBackground';
+import AppHeader from '@/components/AppHeader';
 import FloatingElements from '@/components/FloatingElements';
 
 const animationStyles = `
@@ -27,7 +28,9 @@ if (typeof document !== 'undefined') {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden relative">
+    <>
+      <AppHeader />
+      <div className="min-h-screen bg-white overflow-x-hidden relative">
       {/* Shared Animated Background */}
       <AnimatedBackground variant="full" showWaves={true} showPatterns={true} />
 
@@ -198,6 +201,7 @@ export default function Home() {
           <p>© 2024 Flourish. All rights reserved.</p>
         </footer>
       </div>
-    </div>
+          </div>
+    </>
   );
 }
