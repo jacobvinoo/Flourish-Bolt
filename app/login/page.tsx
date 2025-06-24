@@ -1,3 +1,4 @@
+// ./app/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -18,16 +19,15 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
-  
+
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
-  // Check if user is already logged in
   useEffect(() => {
     const checkSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
-        
+
         if (error) {
           console.error('Session check error:', error);
           setIsChecking(false);
@@ -42,23 +42,21 @@ export default function LoginPage() {
       } catch (err) {
         console.error('Unexpected error checking session:', err);
       }
-      
+
       setIsChecking(false);
     };
 
     checkSession();
   }, [supabase.auth, router]);
 
-  // Listen for auth state changes
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state change:', event, session?.user?.id);
-      
+
       if (event === 'SIGNED_IN' && session?.user) {
         console.log('User signed in successfully, redirecting to dashboard');
-        // Add a small delay to ensure state is properly set
         setTimeout(() => {
           router.push('/dashboard');
         }, 100);
@@ -75,7 +73,7 @@ export default function LoginPage() {
 
     try {
       console.log('Attempting sign in for:', email);
-      
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
@@ -90,7 +88,6 @@ export default function LoginPage() {
 
       if (data.user) {
         console.log('Sign in successful for user:', data.user.id);
-        // The auth state change listener will handle the redirect
       }
     } catch (err: any) {
       console.error('Unexpected sign in error:', err);
@@ -123,7 +120,6 @@ export default function LoginPage() {
     }
   };
 
-  // Show loading screen while checking session
   if (isChecking) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -144,12 +140,8 @@ export default function LoginPage() {
               <PenTool className="w-8 h-8 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome Back
-          </h1>
-          <p className="text-gray-600">
-            Sign in to continue your handwriting journey
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
+          <p className="text-gray-600">Sign in to continue your handwriting journey</p>
         </div>
 
         <Card className="border-0 shadow-xl">
@@ -174,7 +166,7 @@ export default function LoginPage() {
                   className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
