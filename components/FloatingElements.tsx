@@ -78,7 +78,7 @@ export default function FloatingElements({
 
   return (
     <div className={clsx(!showOnMobile && 'hidden sm:block')}>
-      {elements.map(({ key, topPercent, horizontal, isIcon, Icon, label, bgColor, delay, scale }) => (
+      {elements.map(({ key, topPercent, horizontal, isIcon, Icon, label, bgColor, delay, scale, shapeClass }) => (
         <div
           key={key}
           className={clsx(baseStyle, horizontal, 'animate-float', bgColor, 'opacity-90', shapeClass)}
