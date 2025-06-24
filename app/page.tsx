@@ -9,8 +9,10 @@ import Link from 'next/link';
 const animationStyles = `
   @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 33% { transform: translateY(-10px) rotate(1deg); } 66% { transform: translateY(-5px) rotate(-1deg); } }
   @keyframes float-slow { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(2deg); } }
+  @keyframes float-delay { 0%, 100% { transform: translateY(0px) rotate(0deg); } 33% { transform: translateY(-8px) rotate(-1deg); } 66% { transform: translateY(-12px) rotate(1deg); } }
   .animate-float { animation: float 6s ease-in-out infinite; }
   .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+  .animate-float-delay { animation: float-delay 7s ease-in-out infinite; }
 `;
 
 if (typeof document !== 'undefined') {
@@ -21,11 +23,37 @@ if (typeof document !== 'undefined') {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-white overflow-x-hidden relative">
+      {/* Floating Elements */}
+      <div className="absolute left-8 top-40 animate-float-slow">
+        <div className="bg-red-500 text-white text-sm font-bold rounded-full w-10 h-10 flex items-center justify-center shadow-md">A</div>
+      </div>
+      <div className="absolute left-20 bottom-48 animate-float">
+        <div className="bg-yellow-400 rounded-full w-6 h-6 shadow-md rotate-12">⭐</div>
+      </div>
+      <div className="absolute right-10 top-60 animate-float-delay">
+        <div className="bg-green-500 text-white text-sm font-bold rounded-full w-10 h-10 flex items-center justify-center shadow-md">F</div>
+      </div>
+      <div className="absolute right-24 bottom-24 animate-float">
+        <div className="bg-purple-500 rounded-full w-8 h-8 flex items-center justify-center shadow-lg">
+          <Sparkles className="w-5 h-5 text-white" />
+        </div>
+      </div>
+      <div className="absolute left-10 top-2/3 animate-float-slow">
+        <div className="bg-blue-400 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
+          <FileText className="w-5 h-5 text-white" />
+        </div>
+      </div>
+      <div className="absolute right-16 top-1/3 animate-float-delay">
+        <div className="bg-pink-500 rounded-full w-9 h-9 flex items-center justify-center shadow-lg">
+          <Brush className="w-5 h-5 text-white" />
+        </div>
+      </div>
+
       {/* Background Waves */}
       <div className="absolute inset-0 -z-10 flex">
-        <div className="w-1/2 h-full bg-gradient-to-b from-[#EBF3FF] to-[#CADDFE] rounded-r-[80px]" />
-        <div className="w-1/2 h-full bg-gradient-to-b from-[#D9F6E4] to-[#E1F5EE] rounded-l-[80px] ml-auto" />
+        <div className="w-[25%] min-h-screen bg-gradient-to-b from-[#EBF3FF] to-[#CADDFE] rounded-r-[80px]" />
+        <div className="w-[25%] min-h-screen bg-gradient-to-b from-[#D9F6E4] to-[#E1F5EE] rounded-l-[80px] ml-auto" />
       </div>
 
       {/* Header */}
