@@ -11,6 +11,16 @@ import AnimatedBackground from '@/components/AnimatedBackground';
 import AppHeader from '@/components/AppHeader';
 import FloatingElements from '@/components/FloatingElements';
 
+// Define the props for FloatingElements
+interface FloatingElementsProps {
+  variant?: 'full' | 'minimal';
+  density?: 'sparse' | 'medium' | 'dense';
+  showOnMobile?: boolean;
+}
+
+// Extend the FloatingElements component if using it inline for full prop support
+// If it's already in its own file, make sure to update it accordingly
+
 const animationStyles = `
   @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 33% { transform: translateY(-10px) rotate(1deg); } 66% { transform: translateY(-5px) rotate(-1deg); } }
   @keyframes float-slow { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(2deg); } }
