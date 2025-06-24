@@ -1,3 +1,4 @@
+// Replacing local background and floating elements with shared components
 'use client';
 
 import { PenTool, Target, TrendingUp, BookOpen, Sparkles, FileText, Brush } from 'lucide-react';
@@ -5,6 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+
+import AnimatedBackground from '@/components/AnimatedBackground';
+import FloatingElements from '@/components/FloatingElements';
 
 const animationStyles = `
   @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 33% { transform: translateY(-10px) rotate(1deg); } 66% { transform: translateY(-5px) rotate(-1deg); } }
@@ -24,200 +28,176 @@ if (typeof document !== 'undefined') {
 export default function Home() {
   return (
     <div className="min-h-screen bg-white overflow-x-hidden relative">
-      {/* Floating Elements */}
-      <div className="absolute left-8 top-40 animate-float-slow">
-        <div className="bg-red-500 text-white text-sm font-bold rounded-full w-10 h-10 flex items-center justify-center shadow-md">A</div>
-      </div>
-      <div className="absolute left-20 bottom-48 animate-float">
-        <div className="bg-yellow-400 rounded-full w-6 h-6 shadow-md rotate-12">⭐</div>
-      </div>
-      <div className="absolute right-10 top-60 animate-float-delay">
-        <div className="bg-green-500 text-white text-sm font-bold rounded-full w-10 h-10 flex items-center justify-center shadow-md">F</div>
-      </div>
-      <div className="absolute right-24 bottom-24 animate-float">
-        <div className="bg-purple-500 rounded-full w-8 h-8 flex items-center justify-center shadow-lg">
-          <Sparkles className="w-5 h-5 text-white" />
-        </div>
-      </div>
-      <div className="absolute left-10 top-2/3 animate-float-slow">
-        <div className="bg-blue-400 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
-          <FileText className="w-5 h-5 text-white" />
-        </div>
-      </div>
-      <div className="absolute right-16 top-1/3 animate-float-delay">
-        <div className="bg-pink-500 rounded-full w-9 h-9 flex items-center justify-center shadow-lg">
-          <Brush className="w-5 h-5 text-white" />
-        </div>
-      </div>
+      {/* Shared Animated Background */}
+      <AnimatedBackground variant="full" showWaves={true} showPatterns={true} />
 
-      {/* Background Waves */}
-      <div className="absolute inset-0 -z-10 flex">
-        <div className="w-[25%] min-h-screen bg-gradient-to-b from-[#EBF3FF] to-[#CADDFE] rounded-r-[80px]" />
-        <div className="w-[25%] min-h-screen bg-gradient-to-b from-[#D9F6E4] to-[#E1F5EE] rounded-l-[80px] ml-auto" />
-      </div>
+      {/* Shared Floating Elements */}
+      <FloatingElements variant="full" density="medium" showOnMobile={false} />
 
-      {/* Header */}
-      <header className="flex items-center justify-between max-w-7xl mx-auto px-4 py-4">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-green-600 rounded flex items-center justify-center">
-            <PenTool className="w-4 h-4 text-white" />
-          </div>
-          <h1 className="text-lg font-bold text-gray-900">Flourish</h1>
-        </div>
-        <div className="flex gap-3">
-          <Link href="/login"><Button variant="ghost">Sign In</Button></Link>
-          <Link href="/signup"><Button className="bg-green-600 hover:bg-green-700">Get Started</Button></Link>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="text-center py-20 px-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="inline-flex items-center justify-center bg-green-100 p-4 rounded-full mb-4">
-            <PenTool className="text-green-700 w-8 h-8" />
-          </div>
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Flourish</h2>
-          <p className="text-lg text-gray-600 mb-6">AI-powered handwriting analysis and improvement platform for students, parents, and educators</p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-4">
-            <Link href="/signup"><Button className="bg-green-600 hover:bg-green-700 px-6 py-2 text-lg">Get Started Free</Button></Link>
-            <Link href="/login"><Button variant="outline" className="px-6 py-2 text-lg">Sign In</Button></Link>
-          </div>
-          <Button variant="link" className="text-gray-700 hover:text-gray-900">👑 View Pricing Plans</Button>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-6xl mx-auto text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Powerful Features</h2>
-          <p className="text-gray-600">Everything you need to improve handwriting with advanced AI</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <Card className="shadow-md">
-            <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-full mx-auto flex items-center justify-center">
-                <Target className="text-blue-600 w-6 h-6" />
-              </div>
-              <CardTitle className="text-lg mt-4">AI-Powered Analysis</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-sm text-center text-gray-600">
-                Analyze handwriting with precision using machine learning algorithms
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-md">
-            <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-green-100 rounded-full mx-auto flex items-center justify-center">
-                <TrendingUp className="text-green-600 w-6 h-6" />
-              </div>
-              <CardTitle className="text-lg mt-4">Progress Tracking</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-sm text-center text-gray-600">
-                Monitor improvement with personalized reports and insights
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-md">
-            <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-full mx-auto flex items-center justify-center">
-                <BookOpen className="text-purple-600 w-6 h-6" />
-              </div>
-              <CardTitle className="text-lg mt-4">Interactive Worksheets</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-sm text-center text-gray-600">
-                Practice with gamified, feedback-driven worksheets
-              </CardDescription>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Subscription Plans */}
-      <section className="py-20 bg-gray-50 px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Choose Your Plan</h2>
-          <p className="text-gray-600">Start with our free tier or unlock advanced features with our premium plans</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <Card className="border border-gray-200">
-            <CardHeader className="text-center">
-              <CardTitle className="text-xl">Basic</CardTitle>
-              <div className="text-4xl font-bold mt-2">Free</div>
-              <CardDescription className="text-sm">Perfect for getting started</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm space-y-2 text-gray-600">
-                <li>5 analyses/month</li>
-                <li>Basic feedback</li>
-                <li>Standard worksheets</li>
-              </ul>
-              <Button className="w-full mt-6" variant="outline">Get Started</Button>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 border-green-600 relative shadow-lg scale-105">
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-              <Badge className="bg-green-600 text-white px-4 py-1">Most Popular</Badge>
+      {/* Main content */}
+      <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
+        {/* Hero Section */}
+        <section className="text-center py-20">
+          <div className="max-w-4xl mx-auto">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-600 rounded-full mb-6">
+              <PenTool className="text-white w-8 h-8" />
             </div>
-            <CardHeader className="text-center">
-              <CardTitle className="text-xl">Pro</CardTitle>
-              <div className="text-4xl font-bold mt-2">$9.99<span className="text-base text-gray-600">/mo</span></div>
-              <CardDescription className="text-sm">Best for regular practice</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm space-y-2 text-gray-600">
-                <li>Unlimited analyses</li>
-                <li>Detailed feedback</li>
-                <li>Premium worksheets</li>
-                <li>Progress tracking</li>
-              </ul>
-              <Button className="w-full mt-6 bg-green-600 hover:bg-green-700">Start Free Trial</Button>
-            </CardContent>
-          </Card>
-
-          <Card className="border border-gray-200">
-            <CardHeader className="text-center">
-              <CardTitle className="text-xl">Educator</CardTitle>
-              <div className="text-4xl font-bold mt-2">$19.99<span className="text-base text-gray-600">/mo</span></div>
-              <CardDescription className="text-sm">For teachers and classrooms</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm space-y-2 text-gray-600">
-                <li>Manage multiple students</li>
-                <li>Detailed reports</li>
-                <li>Bulk upload tools</li>
-                <li>Priority support</li>
-              </ul>
-              <Button className="w-full mt-6" variant="outline">Contact Sales</Button>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-green-600 mr-3">
-                <PenTool className="h-4 w-4 text-white" />
-              </div>
-              <h3 className="text-xl font-bold">Flourish</h3>
-            </div>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              Empowering better handwriting through AI-powered analysis and personalized learning experiences.
+            <h1 className="text-5xl font-bold text-gray-900 mb-4">
+              <span className="text-green-600">Flourish</span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              AI-powered handwriting improvement for students, parents, and educators
             </p>
-            <div className="mt-8 pt-8 border-t border-gray-800 text-sm text-gray-500">
-              © 2024 Flourish. All rights reserved.
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link href="/signup">
+                <Button size="lg" className="bg-green-600 hover:bg-green-700">Get Started Free</Button>
+              </Link>
+              <Link href="/login">
+                <Button size="lg" variant="outline">Sign In</Button>
+              </Link>
             </div>
           </div>
-        </div>
-      </footer>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">Powerful Features</h2>
+            <p className="text-lg text-gray-600 mt-2">Everything you need to improve handwriting with AI</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Target className="text-blue-600 w-6 h-6" />
+                </div>
+                <CardTitle>AI-Powered Analysis</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <CardDescription>
+                  Analyze handwriting with advanced ML and get detailed feedback
+                </CardDescription>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="text-green-600 w-6 h-6" />
+                </div>
+                <CardTitle>Progress Tracking</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <CardDescription>
+                  Monitor improvement and receive personalized practice suggestions
+                </CardDescription>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="text-purple-600 w-6 h-6" />
+                </div>
+                <CardTitle>Interactive Worksheets</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <CardDescription>
+                  Practice with engaging, gamified worksheets and real-time feedback
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section className="py-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">Choose Your Plan</h2>
+            <p className="text-lg text-gray-600 mt-2">Start free or unlock premium features</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {/* Basic Plan */}
+            <Card className="border">
+              <CardHeader className="text-center">
+                <CardTitle>Basic</CardTitle>
+                <div className="text-3xl font-bold text-gray-900 mt-2">Free</div>
+                <CardDescription className="mt-1">Perfect to get started</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-left">
+                  <li>✔ 5 analyses per month</li>
+                  <li>✔ Basic feedback</li>
+                  <li>✔ Standard worksheets</li>
+                </ul>
+                <Button className="mt-4 w-full" variant="outline">Get Started</Button>
+              </CardContent>
+            </Card>
+
+            {/* Pro Plan */}
+            <Card className="border border-green-500 shadow-lg scale-105 relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <Badge className="bg-green-500 text-white px-3 py-1">Most Popular</Badge>
+              </div>
+              <CardHeader className="text-center">
+                <CardTitle>Pro</CardTitle>
+                <div className="text-3xl font-bold text-gray-900 mt-2">$9.99<span className="text-sm text-gray-600">/mo</span></div>
+                <CardDescription className="mt-1">For regular practice</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-left">
+                  <li>✔ Unlimited analyses</li>
+                  <li>✔ Detailed feedback</li>
+                  <li>✔ Premium worksheets</li>
+                  <li>✔ Progress tracking</li>
+                </ul>
+                <Button className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white">Start Trial</Button>
+              </CardContent>
+            </Card>
+
+            {/* Educator Plan */}
+            <Card className="border">
+              <CardHeader className="text-center">
+                <CardTitle>Educator</CardTitle>
+                <div className="text-3xl font-bold text-gray-900 mt-2">$19.99<span className="text-sm text-gray-600">/mo</span></div>
+                <CardDescription className="mt-1">Best for classrooms</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-left">
+                  <li>✔ Classroom tools</li>
+                  <li>✔ Student progress reports</li>
+                  <li>✔ Bulk uploads</li>
+                  <li>✔ Priority support</li>
+                </ul>
+                <Button className="mt-4 w-full" variant="outline">Contact Sales</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Call to Action */}
+        <section className="py-16 bg-green-600 text-white text-center rounded-xl mt-16">
+          <h2 className="text-3xl font-bold mb-4">Ready to Flourish?</h2>
+          <p className="text-lg mb-6">Join thousands improving their handwriting with AI</p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link href="/signup">
+              <Button size="lg" variant="secondary" className="bg-white text-green-600 hover:bg-gray-100">Start Free</Button>
+            </Link>
+            <Link href="/login">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600">Sign In</Button>
+            </Link>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="mt-20 py-12 border-t text-center text-sm text-gray-500">
+          <div className="flex items-center justify-center mb-2">
+            <div className="bg-green-600 text-white p-2 rounded-lg mr-2">
+              <PenTool className="h-4 w-4" />
+            </div>
+            <span className="font-bold text-gray-900">Flourish</span>
+          </div>
+          <p>© 2024 Flourish. All rights reserved.</p>
+        </footer>
+      </div>
     </div>
   );
 }
