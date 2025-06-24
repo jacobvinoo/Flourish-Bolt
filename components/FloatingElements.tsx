@@ -53,7 +53,16 @@ export default function FloatingElements({
   const icons = isKidsMode ? kidsIcons : defaultIcons;
 
   const elements = Array.from({ length: getDensityCount() }, (_, i) => {
+    const Icon = icons[i % icons.length];
+    const label = labels[i % labels.length];
+    const bgColor = colorPalette[i % colorPalette.length];
+    const horizontal = i % 2 === 0 ? 'left-[2%]' : 'right-[2%]';
+    const topPercent = (i + 1) * (90 / (getDensityCount() + 1));
+    const delay = `${Math.random() * 2}s`;
+    const scale = Math.random() * 0.4 + 1.0;
     const shapeClass = i % 3 === 0 ? 'rounded-md' : i % 3 === 1 ? 'rounded-lg' : 'rounded-full';
+
+    return {
       key: i,
       topPercent,
       horizontal,
@@ -63,6 +72,7 @@ export default function FloatingElements({
       bgColor,
       delay,
       scale,
+      shapeClass,
     };
   });
 
@@ -71,7 +81,7 @@ export default function FloatingElements({
       {elements.map(({ key, topPercent, horizontal, isIcon, Icon, label, bgColor, delay, scale }) => (
         <div
           key={key}
-          className={clsx(baseStyle, shapeClass, horizontal, 'animate-float', bgColor, 'opacity-90')}
+          className={clsx(baseStyle, horizontal, 'animate-float', bgColor, 'opacity-90', shapeClass)}
           style={{ top: `${topPercent}%`, animationDelay: delay, transform: `scale(${scale})` }}
         >
           {isIcon ? <Icon className="w-6 h-6" /> : label}
