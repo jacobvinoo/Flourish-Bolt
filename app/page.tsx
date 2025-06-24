@@ -13,7 +13,7 @@ import FloatingElements from '@/components/FloatingElements';
 
 // Define the props for FloatingElements
 interface FloatingElementsProps {
-  variant?: 'full' | 'minimal';
+  variant?: 'full' | 'minimal' | 'edges-only';
   density?: 'sparse' | 'medium' | 'dense';
   showOnMobile?: boolean;
 }
