@@ -63,6 +63,7 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
+        
         <section className="py-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900">Powerful Features</h2>
