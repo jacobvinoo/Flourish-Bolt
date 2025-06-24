@@ -1,11 +1,10 @@
-// components/FloatingElements.tsx
 'use client';
 
 import { Sparkles, FileText, Brush } from 'lucide-react';
 import clsx from 'clsx';
 
 export interface FloatingElementsProps {
-  variant?: 'full' | 'minimal';
+  variant?: 'full' | 'minimal' | 'edges-only';
   density?: 'sparse' | 'medium' | 'dense';
   showOnMobile?: boolean;
 }
@@ -35,8 +34,12 @@ export default function FloatingElements({
   const elements = Array.from({ length: getDensityCount() }, (_, i) => {
     const Icon = icons[i % icons.length];
     const label = labels[i % labels.length];
+
+    const horizontal = i % 2 === 0 ? 'left-10' : 'right-10';
+    const top = variant === 'edges-only' ? `${i * 20 + 5}%` : `${i * 12 + 10}%`;
+
     return {
-      style: `top-[${10 + i * 10}%] ${i % 2 === 0 ? 'left-10' : 'right-10'} animate-float`,
+      style: `top-[${top}] ${horizontal} animate-float`,
       content: variant === 'minimal' ? label : <Icon className="w-5 h-5" />,
     };
   });
@@ -45,9 +48,4 @@ export default function FloatingElements({
     <div className={clsx(!showOnMobile && 'hidden sm:block')}>
       {elements.map((el, idx) => (
         <div key={idx} className={clsx(baseStyle, el.style, 'bg-green-500 opacity-80')}>
-          {el.content}
-        </div>
-      ))}
-    </div>
-  );
-}
+          {el.c
