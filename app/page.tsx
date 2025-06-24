@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 
 
+
 // Add animations styles
 const animationStyles = `
   @keyframes float {
@@ -450,7 +451,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-      
+      </main>
                   <CardDescription className="text-base leading-relaxed">
                     Engaging practice worksheets with instant feedback and gamified learning experiences
                   </CardDescription>
