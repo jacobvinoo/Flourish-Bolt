@@ -450,7 +450,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-      </main>text-center">
+      
                   <CardDescription className="text-base leading-relaxed">
                     Engaging practice worksheets with instant feedback and gamified learning experiences
                   </CardDescription>
