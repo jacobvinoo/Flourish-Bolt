@@ -34,14 +34,29 @@ export default function FloatingElements({
   const elements = Array.from({ length: getDensityCount() }, (_, i) => {
     const Icon = icons[i % icons.length];
     const label = labels[i % labels.length];
-
     const horizontal = i % 2 === 0 ? 'left-10' : 'right-10';
 
-    // Different vertical distribution for "edges-only"
-    const vertical = variant === 'edges-only'
-      ? `top-[${i * (100 / getDensityCount())}%]`
-      : `top-[${10 + i * 10}%]`;
+    const topPercent =
+      variant === 'edges-only'
+        ? (i * (90 / (getDensityCount() - 1)) + 5) // evenly spaced between 5% and 95%
+        : 10 + i * 10;
 
     return {
-      style: `${vertical} ${horizontal} animate-float`,
-      content: variant === 'minimal' ? label : <Icon className="w-5 h-5" /
+      key: i,
+      style: `top-[${topPercent}%] ${horizontal} animate-float`,
+      isIcon: variant === 'full',
+      Icon,
+      label,
+    };
+  });
+
+  return (
+    <div className={clsx(!showOnMobile && 'hidden sm:block')}>
+      {elements.map(({ key, style, isIcon, Icon, label }) => (
+        <div key={key} className={clsx(baseStyle, style, 'bg-green-500 opacity-80')}>
+          {isIcon ? <Icon className="w-5 h-5" /> : label}
+        </div>
+      ))}
+    </div>
+  );
+}
