@@ -1,157 +1,627 @@
-// ./app/page.tsx
 'use client';
 
-import { PenTool, ThumbsUp, Rocket, Users, Menu, X } from 'lucide-react';
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
+import { PenTool, Globe, Zap, Crown, Users, BarChart3, Target, TrendingUp, BookOpen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2
-    }
+import { PenTool, Globe, Zap, Crown, Users, BarChart3, Target, TrendingUp, BookOpen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
+
+// Add animations styles
+const animationStyles = `
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-10px) rotate(1deg); }
+    66% { transform: translateY(-5px) rotate(-1deg); }
   }
-};
+  
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(2deg); }
+  }
+  
+  @keyframes float-delay {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-8px) rotate(-1deg); }
+    66% { transform: translateY(-12px) rotate(1deg); }
+  }
+  
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  
+  @keyframes twinkle-delay {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+  }
+  
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  @keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+  }
+  
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+  .animate-float-delay { animation: float-delay 7s ease-in-out infinite; }
+  .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
+  .animate-twinkle-delay { animation: twinkle-delay 4s ease-in-out infinite; }
+  .animate-bounce-slow { animation: bounce-slow 4s ease-in-out infinite; }
+  .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+  .animate-spin-reverse { animation: spin-reverse 25s linear infinite; }
+`;
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
-};
+// Inject styles
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = animationStyles;
+  document.head.appendChild(style);
+}
 
 export default function Home() {
-  const pathname = usePathname();
-  const [hidden, setHidden] = useState(false);
-  const [navOpen, setNavOpen] = useState(false);
-  const { scrollY } = useScroll();
-
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    setHidden(latest > 50);
-  });
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 overflow-x-hidden">
-      {/* Animated Sticky Navbar */}
-      <motion.div
-        animate={{ y: hidden ? -80 : 0 }}
-        transition={{ duration: 0.3 }}
-        className="sticky top-0 z-50 w-full bg-white bg-opacity-70 backdrop-blur border-b border-gray-200 shadow-sm"
-      >
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="text-lg font-bold text-blue-700">MyApp</div>
-
-          {/* Desktop Nav */}
-          <div className="hidden md:flex gap-4">
-            <Link
-              href="/login"
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition border ${
-                pathname === '/login'
-                  ? 'bg-blue-100 text-blue-700 border-blue-700'
-                  : 'text-blue-600 border-blue-600 hover:bg-blue-50'
-              }`}
-            >
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
-                pathname === '/signup'
-                  ? 'bg-blue-700 text-white'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
-            >
-              Sign Up
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 text-blue-600 rounded-lg hover:bg-blue-100"
-            onClick={() => setNavOpen(!navOpen)}
+      {/* Full Page Wave Backgrounds */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        {/* Left wave - extends full page height */}
+        <svg className="absolute left-0 top-0 h-full w-64" viewBox="0 0 200 800" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="leftWave" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#a7f3d0" />
+              <stop offset="100%" stopColor="#dbeafe" />
+            </linearGradient>
+          </defs>
+          <path 
+            d="M0,0 L0,800 L120,800 Q160,720 120,640 Q80,560 120,480 Q160,400 120,320 Q80,240 120,160 Q160,80 120,0 Z" 
+            fill="url(#leftWave)"
           >
-            {navOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+            <animateTransform
+              attributeName="transform"
+              attributeType="XML"
+              type="translate"
+              values="0,0; 0,-8; 0,0; 0,6; 0,0"
+              dur="8s"
+              repeatCount="indefinite"
+            />
+          </path>
+        </svg>
+
+        {/* Right wave - extends full page height */}
+        <svg className="absolute right-0 top-0 h-full w-64" viewBox="0 0 200 800" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="rightWave" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#dbeafe" />
+              <stop offset="100%" stopColor="#a7f3d0" />
+            </linearGradient>
+          </defs>
+          <path 
+            d="M200,0 L200,800 L80,800 Q40,720 80,640 Q120,560 80,480 Q40,400 80,320 Q120,240 80,160 Q40,80 80,0 Z" 
+            fill="url(#rightWave)"
+          >
+            <animateTransform
+              attributeName="transform"
+              attributeType="XML"
+              type="translate"
+              values="0,0; 0,6; 0,0; 0,-4; 0,0"
+              dur="7s"
+              repeatCount="indefinite"
+            />
+          </path>
+        </svg>
+
+        {/* Wavy lines overlay */}
+        <div className="absolute inset-0 opacity-10">
+          <svg width="100%" height="100%" viewBox="0 0 1200 600" className="absolute inset-0">
+            <defs>
+              <pattern id="wave" x="0" y="0" width="200" height="100" patternUnits="userSpaceOnUse">
+                <path d="M0,50 Q50,0 100,50 T200,50" stroke="#3b82f6" strokeWidth="2" fill="none" opacity="0.3" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#wave)" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Vibrant Floating Elements */}
+      <div className="fixed inset-0 pointer-events-none z-5">
+        {/* Left side elements */}
+        <div className="absolute top-20 left-8 w-12 h-12 animate-float">
+          <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-500 drop-shadow-lg">
+            <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+          </svg>
+        </div>
+        
+        <div className="absolute top-64 left-2 w-12 h-12 animate-float-delay">
+          <div className="w-full h-full bg-gradient-to-br from-red-400 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
+            A
+          </div>
         </div>
 
-        {/* Mobile Nav Drawer with animation */}
-        <AnimatePresence>
-          {navOpen && (
-            <motion.div
-              key="mobile-nav"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden px-4 pb-4 flex flex-col gap-2"
-            >
-              <Link
-                href="/login"
-                className={`w-full text-center px-4 py-2 rounded-lg border text-sm font-medium transition ${
-                  pathname === '/login'
-                    ? 'bg-blue-100 text-blue-700 border-blue-700'
-                    : 'text-blue-600 border-blue-600 hover:bg-blue-50'
-                }`}
-                onClick={() => setNavOpen(false)}
-              >
-                Login
-              </Link>
-              <Link
-                href="/signup"
-                className={`w-full text-center px-4 py-2 rounded-lg text-sm font-medium transition ${
-                  pathname === '/signup'
-                    ? 'bg-blue-700 text-white'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                }`}
-                onClick={() => setNavOpen(false)}
-              >
-                Sign Up
-              </Link>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+        <div className="absolute top-96 left-6 w-14 h-14 animate-bounce-slow">
+          <div className="w-full h-full bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
+            G
+          </div>
+        </div>
 
-      <motion.div
-        initial="hidden"
-        animate="show"
-        variants={containerVariants}
-        className="relative z-10 flex flex-col items-center justify-center min-h-screen space-y-4"
-      >
-        <motion.div variants={itemVariants} className="text-center">
-          <motion.div
-            variants={itemVariants}
-            className="flex justify-center mb-4"
-          >
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-3 rounded-full">
-              <PenTool className="w-8 h-8 text-white" />
+        <div className="absolute bottom-32 left-8 w-10 h-10 animate-twinkle-delay">
+          <svg viewBox="0 0 24 24" className="w-full h-full text-blue-400 drop-shadow-lg">
+            <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
+          </svg>
+        </div>
+        
+        {/* Right side elements */}
+        <div className="absolute top-32 right-4 w-12 h-12 animate-twinkle">
+          <svg viewBox="0 0 24 24" className="w-full h-full text-pink-400 drop-shadow-lg">
+            <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
+          </svg>
+        </div>
+
+        <div className="absolute top-56 right-2 w-12 h-12 animate-float">
+          <div className="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
+            B
+          </div>
+        </div>
+
+        <div className="absolute bottom-56 right-6 w-12 h-12 animate-bounce-slow">
+          <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
+            C
+          </div>
+        </div>
+
+        <div className="absolute top-1/2 right-4 w-16 h-16 animate-float-slow">
+          <svg viewBox="0 0 24 24" className="w-full h-full text-green-500 drop-shadow-lg">
+            <path fill="currentColor" d="M19,2L14,6.5V17.5L19,13V2M6.5,5C4.55,5 2.45,5.4 1,6.5V21.16C1,21.41 1.25,21.66 1.5,21.66C1.6,21.66 1.65,21.59 1.75,21.59C3.1,20.94 5.05,20.68 6.5,20.68C8.45,20.68 10.55,21.1 12,22C13.35,21.15 15.8,20.68 17.5,20.68C19.15,20.68 20.85,21.1 22.25,21.81C22.35,21.86 22.4,21.91 22.5,21.91C22.75,21.91 23,21.66 23,21.41V6.5C22.4,6.05 21.75,5.75 21,5.5V19C19.9,18.65 18.7,18.5 17.5,18.5C15.8,18.5 13.35,18.9 12,19.81V6.5C10.55,5.4 8.45,5 6.5,5Z" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-green-600">
+                <PenTool className="h-4 w-4 text-white" />
+              </div>
+              <h1 className="text-xl font-bold text-gray-900">
+                Flourish
+              </h1>
             </div>
-          </motion.div>
-          <motion.h1 variants={itemVariants} className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome
-          </motion.h1>
-          <motion.p variants={itemVariants} className="text-gray-600 mb-6">
-            Home page content goes here.
-          </motion.p>
+            
+            <div className="flex items-center gap-4">
+              <Link href="/login">
+                <Button variant="ghost" size="sm" className="text-gray-700 hover:bg-gray-100">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
 
-          <motion.div variants={itemVariants} className="flex gap-4 justify-center">
-            <Link
-              href="/login"
-              className="px-6 py-3 bg-white border border-blue-600 text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-colors duration-200"
-            >
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors duration-200"
-            >
-              Sign Up
-            </Link>
-          </motion.div>
-        </motion.div>
-      </motion.div>
+      {/* Main Content Container - Positioned between waves */}
+      <main className="relative z-10 mx-auto" style={{ maxWidth: 'calc(100vw - 32rem)' }}>
+        {/* Hero Section */}
+        <section className="py-20 lg:py-32">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-6">
+                <div className="bg-gradient-to-r from-green-600 to-green-800 p-4 rounded-full">
+                  <PenTool className="w-12 h-12 text-white" />
+                </div>
+              </div>
+              
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                <span className="text-green-600">Flourish</span>
+              </h1>
+              
+              <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+                AI-powered handwriting analysis and improvement platform for students, parents, and educators
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+                <Link href="/signup">
+                  <Button size="lg" className="bg-green-600 hover:bg-green-700 text-lg px-8 py-3">
+                    Get Started Free
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button variant="outline" size="lg" className="text-lg px-8 py-3">
+                    Sign In
+                  </Button>
+                </Link>
+              </div>
+              
+              <div className="flex items-center justify-center">
+                <Button variant="link" className="text-gray-600 hover:text-gray-800">
+                  👑 View Pricing Plans
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-16 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Powerful Features for Better Handwriting
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Everything you need to improve handwriting skills with advanced AI analysis
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="text-center pb-4">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Target className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <CardTitle className="text-xl">AI-Powered Analysis</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <CardDescription className="text-base leading-relaxed">
+                    Advanced machine learning algorithms analyze handwriting with precision and provide detailed feedback
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="text-center pb-4">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <TrendingUp className="w-8 h-8 text-green-600" />
+                  </div>
+                  <CardTitle className="text-xl">Progress Tracking</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <CardDescription className="text-base leading-relaxed">
+                    Monitor improvement over time with detailed analytics and personalized recommendations
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="text-center pb-4">
+                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <BookOpen className="w-8 h-8 text-purple-600" />
+                  </div>
+                  <CardTitle className="text-xl">Interactive Worksheets</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <CardDescription className="text-base leading-relaxed">
+                    Engaging practice worksheets with instant feedback and gamified learning experiences
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose Your Plan</h2>
+              <p className="text-xl text-gray-600">
+                Start with our free tier or unlock advanced features with our premium plans
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {/* Basic Plan */}
+              <Card className="border-2 border-gray-200 relative">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">Basic</CardTitle>
+                  <div className="text-4xl font-bold text-gray-900 mt-4">Free</div>
+                  <CardDescription className="mt-2">Perfect for getting started</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      5 analyses per month
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Basic feedback
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Standard worksheets
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6" variant="outline">
+                    Get Started
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Premium Plan */}
+              <Card className="border-2 border-green-500 relative shadow-lg scale-105">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-green-500 text-white px-4 py-1">Most Popular</Badge>
+                </div>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">Premium</CardTitle>
+                  <div className="text-4xl font-bold text-gray-900 mt-4">
+                    $9.99<span className="text-lg text-gray-600">/month</span>
+                  </div>
+                  <CardDescription className="mt-2">Best for regular practice</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Unlimited analyses
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Detailed feedback
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Premium worksheets
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Progress tracking
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6 bg-green-600 hover:bg-green-700">
+                    Start Free Trial
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Educator Plan */}
+              <Card className="border-2 border-gray-200 relative">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">Educator</CardTitle>
+                  <div className="text-4xl font-bold text-gray-900 mt-4">
+                    $19.99<span className="text-lg text-gray-600">/month</span>
+                  </div>
+                  <CardDescription className="mt-2">For teachers and schools</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Classroom management
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Student progress reports
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Bulk upload tools
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Priority support
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6" variant="outline">
+                    Contact Sales
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-16 bg-green-600">
+          <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Ready to Improve Your Handwriting?
+            </h2>
+            <p className="text-xl text-green-100 mb-8">
+              Join thousands of students, parents, and educators who trust Flourish
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/signup">
+                <Button size="lg" variant="secondary" className="bg-white text-green-600 hover:bg-gray-100">
+                  Start Free Today
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600">
+                  Sign In
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>text-center">
+                  <CardDescription className="text-base leading-relaxed">
+                    Engaging practice worksheets with instant feedback and gamified learning experiences
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose Your Plan</h2>
+              <p className="text-xl text-gray-600">
+                Start with our free tier or unlock advanced features with our premium plans
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {/* Basic Plan */}
+              <Card className="border-2 border-gray-200 relative">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">Basic</CardTitle>
+                  <div className="text-4xl font-bold text-gray-900 mt-4">Free</div>
+                  <CardDescription className="mt-2">Perfect for getting started</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      5 analyses per month
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Basic feedback
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Standard worksheets
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6" variant="outline">
+                    Get Started
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Premium Plan */}
+              <Card className="border-2 border-green-500 relative shadow-lg scale-105">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-green-500 text-white px-4 py-1">Most Popular</Badge>
+                </div>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">Premium</CardTitle>
+                  <div className="text-4xl font-bold text-gray-900 mt-4">
+                    $9.99<span className="text-lg text-gray-600">/month</span>
+                  </div>
+                  <CardDescription className="mt-2">Best for regular practice</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Unlimited analyses
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Detailed feedback
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Premium worksheets
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Progress tracking
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6 bg-green-600 hover:bg-green-700">
+                    Start Free Trial
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Educator Plan */}
+              <Card className="border-2 border-gray-200 relative">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">Educator</CardTitle>
+                  <div className="text-4xl font-bold text-gray-900 mt-4">
+                    $19.99<span className="text-lg text-gray-600">/month</span>
+                  </div>
+                  <CardDescription className="mt-2">For teachers and schools</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Classroom management
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Student progress reports
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Bulk upload tools
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Priority support
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6" variant="outline">
+                    Contact Sales
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-16 bg-green-600">
+          <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Ready to Improve Your Handwriting?
+            </h2>
+            <p className="text-xl text-green-100 mb-8">
+              Join thousands of students, parents, and educators who trust Flourish
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/signup">
+                <Button size="lg" variant="secondary" className="bg-white text-green-600 hover:bg-gray-100">
+                  Start Free Today
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600">
+                  Sign In
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-green-600 mr-3">
+                <PenTool className="h-4 w-4 text-white" />
+              </div>
+              <h3 className="text-xl font-bold">Flourish</h3>
+            </div>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Empowering better handwriting through AI-powered analysis and personalized learning experiences.
+            </p>
+            <div className="mt-8 pt-8 border-t border-gray-800 text-sm text-gray-500">
+              © 2024 Flourish. All rights reserved.
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
