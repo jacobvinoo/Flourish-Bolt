@@ -36,16 +36,12 @@ export default function FloatingElements({
     const label = labels[i % labels.length];
 
     const horizontal = i % 2 === 0 ? 'left-10' : 'right-10';
-    const top = variant === 'edges-only' ? `${i * 20 + 5}%` : `${i * 12 + 10}%`;
+
+    // Different vertical distribution for "edges-only"
+    const vertical = variant === 'edges-only'
+      ? `top-[${i * (100 / getDensityCount())}%]`
+      : `top-[${10 + i * 10}%]`;
 
     return {
-      style: `top-[${top}] ${horizontal} animate-float`,
-      content: variant === 'minimal' ? label : <Icon className="w-5 h-5" />,
-    };
-  });
-
-  return (
-    <div className={clsx(!showOnMobile && 'hidden sm:block')}>
-      {elements.map((el, idx) => (
-        <div key={idx} className={clsx(baseStyle, el.style, 'bg-green-500 opacity-80')}>
-          {el.c
+      style: `${vertical} ${horizontal} animate-float`,
+      content: variant === 'minimal' ? label : <Icon className="w-5 h-5" /
