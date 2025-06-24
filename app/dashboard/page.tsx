@@ -24,8 +24,7 @@ import {
   Lock,
   PenTool,
   User,
-  LogOut,
-  AlertTriangle
+  LogOut
 } from 'lucide-react';
 
 import { Database, Profile } from '@/lib/database.types';
@@ -84,7 +83,8 @@ export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [authError, setAuthError] = useState<string | null>(null);
+  
+  // Fix: Added missing state variables that were referenced but not declared
   const [currentStreak] = useState(12);
   const [totalPracticeTime] = useState(145);
   const [weeklyGoal] = useState(150);
@@ -97,62 +97,31 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    let mounted = true;
-
     const getUser = async () => {
       try {
-        console.log('Dashboard: Checking authentication...');
-        
         const { data: { user }, error } = await supabase.auth.getUser();
         
-        console.log('Dashboard: Auth result:', { user: !!user, error });
-        
-        if (error) {
-          console.error('Dashboard: Auth error:', error);
-          setAuthError(error.message);
-          if (mounted) {
-            setTimeout(() => router.push('/login'), 2000);
-          }
+        if (error || !user) {
+          console.error('Auth error:', error);
+          router.push('/login');
           return;
         }
         
-        if (!user) {
-          console.log('Dashboard: No user found, redirecting to login');
-          if (mounted) {
-            router.push('/login');
-          }
-          return;
-        }
-        
-        console.log('Dashboard: User authenticated:', user.email);
-        if (mounted) {
-          setUser(user);
-          await fetchProfile(user.id);
-        }
+        setUser(user);
+        await fetchProfile(user.id);
       } catch (error: any) {
-        console.error('Dashboard: Unexpected error:', error);
-        setAuthError('Unexpected authentication error');
-        if (mounted) {
-          setTimeout(() => router.push('/login'), 2000);
-        }
+        console.error('Error in getUser:', error);
+        router.push('/login');
       } finally {
-        if (mounted) {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     };
 
     getUser();
-
-    return () => {
-      mounted = false;
-    };
-  }, [supabase, router]);
+  }, [router, supabase.auth]); // Fix: Added missing dependencies
 
   const fetchProfile = async (userId: string) => {
     try {
-      console.log('Dashboard: Fetching profile for user:', userId);
-      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -160,14 +129,15 @@ export default function Dashboard() {
         .maybeSingle();
 
       if (error) {
-        console.error('Dashboard: Profile fetch error:', error);
+        console.error('Error fetching profile:', error);
         return;
       }
 
-      console.log('Dashboard: Profile fetched:', data);
-      setProfile(data);
+      if (data) {
+        setProfile(data);
+      }
     } catch (error: any) {
-      console.error('Dashboard: Error fetching profile:', error);
+      console.error('Error fetching profile:', error);
     }
   };
 
@@ -193,44 +163,19 @@ export default function Dashboard() {
   const weeklyGoalProgress = (weeklyProgress / weeklyGoal) * 100;
   const isKidsMode = profile?.display_mode === 'kids';
 
-  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading dashboard...</p>
-          {authError && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg max-w-md mx-auto">
-              <div className="flex items-center gap-2 text-red-700">
-                <AlertTriangle className="h-4 w-4" />
-                <span className="text-sm">{authError}</span>
-              </div>
-              <p className="text-xs text-red-600 mt-2">Redirecting to login...</p>
-            </div>
-          )}
         </div>
       </div>
     );
   }
 
-  // User not found state
   if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <AlertTriangle className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
-          <p className="text-gray-600 mb-4">Please sign in to access your dashboard.</p>
-          <button
-            onClick={() => router.push('/login')}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Go to Login
-          </button>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
@@ -254,279 +199,242 @@ export default function Dashboard() {
                 ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600' 
                 : 'text-gray-900'
             }`}>
-              {isKidsMode ? '🌟 Welcome Back!' : 'Welcome back!'}
+              {isKidsMode ? "Let's Practice Writing! 🌟" : "Welcome back!"}
             </h2>
-            <p className={`${
-              isKidsMode 
-                ? 'text-purple-600' 
-                : 'text-gray-600'
-            } mt-1`}>
-              {user?.email || 'Ready to improve your handwriting?'}
+            <p className={`text-lg ${
+              isKidsMode ? 'text-purple-600' : 'text-gray-600'
+            }`}>
+              {profile?.full_name || user.email}
             </p>
           </div>
-
           <div className="flex items-center gap-4">
-            {/* Current Streak */}
-            <div className={`px-4 py-2 rounded-xl ${
-              isKidsMode 
-                ? 'bg-gradient-to-r from-orange-400 to-pink-400 text-white' 
-                : 'bg-orange-50 border border-orange-200'
-            }`}>
-              <div className="flex items-center gap-2">
-                <Flame className={`h-5 w-5 ${
-                  isKidsMode ? 'text-white' : 'text-orange-500'
-                }`} />
-                <div>
-                  <p className={`text-sm font-medium ${
-                    isKidsMode ? 'text-white' : 'text-orange-700'
-                  }`}>
-                    {currentStreak} day streak
-                  </p>
-                </div>
+            <div className="text-center">
+              <div className={`text-2xl font-bold ${
+                isKidsMode ? 'text-orange-500' : 'text-orange-600'
+              }`}>
+                <Flame className="inline-block w-6 h-6 mr-1" />
+                {currentStreak}
               </div>
-            </div>
-
-            {/* Level & XP */}
-            <div className={`px-4 py-2 rounded-xl ${
-              isKidsMode 
-                ? 'bg-gradient-to-r from-blue-400 to-purple-400 text-white' 
-                : 'bg-blue-50 border border-blue-200'
-            }`}>
-              <div className="flex items-center gap-2">
-                <Star className={`h-5 w-5 ${
-                  isKidsMode ? 'text-white' : 'text-blue-500'
-                }`} />
-                <div>
-                  <p className={`text-sm font-medium ${
-                    isKidsMode ? 'text-white' : 'text-blue-700'
-                  }`}>
-                    Level {level}
-                  </p>
-                  <div className="w-16 bg-white/30 rounded-full h-1.5 mt-1">
-                    <div 
-                      className="bg-white h-1.5 rounded-full transition-all duration-300"
-                      style={{ width: `${levelProgress}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
+              <p className={`text-xs ${
+                isKidsMode ? 'text-purple-600' : 'text-gray-500'
+              }`}>
+                Day Streak
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Weekly Goal Progress */}
-        <div className={`p-4 rounded-xl ${
-          isKidsMode 
-            ? 'bg-gradient-to-r from-green-100 to-blue-100 border-2 border-green-200' 
-            : 'bg-white border border-gray-200 shadow-sm'
-        }`}>
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Target className={`h-5 w-5 ${
-                isKidsMode ? 'text-green-600' : 'text-green-600'
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          {/* XP Progress */}
+          <div className={`p-4 rounded-lg border ${
+            isKidsMode 
+              ? 'bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200' 
+              : 'bg-white border-gray-200'
+          }`}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Zap className={`w-5 h-5 ${
+                  isKidsMode ? 'text-yellow-500' : 'text-blue-600'
+                }`} />
+                <span className={`font-medium ${
+                  isKidsMode ? 'text-purple-700' : 'text-gray-700'
+                }`}>
+                  Level {level}
+                </span>
+              </div>
+              <span className={`text-sm ${
+                isKidsMode ? 'text-purple-600' : 'text-gray-500'
+              }`}>
+                {xp} XP
+              </span>
+            </div>
+            <Progress value={levelProgress} />
+            <p className={`text-xs mt-1 ${
+              isKidsMode ? 'text-purple-600' : 'text-gray-500'
+            }`}>
+              {xpToNextLevel} XP to next level
+            </p>
+          </div>
+
+          {/* Weekly Goal */}
+          <div className={`p-4 rounded-lg border ${
+            isKidsMode 
+              ? 'bg-gradient-to-br from-green-50 to-blue-50 border-green-200' 
+              : 'bg-white border-gray-200'
+          }`}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Target className={`w-5 h-5 ${
+                  isKidsMode ? 'text-green-500' : 'text-green-600'
+                }`} />
+                <span className={`font-medium ${
+                  isKidsMode ? 'text-green-700' : 'text-gray-700'
+                }`}>
+                  Weekly Goal
+                </span>
+              </div>
+              <span className={`text-sm ${
+                isKidsMode ? 'text-green-600' : 'text-gray-500'
+              }`}>
+                {weeklyProgress}/{weeklyGoal} min
+              </span>
+            </div>
+            <Progress value={weeklyGoalProgress} />
+            <p className={`text-xs mt-1 ${
+              isKidsMode ? 'text-green-600' : 'text-gray-500'
+            }`}>
+              {weeklyGoal - weeklyProgress} min remaining
+            </p>
+          </div>
+
+          {/* Total Practice Time */}
+          <div className={`p-4 rounded-lg border ${
+            isKidsMode 
+              ? 'bg-gradient-to-br from-orange-50 to-yellow-50 border-orange-200' 
+              : 'bg-white border-gray-200'
+          }`}>
+            <div className="flex items-center gap-2 mb-2">
+              <Clock className={`w-5 h-5 ${
+                isKidsMode ? 'text-orange-500' : 'text-purple-600'
               }`} />
-              <h3 className={`font-semibold ${
-                isKidsMode ? 'text-green-700' : 'text-gray-900'
+              <span className={`font-medium ${
+                isKidsMode ? 'text-orange-700' : 'text-gray-700'
               }`}>
-                Weekly Goal
-              </h3>
+                Total Practice
+              </span>
             </div>
-            <span className={`text-sm ${
-              isKidsMode ? 'text-green-600' : 'text-gray-600'
+            <div className={`text-2xl font-bold ${
+              isKidsMode ? 'text-orange-600' : 'text-purple-600'
             }`}>
-              {weeklyProgress} / {weeklyGoal} minutes
-            </span>
+              {totalPracticeTime}
+            </div>
+            <p className={`text-xs ${
+              isKidsMode ? 'text-orange-600' : 'text-gray-500'
+            }`}>
+              minutes practiced
+            </p>
           </div>
-          <Progress value={weeklyGoalProgress} className="mb-2" />
-          <p className={`text-sm ${
-            isKidsMode ? 'text-green-600' : 'text-gray-600'
-          }`}>
-            {weeklyGoal - weeklyProgress} minutes to reach your goal!
-          </p>
-        </div>
-      </div>
 
-      {/* Learning Paths */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className={`text-2xl font-bold ${
+          {/* Achievement */}
+          <div className={`p-4 rounded-lg border ${
             isKidsMode 
-              ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600' 
-              : 'text-gray-900'
+              ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200' 
+              : 'bg-white border-gray-200'
           }`}>
-            {isKidsMode ? '🎯 Your Learning Adventure' : 'Learning Paths'}
+            <div className="flex items-center gap-2 mb-2">
+              <Trophy className={`w-5 h-5 ${
+                isKidsMode ? 'text-yellow-500' : 'text-yellow-600'
+              }`} />
+              <span className={`font-medium ${
+                isKidsMode ? 'text-yellow-700' : 'text-gray-700'
+              }`}>
+                Achievement
+              </span>
+            </div>
+            <div className={`text-sm font-medium ${
+              isKidsMode ? 'text-yellow-600' : 'text-yellow-600'
+            }`}>
+              Writing Star ⭐
+            </div>
+            <p className={`text-xs ${
+              isKidsMode ? 'text-yellow-600' : 'text-gray-500'
+            }`}>
+              Latest badge earned
+            </p>
+          </div>
+        </div>
+
+        {/* Learning Paths */}
+        <div>
+          <h3 className={`text-xl font-bold mb-4 ${
+            isKidsMode ? 'text-purple-700' : 'text-gray-900'
+          }`}>
+            {isKidsMode ? "Fun Writing Adventures! 🚀" : "Your Learning Path"}
           </h3>
-          <Link href="/practice">
-            <button className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 ${
-              isKidsMode 
-                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600' 
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}>
-              {isKidsMode ? '🚀 Explore All' : 'View All'}
-            </button>
-          </Link>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {mockLearningPaths.map((path) => (
+              <Link key={path.id} href={path.href}>
+                <div className={`group cursor-pointer transition-all duration-200 hover:scale-105 ${
+                  isKidsMode 
+                    ? 'bg-gradient-to-br from-white to-purple-50 hover:shadow-xl' 
+                    : 'bg-white hover:shadow-lg'
+                } rounded-xl border ${
+                  isKidsMode ? 'border-purple-200' : 'border-gray-200'
+                } p-6`}>
+                  
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`text-3xl ${
+                        isKidsMode ? 'transform group-hover:animate-bounce' : ''
+                      }`}>
+                        {path.icon}
+                      </div>
+                      <div>
+                        <h4 className={`font-bold ${
+                          isKidsMode ? 'text-purple-700' : 'text-gray-900'
+                        }`}>
+                          {path.title}
+                        </h4>
+                        <p className={`text-sm ${
+                          isKidsMode ? 'text-purple-600' : 'text-gray-600'
+                        }`}>
+                          {path.description}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className={`px-2 py-1 rounded text-xs border ${getDifficultyColor(path.difficulty)}`}>
+                      {path.difficulty}
+                    </div>
+                  </div>
+                  
+                  {/* Progress */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-sm font-medium ${
+                        isKidsMode ? 'text-purple-700' : 'text-gray-700'
+                      }`}>
+                        Progress
+                      </span>
+                      <span className={`text-sm ${
+                        isKidsMode ? 'text-purple-600' : 'text-gray-600'
+                      }`}>
+                        {path.unlockedLessons}/{path.totalLessons} lessons
+                      </span>
+                    </div>
+                    <Progress value={path.progress} />
+                  </div>
+                  
+                  {/* Next Lesson */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className={`text-xs ${
+                        isKidsMode ? 'text-purple-600' : 'text-gray-500'
+                      }`}>
+                        Next:
+                      </p>
+                      <p className={`text-sm font-medium ${
+                        isKidsMode ? 'text-purple-700' : 'text-gray-700'
+                      }`}>
+                        {path.nextLesson}
+                      </p>
+                    </div>
+                    
+                    <div className={`flex items-center gap-2 text-sm font-medium ${
+                      isKidsMode ? 'text-purple-600' : 'text-blue-600'
+                    } group-hover:gap-3 transition-all`}>
+                      {path.progress > 0 ? 'Continue' : 'Start'}
+                      <ChevronRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockLearningPaths.map((path) => (
-            <Link href={path.href} key={path.id}>
-              <div className={`p-6 rounded-xl transition-all duration-200 hover:scale-105 cursor-pointer ${
-                isKidsMode 
-                  ? 'bg-gradient-to-br from-white to-purple-50 border-2 border-purple-200 hover:border-purple-300' 
-                  : 'bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
-              }`}>
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`text-3xl p-3 rounded-xl ${
-                    isKidsMode ? 'bg-purple-100' : 'bg-gray-100'
-                  }`}>
-                    {path.icon}
-                  </div>
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getDifficultyColor(path.difficulty)}`}>
-                    {path.difficulty}
-                  </span>
-                </div>
-
-                <h4 className={`text-lg font-semibold mb-2 ${
-                  isKidsMode ? 'text-purple-900' : 'text-gray-900'
-                }`}>
-                  {path.title}
-                </h4>
-                
-                <p className={`text-sm mb-4 ${
-                  isKidsMode ? 'text-purple-600' : 'text-gray-600'
-                }`}>
-                  {path.description}
-                </p>
-
-                {/* Progress */}
-                <div className="mb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className={`text-sm font-medium ${
-                      isKidsMode ? 'text-purple-700' : 'text-gray-700'
-                    }`}>
-                      Progress
-                    </span>
-                    <span className={`text-sm ${
-                      isKidsMode ? 'text-purple-600' : 'text-gray-600'
-                    }`}>
-                      {path.progress}%
-                    </span>
-                  </div>
-                  <Progress value={path.progress} />
-                </div>
-
-                {/* Next Lesson */}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className={`text-xs ${
-                      isKidsMode ? 'text-purple-600' : 'text-gray-500'
-                    }`}>
-                      Next: {path.nextLesson}
-                    </p>
-                    <p className={`text-xs ${
-                      isKidsMode ? 'text-purple-500' : 'text-gray-400'
-                    }`}>
-                      {path.unlockedLessons}/{path.totalLessons} unlocked
-                    </p>
-                  </div>
-                  <ChevronRight className={`h-4 w-4 ${
-                    isKidsMode ? 'text-purple-500' : 'text-gray-400'
-                  }`} />
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid md:grid-cols-3 gap-6">
-        {/* Practice Session */}
-        <Link href="/practice">
-          <div className={`p-6 rounded-xl transition-all duration-200 hover:scale-105 cursor-pointer ${
-            isKidsMode 
-              ? 'bg-gradient-to-br from-green-400 to-blue-500 text-white hover:from-green-500 hover:to-blue-600' 
-              : 'bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
-          }`}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`p-3 rounded-xl ${
-                isKidsMode ? 'bg-white/20' : 'bg-green-100'
-              }`}>
-                <Play className={`h-6 w-6 ${
-                  isKidsMode ? 'text-white' : 'text-green-600'
-                }`} />
-              </div>
-              <h4 className={`text-lg font-semibold ${
-                isKidsMode ? 'text-white' : 'text-gray-900'
-              }`}>
-                {isKidsMode ? '🎮 Start Playing!' : 'Quick Practice'}
-              </h4>
-            </div>
-            <p className={`text-sm ${
-              isKidsMode ? 'text-white/90' : 'text-gray-600'
-            }`}>
-              {isKidsMode ? 'Jump into a fun writing game!' : 'Start a 10-minute practice session'}
-            </p>
-          </div>
-        </Link>
-
-        {/* Worksheets */}
-        <Link href="/worksheets">
-          <div className={`p-6 rounded-xl transition-all duration-200 hover:scale-105 cursor-pointer ${
-            isKidsMode 
-              ? 'bg-gradient-to-br from-orange-400 to-pink-500 text-white hover:from-orange-500 hover:to-pink-600' 
-              : 'bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
-          }`}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`p-3 rounded-xl ${
-                isKidsMode ? 'bg-white/20' : 'bg-orange-100'
-              }`}>
-                <BookOpen className={`h-6 w-6 ${
-                  isKidsMode ? 'text-white' : 'text-orange-600'
-                }`} />
-              </div>
-              <h4 className={`text-lg font-semibold ${
-                isKidsMode ? 'text-white' : 'text-gray-900'
-              }`}>
-                {isKidsMode ? '📚 Fun Worksheets' : 'Worksheets'}
-              </h4>
-            </div>
-            <p className={`text-sm ${
-              isKidsMode ? 'text-white/90' : 'text-gray-600'
-            }`}>
-              {isKidsMode ? 'Print and practice with colorful sheets!' : 'Download printable practice sheets'}
-            </p>
-          </div>
-        </Link>
-
-        {/* Progress Report */}
-        <Link href="/progress">
-          <div className={`p-6 rounded-xl transition-all duration-200 hover:scale-105 cursor-pointer ${
-            isKidsMode 
-              ? 'bg-gradient-to-br from-purple-400 to-indigo-500 text-white hover:from-purple-500 hover:to-indigo-600' 
-              : 'bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
-          }`}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`p-3 rounded-xl ${
-                isKidsMode ? 'bg-white/20' : 'bg-purple-100'
-              }`}>
-                <TrendingUp className={`h-6 w-6 ${
-                  isKidsMode ? 'text-white' : 'text-purple-600'
-                }`} />
-              </div>
-              <h4 className={`text-lg font-semibold ${
-                isKidsMode ? 'text-white' : 'text-gray-900'
-              }`}>
-                {isKidsMode ? '⭐ Your Stars!' : 'Progress Report'}
-              </h4>
-            </div>
-            <p className={`text-sm ${
-              isKidsMode ? 'text-white/90' : 'text-gray-600'
-            }`}>
-              {isKidsMode ? 'See all the stars you\'ve earned!' : 'View detailed progress analytics'}
-            </p>
-          </div>
-        </Link>
       </div>
     </PageLayout>
   );
