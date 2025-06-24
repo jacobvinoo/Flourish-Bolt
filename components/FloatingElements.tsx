@@ -1,191 +1,207 @@
-import React from 'react';
+// Replacing local background and floating elements with shared components
+'use client';
 
-interface FloatingElementsProps {
-  isKidsMode?: boolean;
-  variant?: 'full' | 'minimal' | 'edges-only';
-  density?: 'low' | 'medium' | 'high';
-  showOnMobile?: boolean;
+import { PenTool, Target, TrendingUp, BookOpen, Sparkles, FileText, Brush } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
+
+import AnimatedBackground from '@/components/AnimatedBackground';
+import AppHeader from '@/components/AppHeader';
+import FloatingElements from '@/components/FloatingElements';
+
+const animationStyles = `
+  @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 33% { transform: translateY(-10px) rotate(1deg); } 66% { transform: translateY(-5px) rotate(-1deg); } }
+  @keyframes float-slow { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(2deg); } }
+  @keyframes float-delay { 0%, 100% { transform: translateY(0px) rotate(0deg); } 33% { transform: translateY(-8px) rotate(-1deg); } 66% { transform: translateY(-12px) rotate(1deg); } }
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+  .animate-float-delay { animation: float-delay 7s ease-in-out infinite; }
+`;
+
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = animationStyles;
+  document.head.appendChild(style);
 }
 
-const FloatingElements: React.FC<FloatingElementsProps> = ({
-  isKidsMode = false,
-  variant = 'full',
-  density = 'medium',
-  showOnMobile = false
-}) => {
-  const baseOpacity = isKidsMode ? 'opacity-70' : 'opacity-50';
-  const mobileClass = showOnMobile ? '' : 'hidden md:block';
-
-  // Left side elements
-  const leftElements = [
-    {
-      id: 'pencil',
-      position: 'top-20 left-4',
-      size: 'w-12 h-12',
-      animation: 'animate-float',
-      component: (
-        <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-500 drop-shadow-lg">
-          <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-        </svg>
-      )
-    },
-    {
-      id: 'letterA',
-      position: 'top-64 left-2',
-      size: 'w-12 h-12',
-      animation: 'animate-float-delay',
-      component: (
-        <div className="w-full h-full bg-gradient-to-br from-red-400 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
-          A
-        </div>
-      )
-    },
-    {
-      id: 'letterG',
-      position: 'top-96 left-6',
-      size: 'w-14 h-14',
-      animation: 'animate-bounce-slow',
-      component: (
-        <div className="w-full h-full bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
-          G
-        </div>
-      )
-    },
-    {
-      id: 'starLeft',
-      position: 'bottom-32 left-8',
-      size: 'w-10 h-10',
-      animation: 'animate-twinkle-delay',
-      component: (
-        <svg viewBox="0 0 24 24" className="w-full h-full text-blue-400 drop-shadow-lg">
-          <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
-        </svg>
-      )
-    }
-  ];
-
-  // Right side elements
-  const rightElements = [
-    {
-      id: 'starRight',
-      position: 'top-32 right-4',
-      size: 'w-12 h-12',
-      animation: 'animate-twinkle',
-      component: (
-        <svg viewBox="0 0 24 24" className="w-full h-full text-pink-400 drop-shadow-lg">
-          <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
-        </svg>
-      )
-    },
-    {
-      id: 'letterB',
-      position: 'top-56 right-2',
-      size: 'w-12 h-12',
-      animation: 'animate-float',
-      component: (
-        <div className="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
-          B
-        </div>
-      )
-    },
-    {
-      id: 'letterC',
-      position: 'bottom-56 right-6',
-      size: 'w-12 h-12',
-      animation: 'animate-bounce-slow',
-      component: (
-        <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
-          C
-        </div>
-      )
-    },
-    {
-      id: 'book',
-      position: 'top-1/2 right-4',
-      size: 'w-16 h-16',
-      animation: 'animate-float-slow',
-      component: (
-        <svg viewBox="0 0 24 24" className="w-full h-full text-green-500 drop-shadow-lg">
-          <path fill="currentColor" d="M19,2L14,6.5V17.5L19,13V2M6.5,5C4.55,5 2.45,5.4 1,6.5V21.16C1,21.41 1.25,21.66 1.5,21.66C1.6,21.66 1.65,21.59 1.75,21.59C3.1,20.94 5.05,20.68 6.5,20.68C8.45,20.68 10.55,21.1 12,22C13.35,21.15 15.8,20.68 17.5,20.68C19.15,20.68 20.85,21.1 22.25,21.81C22.35,21.86 22.4,21.91 22.5,21.91C22.75,21.91 23,21.66 23,21.41V6.5C22.4,6.05 21.75,5.75 21,5.5V19C19.9,18.65 18.7,18.5 17.5,18.5C15.8,18.5 13.35,18.9 12,19.81V6.5C10.55,5.4 8.45,5 6.5,5Z" />
-        </svg>
-      )
-    },
-    {
-      id: 'number1',
-      position: 'bottom-20 right-4',
-      size: 'w-12 h-12',
-      animation: 'animate-bounce-slow',
-      component: (
-        <div className="w-full h-full bg-gradient-to-br from-purple-400 to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
-          1
-        </div>
-      )
-    }
-  ];
-
-  // Filter elements based on variant and density
-  const getFilteredElements = (elements: typeof leftElements) => {
-    let filtered = [...elements];
-    
-    if (variant === 'minimal') {
-      filtered = elements.slice(0, 2);
-    } else if (variant === 'edges-only') {
-      filtered = elements.filter(el => 
-        el.position.includes('left-2') || 
-        el.position.includes('left-4') || 
-        el.position.includes('right-2') || 
-        el.position.includes('right-4')
-      );
-    }
-    
-    if (density === 'low') {
-      filtered = filtered.slice(0, Math.ceil(filtered.length / 2));
-    } else if (density === 'high' && variant === 'full') {
-      // Keep all elements for high density
-    }
-    
-    return filtered;
-  };
-
-  const filteredLeftElements = getFilteredElements(leftElements);
-  const filteredRightElements = getFilteredElements(rightElements);
-
+export default function Home() {
   return (
-    <div className={`absolute inset-0 overflow-hidden pointer-events-none z-10 ${mobileClass}`}>
-      {/* Left side elements */}
-      {filteredLeftElements.map((element) => (
-        <div
-          key={`left-${element.id}`}
-          className={`absolute ${element.position} ${element.size} ${element.animation} ${baseOpacity} z-10`}
-        >
-          {element.component}
-        </div>
-      ))}
+    <>
+      <AppHeader />
+      <div className="min-h-screen bg-white overflow-x-hidden relative">
+      {/* Shared Animated Background */}
+      <AnimatedBackground variant="full" showWaves={true} showPatterns={true} />
 
-      {/* Right side elements */}
-      {filteredRightElements.map((element) => (
-        <div
-          key={`right-${element.id}`}
-          className={`absolute ${element.position} ${element.size} ${element.animation} ${baseOpacity} z-10`}
-        >
-          {element.component}
-        </div>
-      ))}
+      {/* Shared Floating Elements */}
+      <FloatingElements$1 brightness="high" verticalDistribution="even" />
 
-      {/* Kids mode additional elements */}
-      {isKidsMode && variant === 'full' && (
-        <>
-          {/* Additional playful elements for kids */}
-          <div className="absolute top-1/4 left-1/3 w-12 h-12 bg-cyan-500 rounded-full animate-float flex items-center justify-center text-white font-bold text-xl shadow-xl z-10 opacity-60">
-            L
+      {/* Main content */}
+      <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-8 max-w-5xl mx-auto">
+        {/* Hero Section */}
+        <section className="text-center py-20">
+          <div className="max-w-4xl mx-auto">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-600 rounded-full mb-6">
+              <PenTool className="text-white w-8 h-8" />
+            </div>
+            <h1 className="text-5xl font-bold text-gray-900 mb-4">
+              <span className="text-green-600">Flourish</span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              AI-powered handwriting improvement for students, parents, and educators
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link href="/signup">
+                <Button size="lg" className="bg-green-600 hover:bg-green-700">Get Started Free</Button>
+              </Link>
+              <Link href="/login">
+                <Button size="lg" variant="outline">Sign In</Button>
+              </Link>
+            </div>
           </div>
-          <div className="absolute bottom-1/2 right-32 w-12 h-12 bg-violet-500 rounded-full animate-twinkle flex items-center justify-center text-white font-bold text-xl shadow-xl z-10 opacity-60">
-            O
+        </section>
+
+        {/* Features Section */}
+        <section className="py-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">Powerful Features</h2>
+            <p className="text-lg text-gray-600 mt-2">Everything you need to improve handwriting with AI</p>
           </div>
-        </>
-      )}
-    </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Target className="text-blue-600 w-6 h-6" />
+                </div>
+                <CardTitle>AI-Powered Analysis</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <CardDescription>
+                  Analyze handwriting with advanced ML and get detailed feedback
+                </CardDescription>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="text-green-600 w-6 h-6" />
+                </div>
+                <CardTitle>Progress Tracking</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <CardDescription>
+                  Monitor improvement and receive personalized practice suggestions
+                </CardDescription>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="text-purple-600 w-6 h-6" />
+                </div>
+                <CardTitle>Interactive Worksheets</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <CardDescription>
+                  Practice with engaging, gamified worksheets and real-time feedback
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section className="py-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">Choose Your Plan</h2>
+            <p className="text-lg text-gray-600 mt-2">Start free or unlock premium features</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {/* Basic Plan */}
+            <Card className="border">
+              <CardHeader className="text-center">
+                <CardTitle>Basic</CardTitle>
+                <div className="text-3xl font-bold text-gray-900 mt-2">Free</div>
+                <CardDescription className="mt-1">Perfect to get started</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-left">
+                  <li>✔ 5 analyses per month</li>
+                  <li>✔ Basic feedback</li>
+                  <li>✔ Standard worksheets</li>
+                </ul>
+                <Button className="mt-4 w-full" variant="outline">Get Started</Button>
+              </CardContent>
+            </Card>
+
+            {/* Pro Plan */}
+            <Card className="border border-green-500 shadow-lg scale-105 relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <Badge className="bg-green-500 text-white px-3 py-1">Most Popular</Badge>
+              </div>
+              <CardHeader className="text-center">
+                <CardTitle>Pro</CardTitle>
+                <div className="text-3xl font-bold text-gray-900 mt-2">$9.99<span className="text-sm text-gray-600">/mo</span></div>
+                <CardDescription className="mt-1">For regular practice</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-left">
+                  <li>✔ Unlimited analyses</li>
+                  <li>✔ Detailed feedback</li>
+                  <li>✔ Premium worksheets</li>
+                  <li>✔ Progress tracking</li>
+                </ul>
+                <Button className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white">Start Trial</Button>
+              </CardContent>
+            </Card>
+
+            {/* Educator Plan */}
+            <Card className="border">
+              <CardHeader className="text-center">
+                <CardTitle>Educator</CardTitle>
+                <div className="text-3xl font-bold text-gray-900 mt-2">$19.99<span className="text-sm text-gray-600">/mo</span></div>
+                <CardDescription className="mt-1">Best for classrooms</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-left">
+                  <li>✔ Classroom tools</li>
+                  <li>✔ Student progress reports</li>
+                  <li>✔ Bulk uploads</li>
+                  <li>✔ Priority support</li>
+                </ul>
+                <Button className="mt-4 w-full" variant="outline">Contact Sales</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Call to Action */}
+        <section className="py-16 bg-green-600 text-white text-center rounded-xl mt-16">
+          <h2 className="text-3xl font-bold mb-4">Ready to Flourish?</h2>
+          <p className="text-lg mb-6">Join thousands improving their handwriting with AI</p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link href="/signup">
+              <Button size="lg" variant="secondary" className="bg-white text-green-600 hover:bg-gray-100">Start Free</Button>
+            </Link>
+            <Link href="/login">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600">Sign In</Button>
+            </Link>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="mt-20 py-12 border-t text-center text-sm text-gray-500">
+          <div className="flex items-center justify-center mb-2">
+            <div className="bg-green-600 text-white p-2 rounded-lg mr-2">
+              <PenTool className="h-4 w-4" />
+            </div>
+            <span className="font-bold text-gray-900">Flourish</span>
+          </div>
+          <p>© 2024 Flourish. All rights reserved.</p>
+        </footer>
+      </div>
+          </div>
+    </>
   );
-};
-
-export default FloatingElements;
+}
