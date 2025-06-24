@@ -9,6 +9,67 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 overflow-x-hidden">
       {/* Constrained Floating Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0">
+        {/* Animated Wave Backgrounds */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Left wave */}
+          <svg className="absolute left-0 top-0 h-full w-32" viewBox="0 0 200 800" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="leftWave" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.1" />
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0.1" />
+              </linearGradient>
+            </defs>
+            <path 
+              d="M0,0 L0,800 L120,800 Q160,720 120,640 Q80,560 120,480 Q160,400 120,320 Q80,240 120,160 Q160,80 120,0 Z" 
+              fill="url(#leftWave)"
+            >
+              <animateTransform
+                attributeName="transform"
+                attributeType="XML"
+                type="translate"
+                values="0,0; 0,-8; 0,0; 0,6; 0,0"
+                dur="8s"
+                repeatCount="indefinite"
+              />
+            </path>
+          </svg>
+
+          {/* Right wave */}
+          <svg className="absolute right-0 top-0 h-full w-32" viewBox="0 0 200 800" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="rightWave" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#10b981" stopOpacity="0.1" />
+                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.1" />
+              </linearGradient>
+            </defs>
+            <path 
+              d="M200,0 L200,800 L80,800 Q40,720 80,640 Q120,560 80,480 Q40,400 80,320 Q120,240 80,160 Q40,80 80,0 Z" 
+              fill="url(#rightWave)"
+            >
+              <animateTransform
+                attributeName="transform"
+                attributeType="XML"
+                type="translate"
+                values="0,0; 0,6; 0,0; 0,-4; 0,0"
+                dur="7s"
+                repeatCount="indefinite"
+              />
+            </path>
+          </svg>
+
+          {/* Wavy lines overlay */}
+          <div className="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" viewBox="0 0 1200 600" className="absolute inset-0">
+              <defs>
+                <pattern id="wave" x="0" y="0" width="200" height="100" patternUnits="userSpaceOnUse">
+                  <path d="M0,50 Q50,0 100,50 T200,50" stroke="#3b82f6" strokeWidth="2" fill="none" opacity="0.3" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#wave)" />
+            </svg>
+          </div>
+        </div>
+
         {/* Left side elements - constrained to left 10% of screen */}
         <div className="absolute top-20 left-8 w-12 h-12 animate-pulse">
           <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-500 drop-shadow-lg">
