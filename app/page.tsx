@@ -33,7 +33,12 @@ export default function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 overflow-x-hidden">
+    <motion.div
+      initial="hidden"
+      animate="show"
+      variants={containerVariants}
+      className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 overflow-x-hidden"
+    >
       {/* Animated Sticky Navbar */}
       <motion.div
         animate={{ y: hidden ? -80 : 0 }}
@@ -193,8 +198,6 @@ export default function Home() {
           Sign Up Free
         </Link>
       </motion.section>
-    </div>
+    </motion.div>
   );
 }
-
-
