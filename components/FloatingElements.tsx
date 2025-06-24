@@ -10,7 +10,6 @@ export interface FloatingElementsProps {
   isKidsMode?: boolean;
 }
 
-
 export default function FloatingElements({
   variant = 'full',
   density = 'medium',
@@ -41,14 +40,14 @@ export default function FloatingElements({
   const kidsIcons = [Smile, Star, Heart];
   const labels = ['A', '⭐', 'F', 'B', '💡', 'D', 'G', '✏️', 'H'];
   const colorPalette = [
-    'bg-rose-300',
-    'bg-orange-200',
-    'bg-lime-300',
-    'bg-cyan-300',
-    'bg-violet-300',
-    'bg-sky-300',
-    'bg-pink-400',
-    'bg-indigo-200',
+    'bg-rose-400',
+    'bg-orange-400',
+    'bg-yellow-300',
+    'bg-lime-400',
+    'bg-cyan-400',
+    'bg-violet-400',
+    'bg-pink-500',
+    'bg-indigo-300'
   ];
 
   const icons = isKidsMode ? kidsIcons : defaultIcons;
@@ -60,7 +59,7 @@ export default function FloatingElements({
     const horizontal = i % 2 === 0 ? 'left-[2%]' : 'right-[2%]';
     const topPercent = (i + 1) * (90 / (getDensityCount() + 1));
     const delay = `${Math.random() * 2}s`;
-    const scale = Math.random() * 0.4 + 1.0;
+    const scale = Math.random() < 0.3 ? 1.6 : Math.random() * 0.4 + 1.0;
     const shapeClass = i % 3 === 0 ? 'rounded-md' : i % 3 === 1 ? 'rounded-lg' : 'rounded-full';
 
     return {
