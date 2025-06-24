@@ -35,7 +35,7 @@ export default function Home() {
       <AnimatedBackground variant="full" showWaves={true} showPatterns={true} />
 
       {/* Shared Floating Elements */}
-      <FloatingElements$1 brightness="high" verticalDistribution="even" />
+      <FloatingElements />
 
       {/* Main content */}
       <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-8 max-w-5xl mx-auto">
