@@ -201,7 +201,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="mt-20 py-12 border-t text-center text-sm text-gray-500">
+        <footer className="mt-20 py-6 border-t text-center text-sm text-gray-500">
           <div className="flex items-center justify-center mb-2">
             <div className="bg-green-600 text-white p-2 rounded-lg mr-2">
               <PenTool className="h-4 w-4" />
