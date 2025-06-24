@@ -10,6 +10,7 @@ export interface FloatingElementsProps {
   isKidsMode?: boolean;
 }
 
+
 export default function FloatingElements({
   variant = 'full',
   density = 'medium',
