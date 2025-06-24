@@ -7,87 +7,118 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 overflow-x-hidden">
-      {/* Constrained Floating Background Elements */}
+      {/* Full Page Wave Backgrounds */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        {/* Animated Wave Backgrounds */}
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Left wave */}
-          <svg className="absolute left-0 top-0 h-full w-32" viewBox="0 0 200 800" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="leftWave" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.1" />
-                <stop offset="100%" stopColor="#10b981" stopOpacity="0.1" />
-              </linearGradient>
-            </defs>
-            <path 
-              d="M0,0 L0,800 L120,800 Q160,720 120,640 Q80,560 120,480 Q160,400 120,320 Q80,240 120,160 Q160,80 120,0 Z" 
-              fill="url(#leftWave)"
-            >
-              <animateTransform
-                attributeName="transform"
-                attributeType="XML"
-                type="translate"
-                values="0,0; 0,-8; 0,0; 0,6; 0,0"
-                dur="8s"
-                repeatCount="indefinite"
-              />
-            </path>
-          </svg>
+        {/* Left wave - extends full page height */}
+        <svg className="absolute left-0 top-0 h-full w-64" viewBox="0 0 200 800" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="leftWave" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#a7f3d0" />
+              <stop offset="100%" stopColor="#dbeafe" />
+            </linearGradient>
+          </defs>
+          <path 
+            d="M0,0 L0,800 L120,800 Q160,720 120,640 Q80,560 120,480 Q160,400 120,320 Q80,240 120,160 Q160,80 120,0 Z" 
+            fill="url(#leftWave)"
+          >
+            <animateTransform
+              attributeName="transform"
+              attributeType="XML"
+              type="translate"
+              values="0,0; 0,-8; 0,0; 0,6; 0,0"
+              dur="8s"
+              repeatCount="indefinite"
+            />
+          </path>
+        </svg>
 
-          {/* Right wave */}
-          <svg className="absolute right-0 top-0 h-full w-32" viewBox="0 0 200 800" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="rightWave" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#10b981" stopOpacity="0.1" />
-                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.1" />
-              </linearGradient>
-            </defs>
-            <path 
-              d="M200,0 L200,800 L80,800 Q40,720 80,640 Q120,560 80,480 Q40,400 80,320 Q120,240 80,160 Q40,80 80,0 Z" 
-              fill="url(#rightWave)"
-            >
-              <animateTransform
-                attributeName="transform"
-                attributeType="XML"
-                type="translate"
-                values="0,0; 0,6; 0,0; 0,-4; 0,0"
-                dur="7s"
-                repeatCount="indefinite"
-              />
-            </path>
-          </svg>
+        {/* Right wave - extends full page height */}
+        <svg className="absolute right-0 top-0 h-full w-64" viewBox="0 0 200 800" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="rightWave" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#dbeafe" />
+              <stop offset="100%" stopColor="#a7f3d0" />
+            </linearGradient>
+          </defs>
+          <path 
+            d="M200,0 L200,800 L80,800 Q40,720 80,640 Q120,560 80,480 Q40,400 80,320 Q120,240 80,160 Q40,80 80,0 Z" 
+            fill="url(#rightWave)"
+          >
+            <animateTransform
+              attributeName="transform"
+              attributeType="XML"
+              type="translate"
+              values="0,0; 0,6; 0,0; 0,-4; 0,0"
+              dur="7s"
+              repeatCount="indefinite"
+            />
+          </path>
+        </svg>
 
-          {/* Wavy lines overlay */}
-          <div className="absolute inset-0 opacity-10">
-            <svg width="100%" height="100%" viewBox="0 0 1200 600" className="absolute inset-0">
-              <defs>
-                <pattern id="wave" x="0" y="0" width="200" height="100" patternUnits="userSpaceOnUse">
-                  <path d="M0,50 Q50,0 100,50 T200,50" stroke="#3b82f6" strokeWidth="2" fill="none" opacity="0.3" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#wave)" />
-            </svg>
-          </div>
+        {/* Wavy lines overlay */}
+        <div className="absolute inset-0 opacity-10">
+          <svg width="100%" height="100%" viewBox="0 0 1200 600" className="absolute inset-0">
+            <defs>
+              <pattern id="wave" x="0" y="0" width="200" height="100" patternUnits="userSpaceOnUse">
+                <path d="M0,50 Q50,0 100,50 T200,50" stroke="#3b82f6" strokeWidth="2" fill="none" opacity="0.3" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#wave)" />
+          </svg>
         </div>
+      </div>
 
-        {/* Left side elements - constrained to left 10% of screen */}
-        <div className="absolute top-20 left-8 w-12 h-12 animate-pulse">
+      {/* Vibrant Floating Elements */}
+      <div className="fixed inset-0 pointer-events-none z-5">
+        {/* Left side elements */}
+        <div className="absolute top-20 left-8 w-12 h-12 animate-float">
           <svg viewBox="0 0 24 24" className="w-full h-full text-yellow-500 drop-shadow-lg">
             <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
           </svg>
         </div>
         
-        <div className="absolute top-80 left-4 w-10 h-10 bg-red-400 rounded-xl animate-bounce shadow-xl"></div>
-        <div className="absolute bottom-40 left-6 w-8 h-8 bg-blue-400 rounded-full animate-pulse shadow-xl"></div>
-        
-        {/* Right side elements - constrained to right 10% of screen */}
-        <div className="absolute top-32 right-8 w-10 h-10 bg-green-400 rounded-xl animate-bounce shadow-xl"></div>
-        <div className="absolute top-80 right-4 w-12 h-12 animate-pulse">
-          <svg viewBox="0 0 24 24" className="w-full h-full text-purple-500 drop-shadow-lg">
+        <div className="absolute top-64 left-2 w-12 h-12 animate-float-delay">
+          <div className="w-full h-full bg-gradient-to-br from-red-400 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
+            A
+          </div>
+        </div>
+
+        <div className="absolute top-96 left-6 w-14 h-14 animate-bounce-slow">
+          <div className="w-full h-full bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl shadow-xl">
+            G
+          </div>
+        </div>
+
+        <div className="absolute bottom-32 left-8 w-10 h-10 animate-twinkle-delay">
+          <svg viewBox="0 0 24 24" className="w-full h-full text-blue-400 drop-shadow-lg">
             <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
           </svg>
         </div>
-        <div className="absolute bottom-32 right-6 w-8 h-8 bg-pink-400 rounded-full animate-pulse shadow-xl"></div>
+        
+        {/* Right side elements */}
+        <div className="absolute top-32 right-4 w-12 h-12 animate-twinkle">
+          <svg viewBox="0 0 24 24" className="w-full h-full text-pink-400 drop-shadow-lg">
+            <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
+          </svg>
+        </div>
+
+        <div className="absolute top-56 right-2 w-12 h-12 animate-float">
+          <div className="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
+            B
+          </div>
+        </div>
+
+        <div className="absolute bottom-56 right-6 w-12 h-12 animate-bounce-slow">
+          <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-xl">
+            C
+          </div>
+        </div>
+
+        <div className="absolute top-1/2 right-4 w-16 h-16 animate-float-slow">
+          <svg viewBox="0 0 24 24" className="w-full h-full text-green-500 drop-shadow-lg">
+            <path fill="currentColor" d="M19,2L14,6.5V17.5L19,13V2M6.5,5C4.55,5 2.45,5.4 1,6.5V21.16C1,21.41 1.25,21.66 1.5,21.66C1.6,21.66 1.65,21.59 1.75,21.59C3.1,20.94 5.05,20.68 6.5,20.68C8.45,20.68 10.55,21.1 12,22C13.35,21.15 15.8,20.68 17.5,20.68C19.15,20.68 20.85,21.1 22.25,21.81C22.35,21.86 22.4,21.91 22.5,21.91C22.75,21.91 23,21.66 23,21.41V6.5C22.4,6.05 21.75,5.75 21,5.5V19C19.9,18.65 18.7,18.5 17.5,18.5C15.8,18.5 13.35,18.9 12,19.81V6.5C10.55,5.4 8.45,5 6.5,5Z" />
+          </svg>
+        </div>
       </div>
 
       {/* Header */}
@@ -119,12 +150,12 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content Container - Properly Constrained */}
-      <main className="relative z-10">
+      {/* Main Content Container - Positioned between waves */}
+      <main className="relative z-10 mx-auto" style={{ maxWidth: 'calc(100vw - 32rem)' }}>
         {/* Hero Section */}
         <section className="py-20 lg:py-32">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
               <div className="flex items-center justify-center mb-6">
                 <div className="bg-gradient-to-r from-green-600 to-green-800 p-4 rounded-full">
                   <PenTool className="w-12 h-12 text-white" />
@@ -163,7 +194,7 @@ export default function Home() {
 
         {/* Features Section */}
         <section className="py-16 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
                 Powerful Features for Better Handwriting
@@ -210,6 +241,152 @@ export default function Home() {
                   <CardTitle className="text-xl">Interactive Worksheets</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
+                  <CardDescription className="text-base leading-relaxed">
+                    Engaging practice worksheets with instant feedback and gamified learning experiences
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose Your Plan</h2>
+              <p className="text-xl text-gray-600">
+                Start with our free tier or unlock advanced features with our premium plans
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {/* Basic Plan */}
+              <Card className="border-2 border-gray-200 relative">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">Basic</CardTitle>
+                  <div className="text-4xl font-bold text-gray-900 mt-4">Free</div>
+                  <CardDescription className="mt-2">Perfect for getting started</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      5 analyses per month
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Basic feedback
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Standard worksheets
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6" variant="outline">
+                    Get Started
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Premium Plan */}
+              <Card className="border-2 border-green-500 relative shadow-lg scale-105">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-green-500 text-white px-4 py-1">Most Popular</Badge>
+                </div>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">Premium</CardTitle>
+                  <div className="text-4xl font-bold text-gray-900 mt-4">
+                    $9.99<span className="text-lg text-gray-600">/month</span>
+                  </div>
+                  <CardDescription className="mt-2">Best for regular practice</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Unlimited analyses
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Detailed feedback
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Premium worksheets
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Progress tracking
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6 bg-green-600 hover:bg-green-700">
+                    Start Free Trial
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Educator Plan */}
+              <Card className="border-2 border-gray-200 relative">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">Educator</CardTitle>
+                  <div className="text-4xl font-bold text-gray-900 mt-4">
+                    $19.99<span className="text-lg text-gray-600">/month</span>
+                  </div>
+                  <CardDescription className="mt-2">For teachers and schools</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Classroom management
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Student progress reports
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Bulk upload tools
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                      Priority support
+                    </li>
+                  </ul>
+                  <Button className="w-full mt-6" variant="outline">
+                    Contact Sales
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-16 bg-green-600">
+          <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Ready to Improve Your Handwriting?
+            </h2>
+            <p className="text-xl text-green-100 mb-8">
+              Join thousands of students, parents, and educators who trust Flourish
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/signup">
+                <Button size="lg" variant="secondary" className="bg-white text-green-600 hover:bg-gray-100">
+                  Start Free Today
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600">
+                  Sign In
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>text-center">
                   <CardDescription className="text-base leading-relaxed">
                     Engaging practice worksheets with instant feedback and gamified learning experiences
                   </CardDescription>
