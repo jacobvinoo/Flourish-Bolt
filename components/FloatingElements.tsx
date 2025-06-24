@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 export interface FloatingElementsProps {
   variant?: 'full' | 'minimal' | 'edges-only';
-  density?: 'sparse' | 'medium' | 'dense';
+  density?: 'sparse' | 'medium' | 'dense' | 'low' | 'high';
   showOnMobile?: boolean;
 }
 
@@ -17,8 +17,14 @@ export default function FloatingElements({
   const baseStyle =
     'absolute rounded-full shadow-md flex items-center justify-center text-white text-sm font-bold w-9 h-9';
 
+  const normalizedDensity = (() => {
+    if (density === 'low') return 'sparse';
+    if (density === 'high') return 'dense';
+    return density;
+  })();
+
   const getDensityCount = () => {
-    switch (density) {
+    switch (normalizedDensity) {
       case 'sparse':
         return 3;
       case 'dense':
@@ -38,7 +44,7 @@ export default function FloatingElements({
 
     const topPercent =
       variant === 'edges-only'
-        ? (i * (90 / (getDensityCount() - 1)) + 5) // evenly spaced between 5% and 95%
+        ? (i * (90 / (getDensityCount() - 1)) + 5)
         : 10 + i * 10;
 
     return {
