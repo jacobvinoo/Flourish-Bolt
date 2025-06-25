@@ -100,7 +100,8 @@ export default function Dashboard() {
     const getUser = async () => {
       try {
         const { data: { user }, error } = await supabase.auth.getUser();
-        
+        console.log('Supabase user:', user); // ✅ ADD THIS
+      console.log('Auth error:', error);   // ✅ ADD THIS
         if (error || !user) {
           console.error('Auth error:', error);
           router.push('/login');
