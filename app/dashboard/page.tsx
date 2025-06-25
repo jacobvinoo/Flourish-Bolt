@@ -110,10 +110,12 @@ export default function Dashboard() {
         
         setUser(user);
         await fetchProfile(user.id);
+        console.log('✅ Profile fetched:', data);
       } catch (error: any) {
         console.error('Error in getUser:', error);
         router.push('/login');
       } finally {
+        console.log('✅ Finished loading user and profile');
         setLoading(false);
       }
     };
