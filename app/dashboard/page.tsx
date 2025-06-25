@@ -135,7 +135,7 @@ export default function Dashboard() {
         console.error('Error fetching profile:', error);
         return;
       }
-``
+
       if (data) {
         console.log('✅ Profile fetched:', data);
         setProfile(data);
