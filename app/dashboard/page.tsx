@@ -187,8 +187,7 @@ export default function Dashboard() {
   floatingElementsProps={{
     variant: 'full',
     density: 'medium',
-    showOnMobile: false,
-    isKidsMode: profile?.display_mode === 'kids'
+    showOnMobile: false
   }}
   headerProps={{
     showUserControls: true,
