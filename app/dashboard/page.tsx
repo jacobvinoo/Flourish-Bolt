@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -6,13 +5,13 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PageLayout from '@/components/PageLayout';
-import { 
-  Target, 
-  Trophy, 
-  Flame, 
-  Star, 
-  Crown, 
-  Zap, 
+import {
+  Target,
+  Trophy,
+  Flame,
+  Star,
+  Crown,
+  Zap,
   Clock,
   TrendingUp,
   Settings,
@@ -34,7 +33,7 @@ import { Database, Profile } from '@/lib/database.types';
 function Progress({ value, className = '' }: { value: number; className?: string }) {
   return (
     <div className={`w-full bg-gray-100 rounded-full h-2 ${className}`}>
-      <div 
+      <div
         className="bg-green-600 h-2 rounded-full transition-all duration-300 ease-out"
         style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
       />
@@ -97,7 +96,7 @@ export default function Dashboard() {
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
-    useEffect(() => {
+  useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Dashboard Auth Event:', event);
       if (session) {
@@ -121,7 +120,7 @@ export default function Dashboard() {
   const fetchProfile = async (userId: string) => {
     try {
       console.log('Dashboard: Fetching profile for user:', userId);
-      
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -183,7 +182,7 @@ export default function Dashboard() {
     );
   }
 
-  // User not found state
+  // User not found state (this will be briefly visible before the redirect)
   if (!user) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -219,15 +218,15 @@ export default function Dashboard() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className={`text-3xl font-bold ${
-              isKidsMode 
-                ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600' 
+              isKidsMode
+                ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600'
                 : 'text-gray-900'
             }`}>
               {isKidsMode ? '🌟 Welcome Back!' : 'Welcome back!'}
             </h2>
             <p className={`${
-              isKidsMode 
-                ? 'text-purple-600' 
+              isKidsMode
+                ? 'text-purple-600'
                 : 'text-gray-600'
             } mt-1`}>
               {user?.email || 'Ready to improve your handwriting?'}
@@ -237,8 +236,8 @@ export default function Dashboard() {
           <div className="flex items-center gap-4">
             {/* Current Streak */}
             <div className={`px-4 py-2 rounded-xl ${
-              isKidsMode 
-                ? 'bg-gradient-to-r from-orange-400 to-pink-400 text-white' 
+              isKidsMode
+                ? 'bg-gradient-to-r from-orange-400 to-pink-400 text-white'
                 : 'bg-orange-50 border border-orange-200'
             }`}>
               <div className="flex items-center gap-2">
@@ -257,8 +256,8 @@ export default function Dashboard() {
 
             {/* Level & XP */}
             <div className={`px-4 py-2 rounded-xl ${
-              isKidsMode 
-                ? 'bg-gradient-to-r from-blue-400 to-purple-400 text-white' 
+              isKidsMode
+                ? 'bg-gradient-to-r from-blue-400 to-purple-400 text-white'
                 : 'bg-blue-50 border border-blue-200'
             }`}>
               <div className="flex items-center gap-2">
@@ -272,7 +271,7 @@ export default function Dashboard() {
                     Level {level}
                   </p>
                   <div className="w-16 bg-white/30 rounded-full h-1.5 mt-1">
-                    <div 
+                    <div
                       className="bg-white h-1.5 rounded-full transition-all duration-300"
                       style={{ width: `${levelProgress}%` }}
                     />
@@ -285,8 +284,8 @@ export default function Dashboard() {
 
         {/* Weekly Goal Progress */}
         <div className={`p-4 rounded-xl ${
-          isKidsMode 
-            ? 'bg-gradient-to-r from-green-100 to-blue-100 border-2 border-green-200' 
+          isKidsMode
+            ? 'bg-gradient-to-r from-green-100 to-blue-100 border-2 border-green-200'
             : 'bg-white border border-gray-200 shadow-sm'
         }`}>
           <div className="flex items-center justify-between mb-3">
@@ -319,16 +318,16 @@ export default function Dashboard() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
           <h3 className={`text-2xl font-bold ${
-            isKidsMode 
-              ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600' 
+            isKidsMode
+              ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600'
               : 'text-gray-900'
           }`}>
             {isKidsMode ? '🎯 Your Learning Adventure' : 'Learning Paths'}
           </h3>
           <Link href="/practice">
             <button className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 ${
-              isKidsMode 
-                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600' 
+              isKidsMode
+                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}>
               {isKidsMode ? '🚀 Explore All' : 'View All'}
@@ -340,8 +339,8 @@ export default function Dashboard() {
           {mockLearningPaths.map((path) => (
             <Link href={path.href} key={path.id}>
               <div className={`p-6 rounded-xl transition-all duration-200 hover:scale-105 cursor-pointer ${
-                isKidsMode 
-                  ? 'bg-gradient-to-br from-white to-purple-50 border-2 border-purple-200 hover:border-purple-300' 
+                isKidsMode
+                  ? 'bg-gradient-to-br from-white to-purple-50 border-2 border-purple-200 hover:border-purple-300'
                   : 'bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
               }`}>
                 <div className="flex items-center justify-between mb-4">
@@ -360,7 +359,7 @@ export default function Dashboard() {
                 }`}>
                   {path.title}
                 </h4>
-                
+
                 <p className={`text-sm mb-4 ${
                   isKidsMode ? 'text-purple-600' : 'text-gray-600'
                 }`}>
@@ -413,8 +412,8 @@ export default function Dashboard() {
         {/* Practice Session */}
         <Link href="/practice">
           <div className={`p-6 rounded-xl transition-all duration-200 hover:scale-105 cursor-pointer ${
-            isKidsMode 
-              ? 'bg-gradient-to-br from-green-400 to-blue-500 text-white hover:from-green-500 hover:to-blue-600' 
+            isKidsMode
+              ? 'bg-gradient-to-br from-green-400 to-blue-500 text-white hover:from-green-500 hover:to-blue-600'
               : 'bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
           }`}>
             <div className="flex items-center gap-3 mb-4">
@@ -442,8 +441,8 @@ export default function Dashboard() {
         {/* Worksheets */}
         <Link href="/worksheets">
           <div className={`p-6 rounded-xl transition-all duration-200 hover:scale-105 cursor-pointer ${
-            isKidsMode 
-              ? 'bg-gradient-to-br from-orange-400 to-pink-500 text-white hover:from-orange-500 hover:to-pink-600' 
+            isKidsMode
+              ? 'bg-gradient-to-br from-orange-400 to-pink-500 text-white hover:from-orange-500 hover:to-pink-600'
               : 'bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
           }`}>
             <div className="flex items-center gap-3 mb-4">
@@ -471,8 +470,8 @@ export default function Dashboard() {
         {/* Progress Report */}
         <Link href="/progress">
           <div className={`p-6 rounded-xl transition-all duration-200 hover:scale-105 cursor-pointer ${
-            isKidsMode 
-              ? 'bg-gradient-to-br from-purple-400 to-indigo-500 text-white hover:from-purple-500 hover:to-indigo-600' 
+            isKidsMode
+              ? 'bg-gradient-to-br from-purple-400 to-indigo-500 text-white hover:from-purple-500 hover:to-indigo-600'
               : 'bg-white border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
           }`}>
             <div className="flex items-center gap-3 mb-4">
