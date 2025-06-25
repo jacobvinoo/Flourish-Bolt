@@ -110,7 +110,7 @@ export default function Dashboard() {
         
         setUser(user);
         await fetchProfile(user.id);
-        console.log('✅ Profile fetched:', data);
+
       } catch (error: any) {
         console.error('Error in getUser:', error);
         router.push('/login');
@@ -137,6 +137,7 @@ export default function Dashboard() {
       }
 
       if (data) {
+        console.log('✅ Profile fetched:', data);
         setProfile(data);
       }
     } catch (error: any) {
