@@ -161,6 +161,7 @@ export default function Dashboard() {
   const weeklyGoalProgress = (weeklyProgress / weeklyGoal) * 100;
   const isKidsMode = profile?.display_mode === 'kids';
 
+  
   // Loading state
   if (loading) {
     return (
