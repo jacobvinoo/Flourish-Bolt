@@ -37,13 +37,11 @@ export default function LoginPage() {
 
   // Optional: If already logged in, redirect
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        router.push(redirectedFrom);
-      }
-    })();
-  }, [redirectedFrom, supabase, router]);
+  const redirectedFrom = searchParams.get('redirectedFrom');
+  if (redirectedFrom) {
+    document.cookie = `redirectedFrom=${redirectedFrom}; path=/; max-age=600`;
+  }
+}, [searchParams]);
 
   return (
     <div className="max-w-md mx-auto mt-20">
