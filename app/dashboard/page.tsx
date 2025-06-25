@@ -130,12 +130,12 @@ export default function Dashboard() {
         .select('*')
         .eq('id', userId)
         .maybeSingle();
-
+      console.log('✅ Profile fetched:', data);
       if (error) {
         console.error('Error fetching profile:', error);
         return;
       }
-
+``
       if (data) {
         console.log('✅ Profile fetched:', data);
         setProfile(data);
