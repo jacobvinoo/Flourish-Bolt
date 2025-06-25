@@ -118,13 +118,6 @@ export default function Dashboard() {
     };
   }, [supabase, router]);
 
-    getUser();
-
-    return () => {
-      mounted = false;
-    };
-  }, [supabase, router]);
-
   const fetchProfile = async (userId: string) => {
     try {
       console.log('Dashboard: Fetching profile for user:', userId);
