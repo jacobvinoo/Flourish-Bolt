@@ -673,6 +673,7 @@ export default function Dashboard() {
 }
     if (error) {
       console.error('❌ Error fetching profile:', error);
+      console.log('Error fetching profile')
       return null;
     }
 
