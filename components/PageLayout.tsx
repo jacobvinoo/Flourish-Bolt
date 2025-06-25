@@ -12,9 +12,10 @@ interface PageLayoutProps {
   showBackgroundElements?: boolean;
   showFloatingElements?: boolean;
   floatingElementsProps?: {
-    variant?: 'full' | 'minimal' | 'edges-only';
+    variant?: 'minimal' | 'full' | 'edges-only';
     density?: 'low' | 'medium' | 'high';
     showOnMobile?: boolean;
+    isKidsMode?: boolean; // ✅ Add this line
   };
   headerProps?: {
     showUserControls?: boolean;
