@@ -113,6 +113,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   }, [supabase]);
 */
   // Prevent hydration mismatch
+  useEffect(() => { setMounted(true); }, []);
   if (!mounted) {
     return <div className="adult-mode">{children}</div>;
   }
