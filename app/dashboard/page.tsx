@@ -97,51 +97,26 @@ export default function Dashboard() {
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
-  useEffect(() => {
-    let mounted = true;
-
-    const getUser = async () => {
-      try {
-        console.log('Dashboard: Checking authentication...');
-        
-        const { data: { user }, error } = await supabase.auth.getUser();
-        
-        console.log('Dashboard: Auth result:', { user: !!user, error });
-        
-        if (error) {
-          console.error('Dashboard: Auth error:', error);
-          setAuthError(error.message);
-          if (mounted) {
-            setTimeout(() => router.push('/login'), 2000);
-          }
-          return;
-        }
-        
-        if (!user) {
-          console.log('Dashboard: No user found, redirecting to login');
-          if (mounted) {
-            router.push('/login');
-          }
-          return;
-        }
-        
-        console.log('Dashboard: User authenticated:', user.email);
-        if (mounted) {
-          setUser(user);
-          await fetchProfile(user.id);
-        }
-      } catch (error: any) {
-        console.error('Dashboard: Unexpected error:', error);
-        setAuthError('Unexpected authentication error');
-        if (mounted) {
-          setTimeout(() => router.push('/login'), 2000);
-        }
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
+    useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Dashboard Auth Event:', event);
+      if (session) {
+        // User is signed in
+        setUser(session.user);
+        await fetchProfile(session.user.id);
+        setLoading(false);
+      } else {
+        // User is not signed in, redirect to login
+        console.log('Dashboard: No session found, redirecting to login');
+        router.push('/login');
       }
+    });
+
+    // The cleanup function unsubscribes from the listener when the component unmounts
+    return () => {
+      subscription.unsubscribe();
     };
+  }, [supabase, router]);
 
     getUser();
 
