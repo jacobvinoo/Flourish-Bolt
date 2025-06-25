@@ -97,53 +97,59 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        console.log('Supabase user:', user); // ✅ ADD THIS
-      console.log('Auth error:', error);   // ✅ ADD THIS
-        if (error || !user) {
-          console.error('Auth error:', error);
-          router.push('/login');
-          return;
-        }
-        
-        setUser(user);
-        await fetchProfile(user.id);
-
-      } catch (error: any) {
-        console.error('Error in getUser:', error);
-        router.push('/login');
-      } finally {
-        console.log('✅ Finished loading user and profile');
-        setLoading(false);
-      }
-    };
-
-    getUser();
-  }, [router, supabase.auth]); // Fix: Added missing dependencies
-
-  const fetchProfile = async (userId: string) => {
+  const getUserAndProfile = async () => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
-      console.log('✅ Profile fetched:', data);
-      if (error) {
-        console.error('Error fetching profile:', error);
+      const { data: { user }, error } = await supabase.auth.getUser();
+      console.log('👤 Supabase user:', user);
+      console.log('❌ Auth error (if any):', error);
+
+      if (error || !user) {
+        console.warn('User not found, redirecting to login');
+        router.push('/login');
         return;
       }
 
-      if (data) {
-        console.log('✅ Profile fetched:', data);
-        setProfile(data);
+      setUser(user);
+
+      const profileData = await fetchProfile(user.id);
+      if (!profileData) {
+        console.warn('⚠️ Profile not found, redirecting to login');
+        router.push('/login');
+        return;
       }
-    } catch (error: any) {
-      console.error('Error fetching profile:', error);
+
+      setProfile(profileData);
+      console.log('✅ Profile loaded:', profileData);
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      router.push('/login');
+    } finally {
+      setLoading(false);
     }
   };
+
+  getUserAndProfile();
+}, [router, supabase.auth]);
+
+const fetchProfile = async (userId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (error) {
+      console.error('❌ Error fetching profile:', error);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('❌ fetchProfile threw an error:', error);
+    return null;
+  }
+};
 
   const handleSignOut = async () => {
     try {
