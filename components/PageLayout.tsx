@@ -15,7 +15,6 @@ interface PageLayoutProps {
     variant?: 'minimal' | 'full' | 'edges-only';
     density?: 'low' | 'medium' | 'high';
     showOnMobile?: boolean;
-    isKidsMode?: boolean; // ✅ Add this line
   };
   headerProps?: {
     showUserControls?: boolean;
