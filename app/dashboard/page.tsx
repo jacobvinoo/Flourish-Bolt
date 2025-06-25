@@ -78,6 +78,7 @@ const mockLearningPaths = [
     href: '/practice/uppercase'
   }
 ];
+console.log('FloatingElements props:', { variant, density, showOnMobile, isKidsMode });
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
