@@ -16,6 +16,8 @@ export default function FloatingElements({
   showOnMobile = true,
   isKidsMode = false,
 }: FloatingElementsProps) {
+  console.log('FloatingElements props:', { variant, density, showOnMobile, isKidsMode });
+
   const baseStyle =
     'absolute rounded-full shadow-md flex items-center justify-center text-black text-sm font-bold w-12 h-12 transition-transform duration-1000 ease-in-out';
 
