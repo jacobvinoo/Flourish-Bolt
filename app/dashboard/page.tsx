@@ -180,16 +180,23 @@ export default function Dashboard() {
 
   return (
     <PageLayout
-      isKidsMode={profile?.display_mode === 'kids'}
-      headerVariant="authenticated"
-      containerWidth="max-w-6xl"
-      headerProps={{
-        showUserControls: true,
-        profile,
-        currentStreak,
-        xp
-      }}
-    >
+  isKidsMode={profile?.display_mode === 'kids'}
+  headerVariant="authenticated"
+  containerWidth="max-w-6xl"
+  showFloatingElements={true}
+  floatingElementsProps={{
+    variant: 'full',
+    density: 'medium',
+    showOnMobile: false,
+    isKidsMode: profile?.display_mode === 'kids'
+  }}
+  headerProps={{
+    showUserControls: true,
+    profile,
+    currentStreak,
+    xp
+  }}
+>
       {/* Welcome Section */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
