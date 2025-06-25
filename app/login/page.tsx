@@ -24,7 +24,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   // Check if user is already authenticated
-  useEffect(() => {
+  /* useEffect(() => {
     const checkAuth = async () => {
       try {
         const { data: { user }, error } = await supabase.auth.getUser();
@@ -46,7 +46,7 @@ export default function LoginPage() {
       }
     };
     checkAuth();
-  }, [supabase]);
+  }, [supabase]); */
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
