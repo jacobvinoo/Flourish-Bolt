@@ -13,6 +13,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   const [displayMode, setDisplayMode] = useState<'adult' | 'kid'>('adult');
   const supabase = createClientComponentClient<Database>();
 
+  /*
   useEffect(() => {
     setMounted(true);
     
@@ -110,7 +111,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, [supabase]);
-
+*/
   // Prevent hydration mismatch
   if (!mounted) {
     return <div className="adult-mode">{children}</div>;
