@@ -67,20 +67,22 @@ export default function LoginPage() {
       if (error) {
         console.log('Login: Sign in error:', error.message);
         setError(error.message);
+        setLoading(false);
       } else if (data.user) {
         console.log('Login: Sign in successful, redirecting to dashboard');
         setSuccess(true);
         // Use window.location.href for reliable redirect
+        /*
         setTimeout(() => {
           window.location.href = '/dashboard';
         }, 1000);
+        */
+        router.push('/dashboard')
       }
     } catch (err: any) {
       console.log('Login: Unexpected error:', err);
       setError('An unexpected error occurred. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   const handleSignOut = async () => {
