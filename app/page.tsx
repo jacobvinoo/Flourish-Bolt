@@ -195,7 +195,7 @@ export default function Home() {
               <Button size="lg" variant="secondary" className="bg-white text-green-600 hover:bg-gray-100">Start Free</Button>
             </Link>
             <Link href="/login">
-              <Button size="lg" variant="outline" className="border-white text-white bg-opacity-100 visible hover:bg-white hover:text-green-600">
+              <Button size="lg" variant="secondary" className="bg-white text-green-600 hover:bg-gray-100">
               Sign In</Button>
             </Link>
           </div>
