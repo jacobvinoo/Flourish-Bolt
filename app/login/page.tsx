@@ -108,7 +108,7 @@ export default function LoginPage() {
     <PageLayout
       headerVariant="landing"
       backgroundVariant="full"
-      containerWidth="max-w-4xl"
+      // containerWidth="max-w-4xl"
       showBackgroundElements={true}
       showFloatingElements={true}
       floatingElementsProps={{
