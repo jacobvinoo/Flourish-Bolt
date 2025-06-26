@@ -50,6 +50,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   // Tight universal max width for all content:
   const containerClass = 'max-w-4xl mx-auto px-4 sm:px-6 lg:px-8';
 
+  
   return (
     <div className={`min-h-screen transition-all duration-500 relative overflow-hidden ${backgroundClass} ${className}`}>
       {/* Hide backgrounds on small screens */}
