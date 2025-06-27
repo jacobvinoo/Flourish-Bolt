@@ -322,7 +322,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     // Award 50 xp for completing a step
     const newXp = (localProfile?.xp ?? 0) + 50;
 
-    console.log(`Attempting to update XP for user ${user.id}. NewXP should be ${newXP}`);
+    console.log(`Attempting to update XP for user ${user.id}. NewXP should be ${newXp}`);
     // Update the profile in the database
     const { error } = await supabase
       .from('profiles')
