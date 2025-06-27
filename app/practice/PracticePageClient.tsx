@@ -256,14 +256,26 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
+  useEffect(() => {
+    setLocalProfile(profile);
+  }, [profile]);
+
   const handleFileSelect = (file: File) => {
-    setSelectedFile(file); setUploadError(null); setUploadSuccess(false); setAnalysisResult(null); setShowGrading(false);
+    setSelectedFile(file); 
+    setUploadError(null); 
+    setUploadSuccess(false); 
+    setAnalysisResult(null); 
+    setShowGrading(false);
   };
   const handleFileRemove = () => {
-    setSelectedFile(null); setUploadError(null); setUploadSuccess(false); setAnalysisResult(null); setShowGrading(false);
+    setSelectedFile(null); 
+    setUploadError(null); 
+    setUploadSuccess(false); 
+    setAnalysisResult(null); 
+    setShowGrading(false);
   };
 
-  const simulateAIAnalysis = (file: File) => {
+  /* const simulateAIAnalysis = (file: File) => {
     const mockAnalysisData = [
       { score: 95, steadiness: 98, accuracy: 92 }, { score: 78, steadiness: 70, accuracy: 86 },
       { score: 92, steadiness: 95, accuracy: 89 }, { score: 65, steadiness: 80, accuracy: 50 },
@@ -287,15 +299,20 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     else if (averageAccuracy < averageSteadiness && averageAccuracy < 85) feedbackTip = isKidsMode ? "Your lines are nice and steady! Let's now focus on starting right on the green dot and stopping at the red dot. 🎯" : "Your lines are nice and steady! Let's now focus on starting right on the green dot and stopping at the red dot.";
     else feedbackTip = isKidsMode ? "Fantastic work! Your lines are accurate and steady. You're ready to move on to the next challenge! 🏆" : "Fantastic work! Your lines are accurate and steady. You're ready to move on to the next challenge!";
     return { lines: mockAnalysisData, overallScore: averageScore, steadiness: averageSteadiness, accuracy: averageAccuracy, feedbackTip, imageUrl: URL.createObjectURL(file) };
-  };
+  }; */
 
   const handleUpload = async () => {
     if (!selectedFile || !user) {
       setUploadError(localProfile?.display_mode === 'kids' ? '😅 Please pick a photo first!' : 'No file selected or user not authenticated');
       return;
     }
-    setUploading(true); setUploadError(null); setUploadSuccess(false);
-    try {
+    setUploading(true); 
+    setUploadError(null); 
+    setUploadSuccess(false);
+    setAnalysisResult(null);
+    setShowGrading(false);
+    
+    /* try {
       setTimeout(() => {
         const result = simulateAIAnalysis(selectedFile);
         setAnalysisResult(result); setShowGrading(true); setUploading(false);
@@ -311,6 +328,44 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
       setUploadError(localProfile?.display_mode === 'kids' ? '😞 Oops! Something went wrong. Can you try again?' : error.message || 'An unexpected error occurred during upload');
       setUploading(false);
     }
+  }; */
+
+  try {
+    const currentWorksheet = firstWorkbookSteps[currentStep];
+
+    //Use FormData to send the file and worksheet info to your API route
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('worksheetTitle', currentWorksheet.title);
+    formData.append('worksheetInstructions', currentWorksheet.description);
+
+    // Call AI grading API endpoint
+    const response = await fetch('/api/gradeworksheet', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Errror(errorData.error || 'Failed to get a grade from the AI Server');
+    }
+
+    const result = await response.json();
+
+    // Set the analysis result with the real data from the AI
+    setAnalysisResult({
+      overallScore: result.score,
+      feedbackTip: result.feedback,
+      imageUrl: URL.createObjectURL(selectedFile),
+    });
+
+    setShowGrading(true);
+    
+  } catch (error: any) {
+    setUploadError(error.message || 'An unexpected error occurred.');
+  } finally {
+    setUploading(false);
+  }
   };
 
   const handleGradingComplete = async () => {
