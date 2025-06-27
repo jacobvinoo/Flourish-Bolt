@@ -237,9 +237,9 @@ function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disab
   );
 }
 
-export default function PracticePage() {
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+export default function PracticePageClient({ user, profile }) {
+  //const [user, setUser] = useState<User | null>(null);
+  //const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -253,25 +253,7 @@ export default function PracticePage() {
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        if (error || !user) {
-          router.push('/login');
-          return;
-        }
-        setUser(user);
-        await fetchProfile(user.id);
-      } catch {
-        router.push('/login');
-      } finally {
-        setLoading(false);
-      }
-    };
-    getUser();
-  }, []);
-
+  
   const fetchProfile = async (userId: string) => {
     try {
       const { data } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
