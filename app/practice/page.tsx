@@ -1,5 +1,5 @@
 // app/practice/page.tsx
-
+export const dynamic = 'force-dynamic';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import PracticePageClient from './PracticePageClient';
 import { cookies } from 'next/headers';
