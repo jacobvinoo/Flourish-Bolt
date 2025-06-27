@@ -281,7 +281,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     const averageSteadiness = Math.round(mockAnalysisData.reduce((sum, l) => sum + l.steadiness, 0) / mockAnalysisData.length);
     const averageAccuracy = Math.round(mockAnalysisData.reduce((sum, l) => sum + l.accuracy, 0) / mockAnalysisData.length);
     let feedbackTip = "";
-    const isKidsMode = profile?.display_mode === 'kids';
+    const isKidsMode = localProfile?.display_mode === 'kids';
     if (averageScore < 70) feedbackTip = isKidsMode ? "Good effort! Let's focus on both staying smooth and hitting the dots on our next try. Practice makes perfect! 🌟" : "Good effort! Let's focus on both staying smooth and hitting the dots on our next try. Practice makes perfect!";
     else if (averageSteadiness < averageAccuracy && averageSteadiness < 85) feedbackTip = isKidsMode ? "Great work on accuracy! For next time, let's focus on making our lines smoother and less wobbly. A relaxed grip can help! ✏️" : "Great work on accuracy! For next time, let's focus on making our lines smoother and less wobbly. A relaxed grip can help!";
     else if (averageAccuracy < averageSteadiness && averageAccuracy < 85) feedbackTip = isKidsMode ? "Your lines are nice and steady! Let's now focus on starting right on the green dot and stopping at the red dot. 🎯" : "Your lines are nice and steady! Let's now focus on starting right on the green dot and stopping at the red dot.";
@@ -291,7 +291,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
 
   const handleUpload = async () => {
     if (!selectedFile || !user) {
-      setUploadError(profile?.display_mode === 'kids' ? '😅 Please pick a photo first!' : 'No file selected or user not authenticated');
+      setUploadError(localProfile?.display_mode === 'kids' ? '😅 Please pick a photo first!' : 'No file selected or user not authenticated');
       return;
     }
     setUploading(true); setUploadError(null); setUploadSuccess(false);
@@ -308,7 +308,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
       const { error: uploadError } = await supabase.storage.from('submissions').upload(fileName, selectedFile, { cacheControl: '3600', upsert: false });
       if (uploadError) throw new Error(uploadError.message);
     } catch (error: any) {
-      setUploadError(profile?.display_mode === 'kids' ? '😞 Oops! Something went wrong. Can you try again?' : error.message || 'An unexpected error occurred during upload');
+      setUploadError(localProfile?.display_mode === 'kids' ? '😞 Oops! Something went wrong. Can you try again?' : error.message || 'An unexpected error occurred during upload');
       setUploading(false);
     }
   };
@@ -357,7 +357,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
   const goToPreviousStep = () => { if (currentStep > 0) setCurrentStep(currentStep - 1); };
   const goToNextStep = () => { if (currentStep < firstWorkbookSteps.length - 1) setCurrentStep(currentStep + 1); };
 
-  const isKidsMode = profile?.display_mode === 'kids';
+  const isKidsMode = localProfile?.display_mode === 'kids';
   const currentWorksheet = firstWorkbookSteps[currentStep];
   const progressPercentage = ((completedSteps.size) / firstWorkbookSteps.length) * 100;
   const isCompleted = completedSteps.has(currentWorksheet.id);
