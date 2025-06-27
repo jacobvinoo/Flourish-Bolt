@@ -402,3 +402,4 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
     </PageLayout>
   );
 }
+
