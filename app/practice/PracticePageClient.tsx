@@ -347,7 +347,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Errror(errorData.error || 'Failed to get a grade from the AI Server');
+      throw new Error(errorData.error || 'Failed to get a grade from the AI Server');
     }
 
     const result = await response.json();
