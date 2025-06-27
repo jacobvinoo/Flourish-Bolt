@@ -525,7 +525,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
                 </div>
               </div>
               <Button
-                onClick={() => console.log("Continue button was clicked")} //{handleGradingComplete}
+                onClick={handleGradingComplete}
                 className={`w-full h-12 text-lg font-bold transition-all duration-200 ${
                   isKidsMode
                     ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
