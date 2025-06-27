@@ -312,7 +312,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     }
   };
 
-  const handleGradingComplete = () => {
+  const handleGradingComplete = async () => {
     // Award 50 xp for completing a step
     const newXp = (profile?.xp ?? 0) + 50;
 
