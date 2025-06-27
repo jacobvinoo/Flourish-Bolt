@@ -333,8 +333,8 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     } else {
       //on success update the local state for an immediate UI refresh
       setLocalProfile(prevProfile => {
-        if (!prevProfile) return null;
-        return { ...prevProfile, xp: newXp};
+        ...prevProfile!, 
+          xp: newXp
       });
     }
     
