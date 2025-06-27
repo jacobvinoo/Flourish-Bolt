@@ -157,7 +157,7 @@ export default function Dashboard() {
     }
   };
 
-  const levelProgress = (xp / (xp + xpToNextLevel)) * 100;
+  const levelProgress = (profile?.xp ?? 0 / (profile?.xp ?? 0 + xpToNextLevel)) * 100;
   const weeklyGoalProgress = (weeklyProgress / weeklyGoal) * 100;
   const isKidsMode = profile?.display_mode === 'kids';
 
