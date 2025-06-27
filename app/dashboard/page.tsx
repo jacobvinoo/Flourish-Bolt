@@ -85,12 +85,12 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [currentStreak] = useState(12);
+  //const [currentStreak] = useState(12);
   const [totalPracticeTime] = useState(145);
   const [weeklyGoal] = useState(150);
   const [weeklyProgress] = useState(90);
   const [level] = useState(8);
-  const [xp] = useState(2350);
+  //const [xp] = useState(2350);
   const [xpToNextLevel] = useState(650);
 
   const supabase = createClientComponentClient<Database>();
@@ -209,8 +209,8 @@ export default function Dashboard() {
     headerProps={{
       showUserControls: true,
       profile,
-      currentStreak,
-      xp
+      currentStreak: profile?.current_streak ?? 0,
+      xp: profile?.xp ?? 0
     }}
   >
     {/* Welcome Section */}
@@ -248,7 +248,7 @@ export default function Dashboard() {
                 <p className={`text-sm font-medium ${
                   isKidsMode ? 'text-white' : 'text-orange-700'
                 }`}>
-                  {currentStreak} day streak
+                  {profile?.current_streak ?? 0} day streak
                 </p>
               </div>
             </div>
