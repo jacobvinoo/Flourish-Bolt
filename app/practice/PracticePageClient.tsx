@@ -242,9 +242,7 @@ function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disab
 }
 
 export default function PracticePageClient({ user, profile }: PracticePageClientProps) {
-  //const [user, setUser] = useState<User | null>(null);
-  //const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
