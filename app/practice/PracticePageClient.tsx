@@ -251,6 +251,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [showGrading, setShowGrading] = useState(false);
+  const [localProfile, setLocalProfile] = useState(profile);
 
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
@@ -313,8 +314,13 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
   };
 
   const handleGradingComplete = async () => {
+    setUploadSuccess(true); 
+    setSelectedFile(null); 
+    setShowGrading(false); 
+    setAnalysisResult(null);
+    
     // Award 50 xp for completing a step
-    const newXp = (profile?.xp ?? 0) + 50;
+    const newXp = (localProfile?.xp ?? 0) + 50;
 
     // Update the profile in the database
     const { error } = await supabase
@@ -323,14 +329,15 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
       .eq('id', user.id);
 
     if (error) {
-      console.error('Error updating profile:', error);
+      console.error("Failed to update user's XP:", error.message);
     } else {
-      
+      //on success update the local state for an immediate UI refresh
+      setLocalProfile(prevProfile => {
+        if (!prevProfile) return null;
+        return { ...prevProfile, xp: newXp};
+      });
     }
-    setUploadSuccess(true); 
-    setSelectedFile(null); 
-    setShowGrading(false); 
-    setAnalysisResult(null);
+    
     setCompletedSteps(prev => {
       const newSet = new Set(prev); 
       newSet.add(firstWorkbookSteps[currentStep].id); 
@@ -357,9 +364,9 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     headerVariant="authenticated" 
     headerProps={{ 
       showUserControls: true, 
-      profile: profile,
-      currentStreak: profile?.current_streak ?? 0, 
-      xp: profile?.xp ?? 0
+      profile: localProfile,
+      currentStreak: localProfile?.current_streak ?? 0, 
+      xp: localProfile?.xp ?? 0
     }}
     >
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
