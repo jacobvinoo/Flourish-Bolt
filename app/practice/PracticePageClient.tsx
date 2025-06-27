@@ -313,9 +313,28 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
   };
 
   const handleGradingComplete = () => {
-    setUploadSuccess(true); setSelectedFile(null); setShowGrading(false); setAnalysisResult(null);
+    // Award 50 xp for completing a step
+    const newXp = (profile?.xp ?? 0) + 50;
+
+    // Update the profile in the database
+    const { error } = await supabase
+      .from('profiles')
+      .update({ xp: newXp })
+      .eq('id', user.id);
+
+    if (error) {
+      console.error('Error updating profile:', error);
+    } else {
+      
+    }
+    setUploadSuccess(true); 
+    setSelectedFile(null); 
+    setShowGrading(false); 
+    setAnalysisResult(null);
     setCompletedSteps(prev => {
-      const newSet = new Set(prev); newSet.add(firstWorkbookSteps[currentStep].id); return newSet;
+      const newSet = new Set(prev); 
+      newSet.add(firstWorkbookSteps[currentStep].id); 
+      return newSet;
     });
     setTimeout(() => {
       if (currentStep < firstWorkbookSteps.length - 1) setCurrentStep(currentStep + 1);
@@ -336,7 +355,12 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
   <PageLayout
     isKidsMode={isKidsMode} 
     headerVariant="authenticated" 
-    headerProps={{ showUserControls: true, profile: profile}}
+    headerProps={{ 
+      showUserControls: true, 
+      profile: profile,
+      currentStreak: profile?.current_streak ?? 0, 
+      xp: profile?.xp ?? 0
+    }}
     >
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header and Progress */}
