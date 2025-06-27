@@ -333,7 +333,11 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
   const isCompleted = completedSteps.has(currentWorksheet.id);
 
   return (
-  <PageLayout>
+  <PageLayout
+    isKidsMode={isKidsMode} 
+    headerVariant="authenticated" 
+    headerProps={{ showUserControls: true, profile: profile}}
+    >
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header and Progress */}
       <div className="mb-8 text-center">
