@@ -1,0 +1,404 @@
+// app/practice/lowercase/LowercasePracticeClient.tsx
+'use client';
+
+import { useState, useEffect } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
+import { User } from '@supabase/supabase-js';
+import PageLayout from '@/components/PageLayout';
+import { Database, Profile } from '@/lib/database.types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Upload,
+  X,
+  AlertCircle,
+  Star,
+  CheckCircle,
+  Eye,
+  Printer,
+  ChevronLeft,
+  ChevronRight,
+  Heart,
+  Sparkles,
+  Award
+} from 'lucide-react';
+
+// Define the structure for the props passed to this component
+interface PracticePageClientProps {
+  user: User;
+  profile: Profile | null;
+}
+
+// Define the structure for a single worksheet step
+interface WorksheetStep {
+  id: string;
+  title: string;
+  friendlyTitle: string;
+  description: string;
+  kidsDescription: string;
+  level: number;
+  worksheetUrl: string;
+  skills: string[];
+  estimatedTime: string;
+  color: string;
+  emoji: string;
+  completed?: boolean;
+}
+
+// --- NEW DATA FOR LOWERCASE LETTERS ---
+// This array defines the practice steps for the lowercase letters workbook.
+const lowercaseWorkbookSteps: WorksheetStep[] = [
+  {
+    id: 'letter-a',
+    title: 'Worksheet 2.1: Letter a',
+    friendlyTitle: 'The letter a!',
+    description: 'Practice the round body and short tail of the letter "a".',
+    kidsDescription: "Let's draw a circle and give it a little tail to make an \"a\"!",
+    level: 2,
+    worksheetUrl: '/worksheets/letter-a.html', // Placeholder URL
+    skills: ['Round shapes', 'Closing shapes', 'Short strokes'],
+    estimatedTime: '10-15 minutes',
+    color: 'from-red-400 to-red-600',
+    emoji: 'a'
+  },
+  {
+    id: 'letter-b',
+    title: 'Worksheet 2.2: Letter b',
+    friendlyTitle: 'The letter b!',
+    description: 'Master the tall back and round belly of the letter "b".',
+    kidsDescription: 'Draw a long line down, then give it a round tummy to make a "b"!',
+    level: 2,
+    worksheetUrl: '/worksheets/letter-b.html', // Placeholder URL
+    skills: ['Tall strokes', 'Reversing curves'],
+    estimatedTime: '10-15 minutes',
+    color: 'from-orange-400 to-orange-600',
+    emoji: 'b'
+  },
+  {
+    id: 'letter-c',
+    title: 'Worksheet 2.3: Letter c',
+    friendlyTitle: 'The letter c!',
+    description: 'Practice the open, curving shape of the letter "c".',
+    kidsDescription: 'Start at the top and curve around like you\'re drawing a rainbow!',
+    level: 2,
+    worksheetUrl: '/worksheets/letter-c.html', // Placeholder URL
+    skills: ['Open curves', 'Counter-clockwise motion'],
+    estimatedTime: '10-15 minutes',
+    color: 'from-yellow-400 to-yellow-500',
+    emoji: 'c'
+  },
+  {
+    id: 'letter-d',
+    title: 'Worksheet 2.4: Letter d',
+    friendlyTitle: 'The letter d!',
+    description: 'Combine a round body with a tall back, similar to "a" and "b".',
+    kidsDescription: 'It\'s like an "a" but with a super tall back! Circle first, then a long line up!',
+    level: 2,
+    worksheetUrl: '/worksheets/letter-d.html', // Placeholder URL
+    skills: ['Combining shapes', 'Tall strokes'],
+    estimatedTime: '10-15 minutes',
+    color: 'from-green-400 to-green-600',
+    emoji: 'd'
+  },
+];
+
+// NOTE: The FileUpload component is included here for simplicity.
+// In a larger app, you might move this to its own file in the `components` directory.
+function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disabled = false, isKidsMode = false }: {
+  onFileSelect: (file: File) => void,
+  onFileRemove: () => void,
+  selectedFile: File | null,
+  uploading: boolean,
+  disabled?: boolean,
+  isKidsMode?: boolean
+}) {
+    const [dragActive, setDragActive] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+  
+    const handleDrag = (e: React.DragEvent) => {
+      e.preventDefault(); e.stopPropagation();
+      if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
+      else if (e.type === "dragleave") setDragActive(false);
+    };
+    const handleDrop = (e: React.DragEvent) => {
+      e.preventDefault(); e.stopPropagation();
+      setDragActive(false);
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFileSelection(e.dataTransfer.files[0]);
+    };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      if (e.target.files && e.target.files[0]) handleFileSelection(e.target.files[0]);
+    };
+    const handleFileSelection = (file: File) => {
+      setError(null);
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      if (!validTypes.includes(file.type)) {
+        setError(isKidsMode ? '😅 Oops! Please pick a photo file (JPG or PNG)' : 'Please select a valid image file (JPEG, PNG, or JPG)');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setError(isKidsMode ? '😅 That photo is too big! Please pick a smaller one.' : 'File size must be less than 10MB');
+        return;
+      }
+      onFileSelect(file);
+    };
+
+  if (selectedFile) {
+    return (
+      <div className={`border-2 border-dashed rounded-xl p-6 ${isKidsMode ? 'border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50' : 'border-gray-300 bg-gray-50'}`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-full ${isKidsMode ? 'bg-purple-200' : 'bg-blue-100'}`}>
+              <Upload className={`h-8 w-8 ${isKidsMode ? 'text-purple-600' : 'text-blue-500'}`} />
+            </div>
+            <div>
+              <p className="font-medium text-lg">{isKidsMode ? '📸 Your awesome photo!' : selectedFile.name}</p>
+              <p className="text-sm text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+            </div>
+          </div>
+          {!uploading && (
+            <Button onClick={onFileRemove} variant="outline" size="sm" className={isKidsMode ? 'hover:bg-red-100' : ''}>
+              <X className="h-4 w-4" />
+              {isKidsMode && <span className="ml-1">Remove</span>}
+            </Button>
+          )}
+        </div>
+        {uploading && (
+          <div className="mt-4 flex items-center gap-2 mb-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+            <span className="text-sm font-medium">{isKidsMode ? '🚀 Uploading your amazing work...' : 'Uploading...'}</span>
+          </div>
+        )}
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-3">
+      <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer ${dragActive ? isKidsMode ? 'border-purple-400 bg-gradient-to-br from-purple-100 to-pink-100 scale-105' : 'border-blue-400 bg-blue-50' : isKidsMode ? 'border-purple-300 hover:border-purple-400 hover:bg-gradient-to-br hover:from-purple-50 hover:to-pink-50 hover:scale-102' : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
+        onClick={() => { if (!disabled && !uploading) document.getElementById('file-upload-lowercase')?.click(); }}>
+        <div className={`mx-auto mb-4 p-4 rounded-full ${isKidsMode ? 'bg-gradient-to-br from-purple-200 to-pink-200' : 'bg-gray-100'}`}>
+          <Upload className={`h-12 w-12 mx-auto ${isKidsMode ? 'text-purple-600' : 'text-gray-400'}`} />
+        </div>
+        <h3 className="text-xl font-bold mb-2">{isKidsMode ? dragActive ? '📸 Drop your photo here!' : '📷 Add Your Worksheet Photo!' : dragActive ? 'Drop your image here' : 'Upload worksheet image'}</h3>
+        <p className="text-gray-600 mb-4">{isKidsMode ? 'Drag and drop your photo here, or click to choose one from your device! 🖱️' : 'Drag and drop or click to select an image file'}</p>
+        <Input id="file-upload-lowercase" type="file" accept="image/jpeg,image/png,image/jpg" onChange={handleChange} className="hidden" disabled={disabled || uploading} />
+      </div>
+      {error && (
+        <div className={`p-3 rounded-lg flex items-center gap-2 ${isKidsMode ? 'bg-red-50 border border-red-200' : 'bg-red-50 border border-red-200'}`}>
+          <AlertCircle className="h-4 w-4 text-red-600" />
+          <span className="text-red-700 text-sm">{error}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+export default function LowercasePracticeClient({ user, profile }: PracticePageClientProps) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [showGrading, setShowGrading] = useState(false);
+  const [localProfile, setLocalProfile] = useState(profile);
+
+  const supabase = createClientComponentClient<Database>();
+  const router = useRouter();
+
+  // Effect to keep local profile state in sync with props from the server component
+  useEffect(() => {
+    setLocalProfile(profile);
+  }, [profile]);
+
+  const handleFileSelect = (file: File) => {
+    setSelectedFile(file);
+    setUploadError(null);
+    setUploadSuccess(false);
+    setAnalysisResult(null);
+    setShowGrading(false);
+  };
+
+  const handleFileRemove = () => {
+    setSelectedFile(null);
+    setUploadError(null);
+    setUploadSuccess(false);
+    setAnalysisResult(null);
+    setShowGrading(false);
+  };
+
+  const isKidsMode = localProfile?.display_mode === 'kids';
+
+  const simulateAIAnalysis = (file: File) => {
+    const averageScore = Math.floor(Math.random() * 41) + 60; // Random score between 60-100
+    return {
+      overallScore: averageScore,
+      feedbackTip: 'Great work on your letters! Keep practicing for even straighter lines.',
+      imageUrl: URL.createObjectURL(file)
+    };
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+    setUploading(true);
+    setUploadError(null);
+    setUploadSuccess(false);
+
+    try {
+      // Simulate AI analysis delay
+      setTimeout(() => {
+        const result = simulateAIAnalysis(selectedFile);
+        setAnalysisResult(result);
+        setShowGrading(true);
+        setUploading(false);
+      }, 2500);
+
+      const timestamp = new Date().getTime();
+      const fileExt = selectedFile.name.split('.').pop();
+      const currentWorksheet = lowercaseWorkbookSteps[currentStep];
+      const fileName = `${user.id}/${currentWorksheet.id}/${timestamp}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage.from('submissions').upload(fileName, selectedFile);
+      if (uploadError) throw new Error(uploadError.message);
+
+    } catch (error: any) {
+      setUploadError(error.message || 'An unexpected error occurred during upload');
+      setUploading(false);
+    }
+  };
+
+  const handleGradingComplete = async () => {
+    const newXp = (localProfile?.xp ?? 0) + 25; // Award 25 XP for a lowercase letter
+    const { error } = await supabase
+      .from('profiles')
+      .update({ xp: newXp })
+      .eq('id', user.id);
+
+    if (error) {
+      console.error("DATABASE UPDATE FAILED:", error);
+    } else {
+      router.refresh(); // Refresh server data
+      setLocalProfile(p => p ? { ...p, xp: newXp } : null);
+    }
+
+    setShowGrading(false);
+    setUploadSuccess(true);
+    setCompletedSteps(prev => new Set(prev).add(lowercaseWorkbookSteps[currentStep].id));
+    
+    setTimeout(() => {
+      setUploadSuccess(false);
+      setSelectedFile(null);
+      if (currentStep < lowercaseWorkbookSteps.length - 1) {
+        setCurrentStep(currentStep + 1);
+      }
+    }, 2000);
+  };
+
+  const openWorksheet = (worksheetUrl: string) => window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
+  const goToPreviousStep = () => { if (currentStep > 0) setCurrentStep(currentStep - 1); };
+  const goToNextStep = () => { if (currentStep < lowercaseWorkbookSteps.length - 1) setCurrentStep(currentStep + 1); };
+
+  const currentWorksheet = lowercaseWorkbookSteps[currentStep];
+  const progressPercentage = (completedSteps.size / lowercaseWorkbookSteps.length) * 100;
+
+  return (
+    <PageLayout
+      isKidsMode={isKidsMode}
+      headerVariant="authenticated"
+      headerProps={{
+        showUserControls: true,
+        profile: localProfile,
+        currentStreak: localProfile?.current_streak ?? 0,
+        xp: localProfile?.xp ?? 0,
+        backLink: "/dashboard", // Add a back link to the dashboard
+        backText: "Dashboard"
+      }}
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8 text-center">
+          <h2 className={`text-3xl font-bold ${isKidsMode ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500' : 'text-gray-900'}`}>
+            Lowercase Letter Practice
+          </h2>
+          <p className={`mt-2 text-lg ${isKidsMode ? 'text-blue-700' : 'text-gray-600'}`}>
+            Let's master writing all the lowercase letters, from 'a' to 'z'!
+          </p>
+        </div>
+
+        {/* --- Main Content Grid --- */}
+        <div className="grid lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            {/* Current Worksheet Card */}
+            <div className={`border-0 shadow-xl mb-8 overflow-hidden rounded-2xl ${isKidsMode ? `bg-gradient-to-br ${currentWorksheet.color} text-white` : 'bg-white border border-gray-200'}`}>
+                {/* ... Card content identical to original practice page ... */}
+                 <div className="pb-4 p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className={`text-6xl ${isKidsMode ? 'animate-bounce' : ''}`}>
+                        {currentWorksheet.emoji}
+                      </div>
+                      <div>
+                        <h3 className={`text-2xl font-bold ${isKidsMode ? 'text-white' : 'text-gray-900'}`}>
+                          {isKidsMode ? currentWorksheet.friendlyTitle : currentWorksheet.title}
+                        </h3>
+                        <p className={`mt-2 text-lg ${isKidsMode ? 'text-white/90' : 'text-gray-600'}`}>
+                          {isKidsMode ? currentWorksheet.kidsDescription : currentWorksheet.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            {/* Upload Section */}
+            <div className="p-6 border-0 shadow-xl rounded-2xl bg-white/50">
+              <h3 className="text-xl font-bold mb-4">Upload Your Completed Letter</h3>
+              <FileUpload
+                  onFileSelect={handleFileSelect}
+                  onFileRemove={handleFileRemove}
+                  selectedFile={selectedFile}
+                  uploading={uploading}
+                  disabled={uploadSuccess}
+                  isKidsMode={isKidsMode}
+              />
+              {selectedFile && !uploading && !showGrading && (
+                  <Button onClick={handleUpload} size="lg" className="w-full mt-4 bg-green-600 hover:bg-green-700">
+                    Grade My Letter!
+                  </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            <div className="p-6 border-0 shadow-xl rounded-2xl bg-white/50">
+              <h3 className="font-bold text-lg mb-4">Letter Navigation</h3>
+              <div className="space-y-2">
+                {lowercaseWorkbookSteps.map((step, index) => (
+                  <button
+                    key={step.id}
+                    onClick={() => setCurrentStep(index)}
+                    className={`w-full p-3 rounded-lg border-2 text-left transition-all duration-200 flex items-center gap-3 ${
+                      index === currentStep
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : completedSteps.has(step.id)
+                        ? 'border-green-200 bg-green-50 text-green-700'
+                        : 'border-gray-200 bg-white hover:border-gray-300'
+                    }`}
+                  >
+                    <span className="font-mono text-xl">{step.emoji}</span>
+                    <span className="font-semibold">{isKidsMode ? step.friendlyTitle : step.title}</span>
+                    {completedSteps.has(step.id) && <CheckCircle className="h-5 w-5 text-green-500 ml-auto" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </PageLayout>
+  );
+}
