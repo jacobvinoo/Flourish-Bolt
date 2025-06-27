@@ -322,6 +322,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     // Award 50 xp for completing a step
     const newXp = (localProfile?.xp ?? 0) + 50;
 
+    console.log('Attempting to update XP for user ${user.id}. NewXP should be ${newXP}');
     // Update the profile in the database
     const { error } = await supabase
       .from('profiles')
@@ -331,6 +332,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     if (error) {
       console.error("Failed to update user's XP:", error.message);
     } else {
+      console.log('Database update successful')
       //on success update the local state for an immediate UI refresh
       setLocalProfile(prevProfile => {
         return {
