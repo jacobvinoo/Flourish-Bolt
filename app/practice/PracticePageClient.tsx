@@ -28,6 +28,10 @@ import {
   PenTool
 } from 'lucide-react';
 
+interface PracticePageClientProps {
+  user: User;
+  profile: Profile;
+}
 interface WorksheetStep {
   id: string;
   title: string;
