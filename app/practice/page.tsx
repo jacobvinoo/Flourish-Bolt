@@ -15,6 +15,7 @@ export default async function PracticePage() {
     redirect('/login');
   }
 
+  
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
