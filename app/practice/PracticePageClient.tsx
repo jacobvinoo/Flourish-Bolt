@@ -241,7 +241,7 @@ function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disab
   );
 }
 
-export default function PracticePageClient({ user, profile }) {
+export default function PracticePageClient({ user, profile }: PracticePageClientProps) {
   //const [user, setUser] = useState<User | null>(null);
   //const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
