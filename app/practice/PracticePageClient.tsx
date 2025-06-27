@@ -255,14 +255,6 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
-  
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
-      if (data) setProfile(data);
-    } catch (error) { console.error('Error fetching profile:', error); }
-  };
-
   const handleFileSelect = (file: File) => {
     setSelectedFile(file); setUploadError(null); setUploadSuccess(false); setAnalysisResult(null); setShowGrading(false);
   };
