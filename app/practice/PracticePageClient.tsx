@@ -345,12 +345,22 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
       body: formData,
     });
 
+    const responseText = await response.text();
+    console.log("Raw response from server:", responseText);
+    
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || 'Failed to get a grade from the AI Server');
     }
 
-    const result = await response.json();
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      console.error("Failed to parse JSON response:", e);
+      throw new Error("The server sent and invalid response.")
+    }
+    
 
     // Set the analysis result with the real data from the AI
     setAnalysisResult({
