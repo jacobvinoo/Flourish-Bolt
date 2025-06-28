@@ -2,6 +2,9 @@
 
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { Database } from '@/lib/database.types';
 
 // This line forces the function to run in a Node.js environment on Vercel,
 // which is more robust for complex operations like AI API calls.
@@ -63,22 +66,57 @@ async function callAIGradingModel(
 }
 
 export async function POST(request: Request) {
+  const supabase = createRouteHandlerClient<Database>({ cookies });
   try {
+    const { data: { user }} = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: 'You must be logged in.' }, { status: 401 });
+    }
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const worksheetTitle = formData.get('worksheetTitle') as string;
     const worksheetInstructions = formData.get('worksheetInstructions') as string;
 
-    if (!file) {
-      return NextResponse.json({ error: 'No file uploaded.' }, { status: 400 });
+    if (!file || !worksheetId) {
+      return NextResponse.json({ error: 'Missing file or worksheet ID' }, { status: 400 });
     }
+    // 1. Upload Image to Storage
+    cost imagePath = `${user.id}/${worksheetId}/${Date.now()}.jpg`;
+    const { error: uploadError } = await supabase.storage.from('submissions').upload(imagePath, file);
+    if (uploadError) throw new Error(`Storage Error: ${uploadError.message}`);
 
+    // 2. Get AI Grade
     const buffer = await file.arrayBuffer();
     const base64Image = Buffer.from(buffer).toString('base64');
-    
-    const result = await callAIGradingModel(base64Image, worksheetTitle, worksheetInstructions);
-    
-    return NextResponse.json(result);
+    const aiResult = await callAIGradingModel(base64Image, formData.get('worksheetTitle') as string, formData.get('worksheetInstructions') as string);
+
+    // 3. Save submission to the database
+    const submissionData = {
+      user_id: user.id,
+      worksheet_id: worksheetId,
+      score: aiResult.score,
+      steadiness: aiResult.steadiness,
+      accuracy: aiResult.accuracy,
+      feedback: aiResult.feedback,
+      image_path: imagePath,
+    };
+
+    //Check both error and the returned data
+    // If RLS prevents the insert, 'data' will be null and throw an error
+    const { data: insertData, error: dbError } = await supabase
+      .from('submissions')
+      .insert(submissionData)
+      .select() // Use .select() to get the inserted row back
+      .single(); // Expect a single row back
+
+    if (dbError || !insertData) {
+      console.error("Database Insert Failed.", dbError);
+      throw new Error("Failed to save submission record to the database.");
+    }
+
+    console.log("Successfully saved submission:", insertData.id);
+    return NextResponse.json(aiResult);
 
   } catch (error: any) {
     console.error("[AI GRADING API ERROR]:", error);
