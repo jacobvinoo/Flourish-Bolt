@@ -1,4 +1,3 @@
-// app/practice/lowercase/LowercasePracticeClient.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -21,7 +20,8 @@ import {
   ChevronRight,
   Heart,
   Sparkles,
-  Award
+  Award,
+  BookOpen
 } from 'lucide-react';
 
 // Define the structure for the props passed to this component
@@ -313,9 +313,7 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
         showUserControls: true,
         profile: localProfile,
         currentStreak: localProfile?.current_streak ?? 0,
-        xp: localProfile?.xp ?? 0,
-        backLink: "/dashboard", // Add a back link to the dashboard
-        backText: "Dashboard"
+        xp: localProfile?.xp ?? 0
       }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -328,51 +326,107 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
           </p>
         </div>
 
-        {/* --- Main Content Grid --- */}
+        {isKidsMode && (
+          <div className="border-0 shadow-xl mb-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white overflow-hidden rounded-2xl">
+            <div className="pt-6 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  <Star className="h-6 w-6" /> Your Amazing Progress!
+                </h3>
+                <div className="text-right">
+                  <div className="text-2xl font-bold">{completedSteps.size} / {lowercaseWorkbookSteps.length}</div>
+                  <div className="text-sm opacity-90">Steps Done!</div>
+                </div>
+              </div>
+              <div className="w-full bg-white/20 rounded-full h-2">
+                <div className="h-2 rounded-full bg-gradient-to-r from-yellow-300 to-yellow-400" style={{ width: `${progressPercentage}%` }}></div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {uploadSuccess && (
+          <div className={`mb-6 p-6 rounded-2xl flex items-center gap-4 animate-bounce shadow-lg ${isKidsMode ? 'bg-gradient-to-r from-green-100 to-emerald-100' : 'bg-green-50'}`}>
+            <div className="flex-shrink-0">
+                {isKidsMode ? <div className="text-4xl">🎉</div> : <CheckCircle className="h-8 w-8 text-green-500" />}
+            </div>
+            <div>
+                <p className="font-bold text-lg text-green-800">🌟 Fantastic work! Your submission has been saved.</p>
+                <p className="text-green-700">Moving to the next adventure... 🚀</p>
+            </div>
+          </div>
+        )}
+        
         <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            {/* Current Worksheet Card */}
-            <div className={`border-0 shadow-xl mb-8 overflow-hidden rounded-2xl ${isKidsMode ? `bg-gradient-to-br ${currentWorksheet.color} text-white` : 'bg-white border border-gray-200'}`}>
-                {/* ... Card content identical to original practice page ... */}
-                 <div className="pb-4 p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className={`text-6xl ${isKidsMode ? 'animate-bounce' : ''}`}>
-                        {currentWorksheet.emoji}
-                      </div>
-                      <div>
-                        <h3 className={`text-2xl font-bold ${isKidsMode ? 'text-white' : 'text-gray-900'}`}>
-                          {isKidsMode ? currentWorksheet.friendlyTitle : currentWorksheet.title}
-                        </h3>
-                        <p className={`mt-2 text-lg ${isKidsMode ? 'text-white/90' : 'text-gray-600'}`}>
-                          {isKidsMode ? currentWorksheet.kidsDescription : currentWorksheet.description}
-                        </p>
-                      </div>
+          <div className="lg:col-span-2 space-y-8">
+            <div className={`border-0 shadow-xl overflow-hidden rounded-2xl ${isKidsMode ? `bg-gradient-to-br ${currentWorksheet.color} text-white` : 'bg-white border'}`}>
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="text-6xl">{currentWorksheet.emoji}</div>
+                    <div>
+                      <h3 className={`text-2xl font-bold ${isKidsMode ? 'text-white' : 'text-gray-900'}`}>{isKidsMode ? currentWorksheet.friendlyTitle : currentWorksheet.title}</h3>
+                      <p className={`mt-2 text-lg ${isKidsMode ? 'text-white/90' : 'text-gray-600'}`}>{isKidsMode ? currentWorksheet.kidsDescription : currentWorksheet.description}</p>
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="p-6 pt-0 space-y-4">
+                <div className="flex items-center gap-4">
+                    <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="flex-1 h-12 text-lg font-bold bg-green-600 hover:bg-green-700 text-white"><Eye className="h-5 w-5 mr-2" />Open Worksheet</Button>
+                    <Button onClick={() => window.print()} variant="outline" size="icon" className="h-12 w-12"><Printer className="h-5 w-5" /></Button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <Button onClick={goToPreviousStep} disabled={currentStep === 0} variant="outline"><ChevronLeft className="h-5 w-5 mr-2" />Previous</Button>
+                  <span className="font-bold">{currentStep + 1} of {lowercaseWorkbookSteps.length}</span>
+                  <Button onClick={goToNextStep} disabled={currentStep === lowercaseWorkbookSteps.length - 1} variant="outline">Next<ChevronRight className="h-5 w-5 ml-2" /></Button>
+                </div>
+              </div>
             </div>
+
+            {showGrading && analysisResult && (
+              <div className="p-6 rounded-2xl shadow-xl bg-white border">
+                <h2 className="text-2xl font-bold text-center mb-6">AI Grading Results</h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Your Submission</h3>
+                    <img src={analysisResult.imageUrl} alt="Graded worksheet" className="w-full rounded-lg shadow-md" />
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <div className="rounded-xl p-6 text-center mb-4 bg-gray-100">
+                      <p className="text-lg text-gray-600">Overall Score</p>
+                      <p className={`text-5xl font-bold ${analysisResult.overallScore >= 90 ? 'text-green-500' : analysisResult.overallScore >= 70 ? 'text-yellow-500' : 'text-red-500'}`}>{analysisResult.overallScore}%</p>
+                    </div>
+                    <div className="border-l-4 p-4 rounded-r-lg mb-6 bg-blue-50 border-blue-500">
+                      <h4 className="font-bold text-blue-800">Actionable Tip</h4>
+                      <p className="text-sm text-blue-700">{analysisResult.feedbackTip}</p>
+                    </div>
+                    <Button onClick={handleGradingComplete} className="w-full h-12 text-lg font-bold bg-green-600 text-white hover:bg-green-700">Continue to Next Step</Button>
+                  </div>
+                </div>
+              </div>
+            )}
             
-            {/* Upload Section */}
-            <div className="p-6 border-0 shadow-xl rounded-2xl bg-white/50">
-              <h3 className="text-xl font-bold mb-4">Upload Your Completed Letter</h3>
-              <FileUpload
+            {!showGrading && (
+              <div className="p-6 border-0 shadow-xl rounded-2xl bg-white/50">
+                <h3 className="text-xl font-bold mb-4">Upload Your Completed Letter</h3>
+                <FileUpload
                   onFileSelect={handleFileSelect}
                   onFileRemove={handleFileRemove}
                   selectedFile={selectedFile}
                   uploading={uploading}
                   disabled={uploadSuccess}
                   isKidsMode={isKidsMode}
-              />
-              {selectedFile && !uploading && !showGrading && (
-                  <Button onClick={handleUpload} size="lg" className="w-full mt-4 bg-green-600 hover:bg-green-700">
+                />
+                {selectedFile && !uploading && !showGrading && (
+                  <Button onClick={handleUpload} size="lg" className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white">
                     Grade My Letter!
                   </Button>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-6">
             <div className="p-6 border-0 shadow-xl rounded-2xl bg-white/50">
               <h3 className="font-bold text-lg mb-4">Letter Navigation</h3>
@@ -402,4 +456,3 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
     </PageLayout>
   );
 }
-
