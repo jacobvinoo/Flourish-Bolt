@@ -8,24 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Database, Profile } from '@/lib/database.types';
-import { 
-  FileText, 
-  Download, 
-  Play, 
-  Star,
-  Printer,
-  Eye,
-  BookOpen,
-  Filter,
-  Pencil,
-  Shapes,
-  AlignLeft,
-  LayoutGrid,
-  CircleDot,
-  ArrowUpDown,
-  LetterCase,
-  Hash
-} from 'lucide-react';
+import { FileText, Download, Play, Star, Printer, Eye, BookOpen, Filter, Pencil, Shapes, AlignLeft, LayoutGrid, CircleDot, ArrowUpDown, CassetteTape as LetterCase, Hash } from 'lucide-react';
 import Link from 'next/link';
 import PageLayout from '@/components/PageLayout';
 
