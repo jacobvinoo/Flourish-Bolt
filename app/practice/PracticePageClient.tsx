@@ -30,7 +30,8 @@ import {
 
 interface PracticePageClientProps {
   user: User;
-  profile: Profile;
+  profile: Profile | null;
+  initialSubmissions: Submission[];
 }
 interface WorksheetStep {
   id: string;
@@ -252,13 +253,15 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [showGrading, setShowGrading] = useState(false);
   const [localProfile, setLocalProfile] = useState(profile);
+  const [submissions, setSubmissions] = useState(initialSubmissions);
 
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
   useEffect(() => {
     setLocalProfile(profile);
-  }, [profile]);
+    setSubmissions(initialSubmissions);
+  }, [profile, initialSubmissions]);
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file); 
@@ -275,32 +278,6 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     setShowGrading(false);
   };
 
-  /* const simulateAIAnalysis = (file: File) => {
-    const mockAnalysisData = [
-      { score: 95, steadiness: 98, accuracy: 92 }, { score: 78, steadiness: 70, accuracy: 86 },
-      { score: 92, steadiness: 95, accuracy: 89 }, { score: 65, steadiness: 80, accuracy: 50 },
-      { score: 88, steadiness: 90, accuracy: 86 }, { score: 96, steadiness: 97, accuracy: 95 },
-      { score: 91, steadiness: 92, accuracy: 90 }, { score: 94, steadiness: 95, accuracy: 93 },
-      { score: 82, steadiness: 85, accuracy: 79 }, { score: 97, steadiness: 98, accuracy: 96 },
-      { score: 75, steadiness: 72, accuracy: 78 }, { score: 90, steadiness: 91, accuracy: 89 },
-      { score: 72, steadiness: 65, accuracy: 79 }, { score: 85, steadiness: 88, accuracy: 82 },
-      { score: 93, steadiness: 94, accuracy: 92 }, { score: 68, steadiness: 60, accuracy: 76 },
-      { score: 90, steadiness: 92, accuracy: 88 }, { score: 96, steadiness: 97, accuracy: 95 },
-      { score: 88, steadiness: 90, accuracy: 86 }, { score: 55, steadiness: 70, accuracy: 40 },
-    ];
-    const totalScore = mockAnalysisData.reduce((sum, l) => sum + l.score, 0);
-    const averageScore = Math.round(totalScore / mockAnalysisData.length);
-    const averageSteadiness = Math.round(mockAnalysisData.reduce((sum, l) => sum + l.steadiness, 0) / mockAnalysisData.length);
-    const averageAccuracy = Math.round(mockAnalysisData.reduce((sum, l) => sum + l.accuracy, 0) / mockAnalysisData.length);
-    let feedbackTip = "";
-    const isKidsMode = localProfile?.display_mode === 'kids';
-    if (averageScore < 70) feedbackTip = isKidsMode ? "Good effort! Let's focus on both staying smooth and hitting the dots on our next try. Practice makes perfect! 🌟" : "Good effort! Let's focus on both staying smooth and hitting the dots on our next try. Practice makes perfect!";
-    else if (averageSteadiness < averageAccuracy && averageSteadiness < 85) feedbackTip = isKidsMode ? "Great work on accuracy! For next time, let's focus on making our lines smoother and less wobbly. A relaxed grip can help! ✏️" : "Great work on accuracy! For next time, let's focus on making our lines smoother and less wobbly. A relaxed grip can help!";
-    else if (averageAccuracy < averageSteadiness && averageAccuracy < 85) feedbackTip = isKidsMode ? "Your lines are nice and steady! Let's now focus on starting right on the green dot and stopping at the red dot. 🎯" : "Your lines are nice and steady! Let's now focus on starting right on the green dot and stopping at the red dot.";
-    else feedbackTip = isKidsMode ? "Fantastic work! Your lines are accurate and steady. You're ready to move on to the next challenge! 🏆" : "Fantastic work! Your lines are accurate and steady. You're ready to move on to the next challenge!";
-    return { lines: mockAnalysisData, overallScore: averageScore, steadiness: averageSteadiness, accuracy: averageAccuracy, feedbackTip, imageUrl: URL.createObjectURL(file) };
-  }; */
-
   const handleUpload = async () => {
     if (!selectedFile || !user) {
       setUploadError(localProfile?.display_mode === 'kids' ? '😅 Please pick a photo first!' : 'No file selected or user not authenticated');
@@ -311,24 +288,6 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     setUploadSuccess(false);
     setAnalysisResult(null);
     setShowGrading(false);
-    
-    /* try {
-      setTimeout(() => {
-        const result = simulateAIAnalysis(selectedFile);
-        setAnalysisResult(result); setShowGrading(true); setUploading(false);
-      }, 2500);
-
-      const timestamp = new Date().getTime();
-      const fileExt = selectedFile.name.split('.').pop();
-      const currentWorksheet = firstWorkbookSteps[currentStep];
-      const fileName = `${user.id}/${currentWorksheet.id}/${timestamp}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage.from('submissions').upload(fileName, selectedFile, { cacheControl: '3600', upsert: false });
-      if (uploadError) throw new Error(uploadError.message);
-    } catch (error: any) {
-      setUploadError(localProfile?.display_mode === 'kids' ? '😞 Oops! Something went wrong. Can you try again?' : error.message || 'An unexpected error occurred during upload');
-      setUploading(false);
-    }
-  }; */
 
   try {
     const currentWorksheet = firstWorkbookSteps[currentStep];
@@ -384,13 +343,28 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
   };
 
   const handleGradingComplete = async () => {
+    
+    
+    // Award 50 xp for completing a step
+    const newXp = (localProfile?.xp ?? 0) + 50;
+    await supabase.from('profiles').update({xp: newXp}).eq('id', user.id);
+
+    // Refresh the page to get the latest submissions and profile data
+    router.refresh();
+
     setUploadSuccess(true); 
     setSelectedFile(null); 
     setShowGrading(false); 
     setAnalysisResult(null);
-    
-    // Award 50 xp for completing a step
-    const newXp = (localProfile?.xp ?? 0) + 50;
+
+    setTimeout(() => {
+      setUploadSuccess(false);
+      setSelectedFile(null);
+      if (currentStep < firstWorkbookSteps.length - 1){
+        setCurrentStep(currentStep + 1);
+      }
+    }, 2000);
+  };
 
     console.log(`Attempting to update XP for user ${user.id}. NewXP should be ${newXp}`);
     // Update the profile in the database
@@ -422,13 +396,18 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
       setUploadSuccess(false);
     }, 2000);
   };
+  const isKidsMode = localProfile?.display_mode === 'kids';
+  const currentWorksheet = firstWorkbookSteps[currentStep];
+
+  const currentSubmissions = submissions
+    .filter(s => s.worksheet_id === currentWorksheet.id)
+    .sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   const openWorksheet = (worksheetUrl: string) => { window.open(worksheetUrl, '_blank', 'noopener,noreferrer'); };
   const goToPreviousStep = () => { if (currentStep > 0) setCurrentStep(currentStep - 1); };
   const goToNextStep = () => { if (currentStep < firstWorkbookSteps.length - 1) setCurrentStep(currentStep + 1); };
 
-  const isKidsMode = localProfile?.display_mode === 'kids';
-  const currentWorksheet = firstWorkbookSteps[currentStep];
+  
   const progressPercentage = ((completedSteps.size) / firstWorkbookSteps.length) * 100;
   const isCompleted = completedSteps.has(currentWorksheet.id);
 
@@ -1002,6 +981,53 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
               </div>
             </div>
           )}
+
+          {/* --- NEW: Submission History Section --- */}
+        <div className="mt-16">
+          <div className="flex items-center gap-3 mb-6">
+            <BookOpen className="h-7 w-7 text-gray-400" />
+            <h2 className="text-3xl font-bold text-gray-800">Submission History</h2>
+          </div>
+          <div className="space-y-4">
+            {currentSubmissions.length > 0 ? (
+              currentSubmissions.map((submission) => {
+                // Generate the public URL for the image
+                const { data: imageUrlData } = supabase.storage
+                  .from('submissions')
+                  .getPublicUrl(submission.image_path);
+
+                return (
+                  <div key={submission.id} className="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-6">
+                    <img 
+                      src={imageUrlData.publicUrl}
+                      alt={`Submission for ${submission.worksheet_id}`}
+                      className="w-full md:w-32 md:h-32 object-cover rounded-lg border"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <p className="font-bold text-lg text-gray-800">Overall Score: {submission.score}%</p>
+                        <p className="text-xs text-gray-400">
+                          {new Date(submission.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div className="flex gap-4 mt-1">
+                        <p className="text-sm text-blue-600">Steadiness: {submission.steadiness}%</p>
+                        <p className="text-sm text-green-600">Accuracy: {submission.accuracy}%</p>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-3 p-3 bg-gray-50 rounded-md">
+                        <strong>Feedback:</strong> <em>"{submission.feedback}"</em>
+                      </p>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-12 px-6 bg-gray-50 rounded-2xl border">
+                <p className="text-gray-500">You haven't made any submissions for this worksheet yet.</p>
+                <p className="text-gray-400 text-sm mt-1">Complete the exercise above to see your history!</p>
+              </div>
+            )}
+
         </div>
       </div>
     </div>
