@@ -422,7 +422,7 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
               </div>
               <div className="p-6 pt-0 space-y-4">
                 <div className="flex items-center gap-4">
-                    <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="flex-1 h-12 text-lg font-bold"><Eye className="h-5 w-5 mr-2" />Open Worksheet</Button>
+                    <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="flex-1 h-12 text-lg font-bold bg-green-600 hover:bg-green-700 text-white"><Eye className="h-5 w-5 mr-2" />Open Worksheet</Button>
                     <Button onClick={() => window.print()} variant="outline" size="icon" className="h-12 w-12"><Printer className="h-5 w-5" /></Button>
                 </div>
                 <div className="flex items-center justify-between">
