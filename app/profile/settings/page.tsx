@@ -18,7 +18,10 @@ import {
   CreditCard,
   Calendar,
   Crown,
-  Sparkles
+  Sparkles,
+  Check,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { Database, Profile } from '@/lib/database.types';
 
@@ -34,12 +37,23 @@ interface FormData {
   avatar_url: string | null;
 }
 
+interface PlanOption {
+  id: SubscriptionType;
+  name: string;
+  price: number;
+  description: string;
+  features: string[];
+  popular?: boolean;
+}
+
 export default function ProfileSettingsPage() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [showPlanSelector, setShowPlanSelector] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<SubscriptionType | null>(null);
   
   // Form state
   const [formData, setFormData] = useState<FormData>({
@@ -90,6 +104,7 @@ export default function ProfileSettingsPage() {
           display_mode: getDisplayMode(data.display_mode),
           avatar_url: data.avatar_url
         });
+        setSelectedPlan(data.subscription_type as SubscriptionType || 'free');
       }
     } catch (error: any) {
       console.error('Error fetching profile:', error);
@@ -135,6 +150,7 @@ export default function ProfileSettingsPage() {
           user_role: formData.user_role,
           display_mode: formData.display_mode,
           avatar_url: formData.avatar_url,
+          subscription_type: selectedPlan,
           updated_at: new Date().toISOString()
         })
         .eq('id', user.id);
@@ -144,6 +160,9 @@ export default function ProfileSettingsPage() {
       }
 
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
+      
+      // Refresh profile data
+      await fetchProfile(user.id);
     } catch (error: any) {
       console.error('Error updating profile:', error);
       setMessage({ type: 'error', text: error.message || 'Failed to update profile' });
@@ -233,6 +252,72 @@ export default function ProfileSettingsPage() {
     } else {
       return trialEnd.toLocaleDateString();
     }
+  };
+
+  // Available subscription plans
+  const plans: PlanOption[] = [
+    {
+      id: 'free',
+      name: 'Free',
+      price: 0,
+      description: 'Basic features for getting started',
+      features: [
+        '5 handwriting analyses per month',
+        'Basic feedback',
+        'Standard worksheets'
+      ]
+    },
+    {
+      id: 'basic',
+      name: 'Basic',
+      price: 9.99,
+      description: 'Perfect for regular practice',
+      features: [
+        '20 handwriting analyses per month',
+        'Detailed feedback',
+        'All standard worksheets',
+        'Progress tracking'
+      ],
+      popular: false
+    },
+    {
+      id: 'pro',
+      name: 'Pro',
+      price: 19.99,
+      description: 'Advanced features for serious learners',
+      features: [
+        'Unlimited handwriting analyses',
+        'Advanced AI feedback',
+        'All premium worksheets',
+        'Advanced analytics',
+        'Multiple student profiles'
+      ],
+      popular: true
+    },
+    {
+      id: 'educator',
+      name: 'Educator',
+      price: 49.99,
+      description: 'Professional tools for teachers',
+      features: [
+        'Unlimited handwriting analyses',
+        'Classroom management tools',
+        'Bulk student accounts',
+        'Educational reports',
+        'Priority support'
+      ]
+    }
+  ];
+
+  // Handle plan selection
+  const handlePlanSelect = (planId: SubscriptionType) => {
+    setSelectedPlan(planId);
+    setShowPlanSelector(false);
+  };
+
+  // Handle plan change
+  const handleChangePlan = () => {
+    setShowPlanSelector(!showPlanSelector);
   };
 
   if (loading) {
@@ -690,8 +775,113 @@ export default function ProfileSettingsPage() {
                   </ul>
                 </div>
                 
-                {/* Upgrade Button */}
-                {profile?.subscription_type === 'free' && (
+                {/* Change Plan Button */}
+                <div className="mt-4">
+                  <button 
+                    onClick={handleChangePlan}
+                    className={`flex items-center justify-between w-full px-4 py-2 rounded-xl font-medium transition-colors ${
+                      isKidsMode 
+                        ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    <span>{isKidsMode ? '🔄 Change My Plan' : 'Change Subscription Plan'}</span>
+                    {showPlanSelector ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+                
+                {/* Plan Selector */}
+                {showPlanSelector && (
+                  <div className="mt-4 space-y-3">
+                    <h4 className={`text-sm font-medium ${
+                      isKidsMode ? 'text-blue-700' : 'text-gray-700'
+                    }`}>
+                      {isKidsMode ? '✨ Choose a New Plan' : 'Select a Plan'}
+                    </h4>
+                    
+                    {plans.map((plan) => (
+                      <div 
+                        key={plan.id}
+                        onClick={() => handlePlanSelect(plan.id)}
+                        className={`p-4 border rounded-xl cursor-pointer transition-all ${
+                          selectedPlan === plan.id
+                            ? isKidsMode
+                              ? 'border-blue-500 bg-blue-50'
+                              : 'border-green-500 bg-green-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                        } ${plan.popular ? 'relative' : ''}`}
+                      >
+                        {plan.popular && (
+                          <div className="absolute -top-2 right-4 px-2 py-0.5 bg-purple-500 text-white text-xs font-bold rounded-full">
+                            Popular
+                          </div>
+                        )}
+                        
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                              plan.id === 'free'
+                                ? 'bg-gray-200'
+                                : plan.id === 'basic'
+                                ? 'bg-blue-100'
+                                : plan.id === 'pro'
+                                ? 'bg-purple-100'
+                                : 'bg-green-100'
+                            }`}>
+                              {plan.id === 'free' ? (
+                                <Sparkles className="h-5 w-5 text-gray-600" />
+                              ) : plan.id === 'basic' ? (
+                                <Star className="h-5 w-5 text-blue-600" />
+                              ) : plan.id === 'pro' ? (
+                                <Crown className="h-5 w-5 text-purple-600" />
+                              ) : (
+                                <Users className="h-5 w-5 text-green-600" />
+                              )}
+                            </div>
+                            <div>
+                              <h5 className="font-bold">{plan.name}</h5>
+                              <div className="flex items-baseline gap-1">
+                                {plan.price > 0 ? (
+                                  <>
+                                    <span className="font-bold">${plan.price}</span>
+                                    <span className="text-xs text-gray-500">/month</span>
+                                  </>
+                                ) : (
+                                  <span className="text-sm text-gray-600">Free</span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {selectedPlan === plan.id && (
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                              isKidsMode ? 'bg-blue-500' : 'bg-green-500'
+                            }`}>
+                              <Check className="h-4 w-4 text-white" />
+                            </div>
+                          )}
+                        </div>
+                        
+                        <p className="text-sm text-gray-600 mt-2">{plan.description}</p>
+                      </div>
+                    ))}
+                    
+                    <div className={`p-3 rounded-lg ${
+                      isKidsMode ? 'bg-blue-50 border border-blue-200' : 'bg-blue-50 border border-blue-200'
+                    }`}>
+                      <p className="text-xs text-blue-700">
+                        <strong>Note:</strong> This is a simulation. In a production environment, changing plans would redirect to a payment processor.
+                      </p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Upgrade Button (only shown for free users when not showing plan selector) */}
+                {profile?.subscription_type === 'free' && !showPlanSelector && (
                   <div className="mt-4">
                     <Link href="/pricing">
                       <button className={`w-full px-4 py-2 rounded-xl font-medium transition-colors ${
@@ -705,8 +895,8 @@ export default function ProfileSettingsPage() {
                   </div>
                 )}
                 
-                {/* Manage Subscription Button */}
-                {profile?.subscription_type !== 'free' && (
+                {/* Manage Subscription Button (only shown for paid users when not showing plan selector) */}
+                {profile?.subscription_type !== 'free' && !showPlanSelector && (
                   <div className="mt-4">
                     <Link href="/pricing">
                       <button className={`w-full px-4 py-2 rounded-xl font-medium transition-colors ${
