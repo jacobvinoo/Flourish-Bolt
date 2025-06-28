@@ -340,7 +340,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     formData.append('worksheetInstructions', currentWorksheet.description);
 
     // Call AI grading API endpoint
-    const response = await fetch('/api/gradeworksheet', {
+    const response = await fetch('/api/grade-worksheet', {
       method: 'POST',
       body: formData,
     });
