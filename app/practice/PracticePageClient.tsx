@@ -369,6 +369,8 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
       imageUrl: URL.createObjectURL(selectedFile),
     };
 
+    console.log("Setting analysis state:", newAnalysisResult);
+    
     setAnalysisResult(newAnalysisResult);
     setShowGrading(true);
     
