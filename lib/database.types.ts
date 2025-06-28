@@ -26,6 +26,7 @@ export interface Database {
           updated_at: string
           current_streak: number | null 
           xp: number | null
+          subscription_type: string | null
         }
         Insert: {
           id: string
@@ -40,7 +41,8 @@ export interface Database {
           created_at?: string
           updated_at?: string
           current_streak?: number | null 
-          xp?: number | null 
+          xp?: number | null
+          subscription_type?: string | null
         }
         Update: {
           id?: string
@@ -55,7 +57,8 @@ export interface Database {
           created_at?: string
           updated_at?: string
           current_streak?: number | null 
-          xp?: number | null 
+          xp?: number | null
+          subscription_type?: string | null
         }
       }
     }
