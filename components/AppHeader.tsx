@@ -49,22 +49,40 @@ const AppHeader: React.FC<AppHeaderProps> = ({
           {/* Left side - Logo and Back Button */}
           <div className="flex items-center gap-3">
             {backLink ? (
-              <Link href={backLink}>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className={`${
-                    isKidsMode 
-                      ? 'text-white/90 hover:bg-white/10 hover:text-white' 
-                      : 'text-gray-700 hover:bg-gray-100'
-                  } transition-all duration-200`}
-                >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  {backText || (isKidsMode ? '🏠 Back Home' : 'Back to Dashboard')}
-                </Button>
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link href={backLink}>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className={`${
+                      isKidsMode 
+                        ? 'text-white/90 hover:bg-white/10 hover:text-white' 
+                        : 'text-gray-700 hover:bg-gray-100'
+                    } transition-all duration-200`}
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    {backText || (isKidsMode ? '🏠 Back Home' : 'Back to Dashboard')}
+                  </Button>
+                </Link>
+                
+                {/* Logo still visible when back button is shown */}
+                <Link href="/" className="flex items-center gap-2">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    isKidsMode ? 'bg-white/20' : 'bg-green-600'
+                  }`}>
+                    <PenTool className={`h-4 w-4 ${
+                      isKidsMode ? 'text-white' : 'text-white'
+                    }`} />
+                  </div>
+                  <h1 className={`text-xl font-bold ${
+                    isKidsMode ? 'text-white' : 'text-gray-900'
+                  }`}>
+                    {isKidsMode ? '✨ Flourish!' : 'Flourish'}
+                  </h1>
+                </Link>
+              </div>
             ) : (
-              <>
+              <Link href="/" className="flex items-center gap-2">
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                   isKidsMode ? 'bg-white/20' : 'bg-green-600'
                 }`}>
@@ -77,7 +95,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 }`}>
                   {isKidsMode ? '✨ Flourish!' : 'Flourish'}
                 </h1>
-              </>
+              </Link>
             )}
           </div>
 
