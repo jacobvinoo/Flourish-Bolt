@@ -373,7 +373,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     
     setAnalysisResult(newAnalysisResult);
     setShowGrading(true);
-    
+    console.log ("AnalysisResult:", analysisResult);
   } catch (error: any) {
     setUploadError(error.message || 'An unexpected error occurred.');
   } finally {
