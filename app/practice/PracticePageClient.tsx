@@ -366,6 +366,8 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     const newAnalysisResult = {
       score: result.score,
       feedback: result.feedback,
+      steadiness: result.steadiness,
+      accuracy: result.accuracy,
       imageUrl: URL.createObjectURL(selectedFile),
     };
 
