@@ -554,13 +554,13 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
                   {isKidsMode ? 'Overall Score 🏆' : 'Overall Score'}
                 </p>
                 <p className={`text-5xl font-bold ${
-                  analysisResult.overallScore >= 90
+                  analysisResult.score >= 90
                     ? 'text-green-500'
-                    : analysisResult.overallScore >= 70
+                    : analysisResult.score >= 70
                       ? 'text-yellow-500'
                       : 'text-red-500'
                 }`}>
-                  {analysisResult.overallScore}%
+                  {analysisResult.score}%
                 </p>
               </div>
               {!isKidsMode && (
@@ -587,7 +587,7 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
                       {isKidsMode ? '💡 Helpful Tip!' : 'Actionable Tip'}
                     </h4>
                     <p className={`text-sm ${isKidsMode ? 'text-yellow-700' : 'text-blue-700'}`}>
-                      {analysisResult.feedbackTip}
+                      {analysisResult.feedback}
                     </p>
                   </div>
                 </div>
