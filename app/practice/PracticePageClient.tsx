@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -24,10 +25,21 @@ import {
   BookOpen
 } from 'lucide-react';
 
-// Define the Submission type based on your database schema
 // --- THIS IS THE FIX ---
-// Changed from Tables<'submissions'> to Tables['submissions']
-type Submission = Tables['submissions']['Row'];
+// We are manually defining the Submission type here to resolve the build error.
+// For a permanent solution, you should update your `database.types.ts` file
+// by running the Supabase CLI, and then you can remove this manual definition.
+type Submission = {
+  id: string;
+  user_id: string;
+  worksheet_id: string;
+  score: number;
+  steadiness: number;
+  accuracy: number;
+  feedback: string | null;
+  image_path: string;
+  created_at: string;
+};
 
 interface PracticePageClientProps {
   user: User;
@@ -268,3 +280,4 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
     </PageLayout>
   );
 }
+
