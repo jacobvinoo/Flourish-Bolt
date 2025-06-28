@@ -60,7 +60,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   };
   
   return (
-    <div className={`min-h-screen transition-all duration-500 relative ${backgroundClass} ${className}`}>
+    <div className={`min-h-screen transition-all duration-500 relative overflow-hidden ${backgroundClass} ${className}`}>
       {/* Hide backgrounds on small screens */}
       {showBackgroundElements && (
         <div className="hidden md:block absolute inset-0 w-full h-full pointer-events-none z-0">
