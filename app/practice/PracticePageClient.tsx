@@ -363,12 +363,13 @@ export default function PracticePageClient({ user, profile }: PracticePageClient
     
 
     // Set the analysis result with the real data from the AI
-    setAnalysisResult({
-      overallScore: result.score,
-      feedbackTip: result.feedback,
+    const newAnalysisResult = {
+      score: result.score,
+      feedback: result.feedback,
       imageUrl: URL.createObjectURL(selectedFile),
-    });
+    };
 
+    setAnalysisResult(newAnalysisResult);
     setShowGrading(true);
     
   } catch (error: any) {
