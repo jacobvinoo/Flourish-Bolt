@@ -697,7 +697,11 @@ export default function ProgressReportClient({ user, profile, initialSubmissions
               </CardHeader>
               <CardContent>
                 {filteredSubmissions.length > 0 ? (
-                  <SkillRadarChart skills={skillRadarData} isKidsMode={isKidsMode} />
+                  <div className="w-full flex justify-center">
+                    <div className="w-full max-w-[300px]">
+                      <SkillRadarChart skills={skillRadarData} isKidsMode={isKidsMode} />
+                    </div>
+                  </div>
                 ) : (
                   <div className="text-center py-12">
                     <PieChart className={`h-12 w-12 mx-auto mb-2 ${isKidsMode ? 'text-pink-400' : 'text-gray-300'}`} />
