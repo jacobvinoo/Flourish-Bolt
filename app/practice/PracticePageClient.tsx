@@ -25,7 +25,9 @@ import {
 } from 'lucide-react';
 
 // Define the Submission type based on your database schema
-type Submission = Tables<'submissions'>['Row'];
+// --- THIS IS THE FIX ---
+// Changed from Tables<'submissions'> to Tables['submissions']
+type Submission = Tables['submissions']['Row'];
 
 interface PracticePageClientProps {
   user: User;
@@ -266,4 +268,3 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
     </PageLayout>
   );
 }
-
