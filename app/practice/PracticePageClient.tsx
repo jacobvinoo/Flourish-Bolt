@@ -59,6 +59,7 @@ interface WorksheetStep {
   emoji: string;
 }
 
+// Using the full list of worksheets
 const firstWorkbookSteps: WorksheetStep[] = [
   {
     id: 'vertical-lines',
@@ -88,6 +89,76 @@ const firstWorkbookSteps: WorksheetStep[] = [
     color: 'from-green-400 to-green-600',
     emoji: '➡️'
   },
+  {
+    id: 'circles',
+    title: 'Worksheet 1.3: Circles',
+    friendlyTitle: 'Round and Round!',
+    description: 'Learn circular motions essential for letters like o, a, and d.',
+    kidsDescription: 'Make perfect circles like bubbles, donuts, or the sun! Practice going round and round!',
+    level: 1,
+    worksheetUrl: '/worksheets/circles.html',
+    skills: ['Circular motions', 'Smooth curves', 'Hand control'],
+    estimatedTime: '15-20 minutes',
+    icon: 'Circle',
+    color: 'from-yellow-400 to-orange-500',
+    emoji: '⭕'
+  },
+  {
+    id: 'diagonal-lines',
+    title: 'Worksheet 1.4: Diagonal Lines',
+    friendlyTitle: 'Slanted Lines!',
+    description: 'Master diagonal strokes for letters like A, V, X, and k.',
+    kidsDescription: 'Draw slanted lines like slides at the playground or roof tops!',
+    level: 1,
+    worksheetUrl: '/worksheets/diagonal-lines.html',
+    skills: ['Diagonal drawing', 'Angles', 'Letter shapes'],
+    estimatedTime: '15-20 minutes',
+    icon: 'TrendingUp',
+    color: 'from-purple-400 to-purple-600',
+    emoji: '📐'
+  },
+  {
+    id: 'intersecting-lines',
+    title: 'Worksheet 1.5: Intersecting Lines',
+    friendlyTitle: 'Crossing Lines!',
+    description: 'Practice crosses and plus signs with precision.',
+    kidsDescription: 'Make crossing lines like a tic-tac-toe game or a treasure map X!',
+    level: 1,
+    worksheetUrl: '/worksheets/intersecting-lines.html',
+    skills: ['Crossing lines', 'Precision', 'Plus signs'],
+    estimatedTime: '15-20 minutes',
+    icon: 'Plus',
+    color: 'from-red-400 to-pink-500',
+    emoji: '✖️'
+  },
+  {
+    id: 'basic-shapes',
+    title: 'Worksheet 1.6: Basic Shapes',
+    friendlyTitle: 'Fun Shapes!',
+    description: 'Combine strokes to create squares, triangles, and rectangles.',
+    kidsDescription: 'Draw squares like windows, triangles like pizza slices, and rectangles like doors!',
+    level: 1,
+    worksheetUrl: '/worksheets/basic-shapes.html',
+    skills: ['Shape drawing', 'Combining lines', 'Geometric fun'],
+    estimatedTime: '20-25 minutes',
+    icon: 'Square',
+    color: 'from-indigo-400 to-blue-500',
+    emoji: '🔺'
+  },
+  {
+    id: 'continuous-curves',
+    title: 'Worksheet 1.7: Continuous Curves',
+    friendlyTitle: 'Wavy Lines!',
+    description: 'Develop fluidity with wavy lines and loops for cursive preparation.',
+    kidsDescription: 'Draw wavy lines like ocean waves, roller coasters, or a snake dancing!',
+    level: 1,
+    worksheetUrl: '/worksheets/continuous-curves.html',
+    skills: ['Wavy lines', 'Smooth flow', 'Cursive prep'],
+    estimatedTime: '20-25 minutes',
+    icon: 'Waves',
+    color: 'from-teal-400 to-cyan-500',
+    emoji: '🌊'
+  }
 ];
 
 function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disabled = false, isKidsMode = false }: {
@@ -98,8 +169,74 @@ function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disab
   disabled?: boolean,
   isKidsMode?: boolean
 }) {
-  // This component is correct and does not need changes.
-  return <div>...FileUpload JSX...</div>;
+  const [dragActive, setDragActive] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
+    else if (e.type === "dragleave") setDragActive(false);
+  };
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFileSelection(e.dataTransfer.files[0]);
+  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (e.target.files && e.target.files[0]) handleFileSelection(e.target.files[0]);
+  };
+  const handleFileSelection = (file: File) => {
+    setError(null);
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!validTypes.includes(file.type)) {
+      setError(isKidsMode ? '😅 Oops! Please pick a photo file (JPG or PNG)' : 'Please select a valid image file (JPEG, PNG, or JPG)');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError(isKidsMode ? '😅 That photo is too big! Please pick a smaller one.' : 'File size must be less than 10MB');
+      return;
+    }
+    onFileSelect(file);
+  };
+
+  if (selectedFile) {
+      return (
+        <div className={`border-2 border-dashed rounded-xl p-6 ${isKidsMode ? 'border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50' : 'border-gray-300 bg-gray-50'}`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-full ${isKidsMode ? 'bg-purple-200' : 'bg-blue-100'}`}>
+                <Upload className={`h-8 w-8 ${isKidsMode ? 'text-purple-600' : 'text-blue-500'}`} />
+              </div>
+              <div>
+                <p className="font-medium text-lg">{isKidsMode ? '📸 Your awesome photo!' : selectedFile.name}</p>
+                <p className="text-sm text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+              </div>
+            </div>
+            {!uploading && (
+              <Button onClick={onFileRemove} variant="outline" size="sm" className={isKidsMode ? 'hover:bg-red-100' : ''}>
+                <X className="h-4 w-4" />
+                {isKidsMode && <span className="ml-1">Remove</span>}
+              </Button>
+            )}
+          </div>
+        </div>
+      );
+  }
+  return (
+    <div className="space-y-3">
+      <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer ${dragActive ? 'border-purple-400 bg-purple-100' : 'border-gray-300 hover:border-gray-400'}`}
+        onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrop} onDrop={handleDrop}
+        onClick={() => { if (!disabled && !uploading) document.getElementById('file-upload')?.click(); }}>
+        <div className={`mx-auto mb-4 p-4 rounded-full ${isKidsMode ? 'bg-purple-200' : 'bg-gray-100'}`}>
+          <Upload className={`h-12 w-12 mx-auto ${isKidsMode ? 'text-purple-600' : 'text-gray-400'}`} />
+        </div>
+        <h3 className="text-xl font-bold mb-2">Upload Your Completed Worksheet</h3>
+        <p className="text-gray-600 mb-4">Drag and drop or click to select an image file</p>
+        <Input id="file-upload" type="file" accept="image/jpeg,image/png,image/jpg" onChange={handleChange} className="hidden" disabled={disabled || uploading} />
+      </div>
+    </div>
+  );
 }
 
 
@@ -144,12 +281,7 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
       const currentWorksheet = firstWorkbookSteps[currentStep];
       const formData = new FormData();
       formData.append('file', selectedFile);
-
-      // --- THIS IS THE FIX ---
-      // We must send the worksheet 'id' so the API knows which worksheet
-      // this submission belongs to.
       formData.append('worksheetId', currentWorksheet.id);
-      
       formData.append('worksheetTitle', currentWorksheet.title);
       formData.append('worksheetInstructions', currentWorksheet.description);
 
@@ -180,8 +312,6 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
     const newXp = (localProfile?.xp ?? 0) + 50;
     await supabase.from('profiles').update({ xp: newXp }).eq('id', user.id);
 
-    // This will re-run the server component for this page, which fetches
-    // the new submission history from the database.
     router.refresh();
 
     setShowGrading(false);
@@ -208,6 +338,9 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
   const goToPreviousStep = () => { if (currentStep > 0) setCurrentStep(currentStep - 1); };
   const goToNextStep = () => { if (currentStep < firstWorkbookSteps.length - 1) setCurrentStep(currentStep + 1); };
 
+  const completedStepsCount = new Set(submissions.map(s => s.worksheet_id)).size;
+  const progressPercentage = (completedStepsCount / firstWorkbookSteps.length) * 100;
+
   return (
     <PageLayout
       isKidsMode={isKidsMode}
@@ -220,13 +353,114 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
       }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* --- Main Practice UI --- */}
+        
+        {/* Header and Progress */}
+        <div className="mb-8 text-center">
+            {/* ... */}
+        </div>
+        {/* Progress Bar */}
+        {isKidsMode && (
+          <div>...Progress Bar UI...</div>
+        )}
+
+        {/* Upload Success */}
+        {uploadSuccess && (
+          <div>...Upload Success UI...</div>
+        )}
+        
+        {/* Main Grid Layout */}
         <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content Column */}
           <div className="lg:col-span-2 space-y-8">
-            {/* ...UI for current worksheet, grading report, and upload... */}
+            {/* Current Worksheet Card */}
+            <div className={`border-0 shadow-xl overflow-hidden rounded-2xl ${isKidsMode ? `bg-gradient-to-br ${currentWorksheet.color} text-white` : 'bg-white border border-gray-200'}`}>
+              <div className="p-6">
+                 <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className={`text-6xl ${isKidsMode ? 'animate-bounce' : ''}`}>{currentWorksheet.emoji}</div>
+                      <div>
+                        <h3 className={`text-2xl font-bold ${isKidsMode ? 'text-white' : 'text-gray-900'}`}>{isKidsMode ? currentWorksheet.friendlyTitle : currentWorksheet.title}</h3>
+                        <p className={`mt-2 text-lg ${isKidsMode ? 'text-white/90' : 'text-gray-600'}`}>{isKidsMode ? currentWorksheet.kidsDescription : currentWorksheet.description}</p>
+                      </div>
+                    </div>
+                 </div>
+              </div>
+              <div className="p-6 pt-0 space-y-4">
+                <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="w-full h-12 text-lg font-bold">
+                  <Eye className="h-5 w-5 mr-2" />
+                  Open Worksheet
+                </Button>
+              </div>
+            </div>
+            
+            {/* AI Grading Results (conditionally rendered) */}
+            {showGrading && analysisResult && (
+              <div className="p-6 rounded-2xl shadow-xl bg-white border">
+                <h2 className="text-2xl font-bold text-center mb-6">AI Grading Results</h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Your Submission</h3>
+                    <img src={analysisResult.imageUrl} alt="Graded worksheet" className="w-full rounded-lg shadow-md" />
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <div className="rounded-xl p-6 text-center mb-4 bg-gray-100">
+                      <p className="text-lg text-gray-600">Overall Score</p>
+                      <p className="text-5xl font-bold text-green-500">{analysisResult.score}%</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-blue-50 p-3 rounded-lg text-center">
+                        <p className="text-sm text-blue-600 font-medium">Steadiness</p>
+                        <p className="text-2xl font-bold text-blue-700">{analysisResult.steadiness}%</p>
+                      </div>
+                      <div className="bg-green-50 p-3 rounded-lg text-center">
+                        <p className="text-sm text-green-600 font-medium">Accuracy</p>
+                        <p className="text-2xl font-bold text-green-700">{analysisResult.accuracy}%</p>
+                      </div>
+                    </div>
+                    <div className="border-l-4 p-4 rounded-r-lg mb-6 bg-blue-50 border-blue-500">
+                      <h4 className="font-bold text-blue-800">Actionable Tip</h4>
+                      <p className="text-sm text-blue-700">{analysisResult.feedback}</p>
+                    </div>
+                    <Button onClick={handleGradingComplete} className="w-full h-12 text-lg font-bold bg-green-600 text-white hover:bg-green-700">Continue to Next Step</Button>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Upload Section (conditionally rendered) */}
+            {!showGrading && (
+              <div className="p-6 border rounded-2xl bg-white">
+                <h3 className="text-xl font-bold mb-4">Upload Your Completed Worksheet</h3>
+                <FileUpload
+                    onFileSelect={handleFileSelect}
+                    onFileRemove={handleFileRemove}
+                    selectedFile={selectedFile}
+                    uploading={uploading}
+                    disabled={uploadSuccess}
+                    isKidsMode={isKidsMode}
+                />
+                {selectedFile && !uploading && (
+                  <Button onClick={handleUpload} size="lg" disabled={uploading} className="w-full mt-4 bg-green-600 hover:bg-green-700">
+                    {uploading ? "Analyzing..." : "Grade My Worksheet!"}
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
+
+          {/* Sidebar */}
           <div className="space-y-6">
-            {/* ...UI for sidebar navigation... */}
+            <div className="p-6 border-0 shadow-xl rounded-2xl bg-white/50">
+              <h3 className="font-bold text-lg mb-4">Quick Navigation</h3>
+              <div className="space-y-2">
+                {firstWorkbookSteps.map((step, index) => (
+                  <button key={step.id} onClick={() => setCurrentStep(index)} className={`w-full p-3 rounded-lg border-2 text-left transition-all duration-200 flex items-center gap-3 ${index === currentStep ? 'border-blue-500 bg-blue-50' : 'bg-white hover:border-gray-300'}`}>
+                    <span className="font-mono text-xl">{step.emoji}</span>
+                    <span className="font-semibold">{step.title}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -244,7 +478,7 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
                   .getPublicUrl(submission.image_path);
 
                 return (
-                  <div key={submission.id} className="p-6 bg-white rounded-2xl border flex flex-col md:flex-row items-center gap-6">
+                  <div key={submission.id} className="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-6">
                     <img 
                       src={imageUrlData.publicUrl}
                       alt={`Submission for ${submission.worksheet_id}`}
@@ -252,7 +486,7 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
                     />
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <p className="font-bold text-lg text-gray-800">Score: {submission.score}%</p>
+                        <p className="font-bold text-lg text-gray-800">Overall Score: {submission.score}%</p>
                         <p className="text-xs text-gray-400">{new Date(submission.created_at).toLocaleDateString()}</p>
                       </div>
                       <div className="flex gap-4 mt-1">
@@ -278,3 +512,4 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
     </PageLayout>
   );
 }
+
