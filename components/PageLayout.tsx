@@ -50,6 +50,14 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   // Tight universal max width for all content:
   const containerClass = 'max-w-4xl mx-auto px-4 sm:px-6 lg:px-8';
 
+  // If we're on an authenticated page (not dashboard), add dashboard link
+  const updatedHeaderProps = {
+    ...headerProps,
+    // Set backLink to dashboard for authenticated pages unless it's already set
+    backLink: headerVariant === 'authenticated' && !headerProps.backLink ? '/dashboard' : headerProps.backLink,
+    // Set backText to "Back to Dashboard" for authenticated pages unless it's already set
+    backText: headerVariant === 'authenticated' && !headerProps.backText ? (isKidsMode ? '🏠 Back Home' : 'Back to Dashboard') : headerProps.backText
+  };
   
   return (
     <div className={`min-h-screen transition-all duration-500 relative overflow-hidden ${backgroundClass} ${className}`}>
@@ -78,7 +86,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
         <AppHeader
           variant={headerVariant}
           isKidsMode={isKidsMode}
-          {...headerProps}
+          {...updatedHeaderProps}
         />
       )}
 
