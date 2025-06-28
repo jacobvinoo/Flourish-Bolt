@@ -139,39 +139,41 @@ const SkillRadarChart = ({ skills, isKidsMode }: { skills: Record<string, number
   });
   
   return (
-    <div className="relative h-64 w-full mt-4">
-      {/* Background circles */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className={`w-full h-full max-w-[200px] max-h-[200px] rounded-full ${isKidsMode ? 'bg-purple-100' : 'bg-gray-100'} opacity-20`}></div>
-        <div className={`absolute w-3/4 h-3/4 rounded-full ${isKidsMode ? 'bg-purple-100' : 'bg-gray-100'} opacity-30`}></div>
-        <div className={`absolute w-1/2 h-1/2 rounded-full ${isKidsMode ? 'bg-purple-100' : 'bg-gray-100'} opacity-40`}></div>
-        <div className={`absolute w-1/4 h-1/4 rounded-full ${isKidsMode ? 'bg-purple-100' : 'bg-gray-100'} opacity-50`}></div>
-      </div>
-      
-      {/* Skill points and labels */}
-      {skillPoints.map(({ skill, value, x, y, angle }) => (
-        <div key={skill} className="absolute" style={{ left: `${x}%`, top: `${y}%` }}>
-          <div className={`w-4 h-4 rounded-full ${isKidsMode ? 'bg-pink-500' : 'bg-primary'} -ml-2 -mt-2`}></div>
-          <div 
-            className={`absolute text-xs font-medium ${isKidsMode ? 'text-purple-700' : 'text-gray-700'} whitespace-nowrap`}
-            style={{ 
-              transform: `translate(${Math.sin(angle) > 0 ? '10px' : Math.sin(angle) < 0 ? '-110%' : '-50%'}, ${Math.cos(angle) < 0 ? '10px' : '-150%'})` 
-            }}
-          >
-            {skill} ({value}%)
-          </div>
+    <div className="relative h-64 w-full flex items-center justify-center">
+      <div className="relative w-full max-w-[300px] h-64">
+        {/* Background circles */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className={`w-full h-full max-w-[200px] max-h-[200px] rounded-full ${isKidsMode ? 'bg-purple-100' : 'bg-gray-100'} opacity-20`}></div>
+          <div className={`absolute w-3/4 h-3/4 rounded-full ${isKidsMode ? 'bg-purple-100' : 'bg-gray-100'} opacity-30`}></div>
+          <div className={`absolute w-1/2 h-1/2 rounded-full ${isKidsMode ? 'bg-purple-100' : 'bg-gray-100'} opacity-40`}></div>
+          <div className={`absolute w-1/4 h-1/4 rounded-full ${isKidsMode ? 'bg-purple-100' : 'bg-gray-100'} opacity-50`}></div>
         </div>
-      ))}
-      
-      {/* Connect the dots with SVG polygon */}
-      <svg className="absolute inset-0 w-full h-full" style={{ overflow: 'visible' }}>
-        <polygon 
-          points={skillPoints.map(({ x, y }) => `${x},${y}`).join(' ')}
-          fill={isKidsMode ? 'rgba(219, 39, 119, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
-          stroke={isKidsMode ? '#db2777' : 'hsl(var(--primary))'}
-          strokeWidth="2"
-        />
-      </svg>
+        
+        {/* Skill points and labels */}
+        {skillPoints.map(({ skill, value, x, y, angle }) => (
+          <div key={skill} className="absolute" style={{ left: `${x}%`, top: `${y}%` }}>
+            <div className={`w-4 h-4 rounded-full ${isKidsMode ? 'bg-pink-500' : 'bg-primary'} -ml-2 -mt-2`}></div>
+            <div 
+              className={`absolute text-xs font-medium ${isKidsMode ? 'text-purple-700' : 'text-gray-700'} whitespace-nowrap`}
+              style={{ 
+                transform: `translate(${Math.sin(angle) > 0 ? '10px' : Math.sin(angle) < 0 ? '-110%' : '-50%'}, ${Math.cos(angle) < 0 ? '10px' : '-150%'})` 
+              }}
+            >
+              {skill} ({value}%)
+            </div>
+          </div>
+        ))}
+        
+        {/* Connect the dots with SVG polygon */}
+        <svg className="absolute inset-0 w-full h-full" style={{ overflow: 'visible' }}>
+          <polygon 
+            points={skillPoints.map(({ x, y }) => `${x},${y}`).join(' ')}
+            fill={isKidsMode ? 'rgba(219, 39, 119, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
+            stroke={isKidsMode ? '#db2777' : 'hsl(var(--primary))'}
+            strokeWidth="2"
+          />
+        </svg>
+      </div>
     </div>
   );
 };
@@ -697,10 +699,8 @@ export default function ProgressReportClient({ user, profile, initialSubmissions
               </CardHeader>
               <CardContent>
                 {filteredSubmissions.length > 0 ? (
-                  <div className="w-full flex justify-center">
-                    <div className="w-full max-w-[300px]">
-                      <SkillRadarChart skills={skillRadarData} isKidsMode={isKidsMode} />
-                    </div>
+                  <div className="flex justify-center">
+                    <SkillRadarChart skills={skillRadarData} isKidsMode={isKidsMode} />
                   </div>
                 ) : (
                   <div className="text-center py-12">
