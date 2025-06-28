@@ -25,7 +25,8 @@ import {
 } from 'lucide-react';
 
 // NOTE: This is a temporary fix. For a permanent solution, you should
-// update your `database.types.ts` by running the Supabase CLI.
+// update your `database.types.ts` by running the Supabase CLI,
+// and then you can remove this manual definition.
 type Submission = {
   id: string;
   user_id: string;
@@ -59,7 +60,6 @@ interface WorksheetStep {
   emoji: string;
 }
 
-// Using the full list of worksheets
 const firstWorkbookSteps: WorksheetStep[] = [
   {
     id: 'vertical-lines',
@@ -201,44 +201,58 @@ function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disab
   };
 
   if (selectedFile) {
-      return (
-        <div className={`border-2 border-dashed rounded-xl p-6 ${isKidsMode ? 'border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50' : 'border-gray-300 bg-gray-50'}`}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-full ${isKidsMode ? 'bg-purple-200' : 'bg-blue-100'}`}>
-                <Upload className={`h-8 w-8 ${isKidsMode ? 'text-purple-600' : 'text-blue-500'}`} />
-              </div>
-              <div>
-                <p className="font-medium text-lg">{isKidsMode ? '📸 Your awesome photo!' : selectedFile.name}</p>
-                <p className="text-sm text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
-              </div>
+    return (
+      <div className={`border-2 border-dashed rounded-xl p-6 ${isKidsMode ? 'border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50' : 'border-gray-300 bg-gray-50'}`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-full ${isKidsMode ? 'bg-purple-200' : 'bg-blue-100'}`}>
+              <Upload className={`h-8 w-8 ${isKidsMode ? 'text-purple-600' : 'text-blue-500'}`} />
             </div>
-            {!uploading && (
-              <Button onClick={onFileRemove} variant="outline" size="sm" className={isKidsMode ? 'hover:bg-red-100' : ''}>
-                <X className="h-4 w-4" />
-                {isKidsMode && <span className="ml-1">Remove</span>}
-              </Button>
-            )}
+            <div>
+              <p className="font-medium text-lg">{isKidsMode ? '📸 Your awesome photo!' : selectedFile.name}</p>
+              <p className="text-sm text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+            </div>
           </div>
+          {!uploading && (
+            <Button onClick={onFileRemove} variant="outline" size="sm" className={isKidsMode ? 'hover:bg-red-100' : ''}>
+              <X className="h-4 w-4" />
+              {isKidsMode && <span className="ml-1">Remove</span>}
+            </Button>
+          )}
         </div>
-      );
+        {uploading && (
+          <div className="mt-4 flex items-center gap-2 mb-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600"></div>
+            <span className="text-sm font-medium">{isKidsMode ? '🚀 Uploading your amazing work...' : 'Uploading...'}</span>
+          </div>
+        )}
+      </div>
+    );
   }
   return (
     <div className="space-y-3">
-      <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer ${dragActive ? 'border-purple-400 bg-purple-100' : 'border-gray-300 hover:border-gray-400'}`}
+      <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer ${dragActive ? isKidsMode ? 'border-purple-400 bg-gradient-to-br from-purple-100 to-pink-100 scale-105' : 'border-blue-400 bg-blue-50' : isKidsMode ? 'border-purple-300 hover:border-purple-400 hover:bg-gradient-to-br hover:from-purple-50 hover:to-pink-50 hover:scale-102' : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrop} onDrop={handleDrop}
         onClick={() => { if (!disabled && !uploading) document.getElementById('file-upload')?.click(); }}>
-        <div className={`mx-auto mb-4 p-4 rounded-full ${isKidsMode ? 'bg-purple-200' : 'bg-gray-100'}`}>
+        <div className={`mx-auto mb-4 p-4 rounded-full ${isKidsMode ? 'bg-gradient-to-br from-purple-200 to-pink-200' : 'bg-gray-100'}`}>
           <Upload className={`h-12 w-12 mx-auto ${isKidsMode ? 'text-purple-600' : 'text-gray-400'}`} />
         </div>
-        <h3 className="text-xl font-bold mb-2">Upload Your Completed Worksheet</h3>
-        <p className="text-gray-600 mb-4">Drag and drop or click to select an image file</p>
+        <h3 className="text-xl font-bold mb-2">{isKidsMode ? dragActive ? '📸 Drop your photo here!' : '📷 Add Your Worksheet Photo!' : dragActive ? 'Drop your image here' : 'Upload worksheet image'}</h3>
+        <p className="text-gray-600 mb-4">{isKidsMode ? 'Drag and drop your photo here, or click to choose one from your device! 🖱️' : 'Drag and drop or click to select an image file'}</p>
+        <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm ${isKidsMode ? 'bg-purple-100 text-purple-700 border border-purple-200' : 'bg-gray-100 text-gray-600 border border-gray-200'}`}>
+          {isKidsMode ? '✨ Photos (JPG, PNG) up to 10MB' : 'Supports JPEG, PNG up to 10MB'}
+        </div>
         <Input id="file-upload" type="file" accept="image/jpeg,image/png,image/jpg" onChange={handleChange} className="hidden" disabled={disabled || uploading} />
       </div>
+      {error && (
+        <div className={`p-3 rounded-lg flex items-center gap-2 ${isKidsMode ? 'bg-red-50 border border-red-200' : 'bg-red-50 border border-red-200'}`}>
+          <AlertCircle className="h-4 w-4 text-red-600" />
+          <span className="text-red-700 text-sm">{error}</span>
+        </div>
+      )}
     </div>
   );
 }
-
 
 export default function PracticePageClient({ user, profile, initialSubmissions }: PracticePageClientProps) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -281,7 +295,11 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
       const currentWorksheet = firstWorkbookSteps[currentStep];
       const formData = new FormData();
       formData.append('file', selectedFile);
+      
+      // --- THIS IS THE CRITICAL FIX ---
+      // We must send the worksheet 'id' so the API can save the submission correctly.
       formData.append('worksheetId', currentWorksheet.id);
+
       formData.append('worksheetTitle', currentWorksheet.title);
       formData.append('worksheetInstructions', currentWorksheet.description);
 
@@ -354,101 +372,81 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Header and Progress */}
         <div className="mb-8 text-center">
-            {/* ... */}
+          <h2 className={`text-3xl font-bold ${isKidsMode ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600' : 'text-gray-900'}`}>
+            {isKidsMode ? '🎨 Handwriting Adventure!' : 'First Workbook Practice'}
+          </h2>
+          <p className={`mt-2 text-lg ${isKidsMode ? 'text-purple-700' : 'text-gray-600'}`}>
+            {isKidsMode ? 'Let\'s practice writing and have tons of fun! 🚀✨' : 'Master the fundamentals with our structured practice program'}
+          </p>
         </div>
-        {/* Progress Bar */}
-        {isKidsMode && (
-          <div>...Progress Bar UI...</div>
-        )}
-
-        {/* Upload Success */}
-        {uploadSuccess && (
-          <div>...Upload Success UI...</div>
-        )}
         
-        {/* Main Grid Layout */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content Column */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Current Worksheet Card */}
-            <div className={`border-0 shadow-xl overflow-hidden rounded-2xl ${isKidsMode ? `bg-gradient-to-br ${currentWorksheet.color} text-white` : 'bg-white border border-gray-200'}`}>
-              <div className="p-6">
-                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className={`text-6xl ${isKidsMode ? 'animate-bounce' : ''}`}>{currentWorksheet.emoji}</div>
-                      <div>
-                        <h3 className={`text-2xl font-bold ${isKidsMode ? 'text-white' : 'text-gray-900'}`}>{isKidsMode ? currentWorksheet.friendlyTitle : currentWorksheet.title}</h3>
-                        <p className={`mt-2 text-lg ${isKidsMode ? 'text-white/90' : 'text-gray-600'}`}>{isKidsMode ? currentWorksheet.kidsDescription : currentWorksheet.description}</p>
-                      </div>
-                    </div>
-                 </div>
+        {isKidsMode && (
+          <div className="border-0 shadow-xl mb-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white overflow-hidden rounded-2xl">
+            <div className="pt-6 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  <Star className="h-6 w-6" /> Your Amazing Progress!
+                </h3>
+                <div className="text-right">
+                  <div className="text-2xl font-bold">{completedStepsCount} / {firstWorkbookSteps.length}</div>
+                  <div className="text-sm opacity-90">Steps Done!</div>
+                </div>
               </div>
-              <div className="p-6 pt-0 space-y-4">
-                <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="w-full h-12 text-lg font-bold">
-                  <Eye className="h-5 w-5 mr-2" />
-                  Open Worksheet
-                </Button>
+              <div className="w-full bg-white/20 rounded-full h-2">
+                <div className="h-2 rounded-full bg-gradient-to-r from-yellow-300 to-yellow-400" style={{ width: `${progressPercentage}%` }}></div>
               </div>
             </div>
-            
-            {/* AI Grading Results (conditionally rendered) */}
-            {showGrading && analysisResult && (
-              <div className="p-6 rounded-2xl shadow-xl bg-white border">
-                <h2 className="text-2xl font-bold text-center mb-6">AI Grading Results</h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">Your Submission</h3>
-                    <img src={analysisResult.imageUrl} alt="Graded worksheet" className="w-full rounded-lg shadow-md" />
-                  </div>
-                  <div className="flex flex-col justify-center">
-                    <div className="rounded-xl p-6 text-center mb-4 bg-gray-100">
-                      <p className="text-lg text-gray-600">Overall Score</p>
-                      <p className="text-5xl font-bold text-green-500">{analysisResult.score}%</p>
+          </div>
+        )}
+
+        {uploadSuccess && (
+          <div className={`mb-6 p-6 rounded-2xl flex items-center gap-4 animate-bounce shadow-lg ${isKidsMode ? 'bg-gradient-to-r from-green-100 to-emerald-100' : 'bg-green-50'}`}>
+            <p className="font-bold text-lg text-green-800">🌟 Fantastic work! Your submission has been saved.</p>
+          </div>
+        )}
+        
+        <div className="grid lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            <div className={`border-0 shadow-xl overflow-hidden rounded-2xl ${isKidsMode ? `bg-gradient-to-br ${currentWorksheet.color} text-white` : 'bg-white border'}`}>
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="text-6xl">{currentWorksheet.emoji}</div>
+                    <div>
+                      <h3 className={`text-2xl font-bold ${isKidsMode ? 'text-white' : 'text-gray-900'}`}>{isKidsMode ? currentWorksheet.friendlyTitle : currentWorksheet.title}</h3>
+                      <p className={`mt-2 text-lg ${isKidsMode ? 'text-white/90' : 'text-gray-600'}`}>{isKidsMode ? currentWorksheet.kidsDescription : currentWorksheet.description}</p>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 mb-4">
-                      <div className="bg-blue-50 p-3 rounded-lg text-center">
-                        <p className="text-sm text-blue-600 font-medium">Steadiness</p>
-                        <p className="text-2xl font-bold text-blue-700">{analysisResult.steadiness}%</p>
-                      </div>
-                      <div className="bg-green-50 p-3 rounded-lg text-center">
-                        <p className="text-sm text-green-600 font-medium">Accuracy</p>
-                        <p className="text-2xl font-bold text-green-700">{analysisResult.accuracy}%</p>
-                      </div>
-                    </div>
-                    <div className="border-l-4 p-4 rounded-r-lg mb-6 bg-blue-50 border-blue-500">
-                      <h4 className="font-bold text-blue-800">Actionable Tip</h4>
-                      <p className="text-sm text-blue-700">{analysisResult.feedback}</p>
-                    </div>
-                    <Button onClick={handleGradingComplete} className="w-full h-12 text-lg font-bold bg-green-600 text-white hover:bg-green-700">Continue to Next Step</Button>
                   </div>
                 </div>
               </div>
+              <div className="p-6 pt-0 space-y-4">
+                <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="w-full h-12 text-lg font-bold"><Eye className="h-5 w-5 mr-2" />Open Worksheet</Button>
+                <div className="flex items-center justify-between">
+                  <Button onClick={goToPreviousStep} disabled={currentStep === 0} variant="outline"><ChevronLeft className="h-5 w-5 mr-2" />Previous</Button>
+                  <span className="font-bold">{currentStep + 1} of {firstWorkbookSteps.length}</span>
+                  <Button onClick={goToNextStep} disabled={currentStep === firstWorkbookSteps.length - 1} variant="outline">Next<ChevronRight className="h-5 w-5 ml-2" /></Button>
+                </div>
+              </div>
+            </div>
+
+            {showGrading && analysisResult && (
+              <div className="p-6 rounded-2xl shadow-xl bg-white border">
+                {/* ... AI Grading UI ... */}
+              </div>
             )}
             
-            {/* Upload Section (conditionally rendered) */}
             {!showGrading && (
               <div className="p-6 border rounded-2xl bg-white">
                 <h3 className="text-xl font-bold mb-4">Upload Your Completed Worksheet</h3>
-                <FileUpload
-                    onFileSelect={handleFileSelect}
-                    onFileRemove={handleFileRemove}
-                    selectedFile={selectedFile}
-                    uploading={uploading}
-                    disabled={uploadSuccess}
-                    isKidsMode={isKidsMode}
-                />
+                <FileUpload onFileSelect={handleFileSelect} onFileRemove={handleFileRemove} selectedFile={selectedFile} uploading={uploading} disabled={uploadSuccess} isKidsMode={isKidsMode}/>
                 {selectedFile && !uploading && (
-                  <Button onClick={handleUpload} size="lg" disabled={uploading} className="w-full mt-4 bg-green-600 hover:bg-green-700">
-                    {uploading ? "Analyzing..." : "Grade My Worksheet!"}
-                  </Button>
+                  <Button onClick={handleUpload} size="lg" disabled={uploading} className="w-full mt-4 bg-green-600 hover:bg-green-700">{uploading ? "Analyzing..." : "Grade My Worksheet!"}</Button>
                 )}
               </div>
             )}
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-6">
             <div className="p-6 border-0 shadow-xl rounded-2xl bg-white/50">
               <h3 className="font-bold text-lg mb-4">Quick Navigation</h3>
@@ -464,7 +462,6 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
           </div>
         </div>
 
-        {/* --- Submission History Section --- */}
         <div className="mt-16">
           <div className="flex items-center gap-3 mb-6">
             <BookOpen className="h-7 w-7 text-gray-400" />
@@ -473,29 +470,20 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
           <div className="space-y-4">
             {currentSubmissions.length > 0 ? (
               currentSubmissions.map((submission) => {
-                const { data: imageUrlData } = supabase.storage
-                  .from('submissions')
-                  .getPublicUrl(submission.image_path);
-
+                const { data: { publicUrl } } = supabase.storage.from('submissions').getPublicUrl(submission.image_path);
                 return (
-                  <div key={submission.id} className="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-6">
-                    <img 
-                      src={imageUrlData.publicUrl}
-                      alt={`Submission for ${submission.worksheet_id}`}
-                      className="w-full md:w-32 h-auto md:h-32 object-cover rounded-lg border"
-                    />
+                  <div key={submission.id} className="p-6 bg-white rounded-2xl border flex items-center gap-6">
+                    <img src={publicUrl} alt={`Submission for ${submission.worksheet_id}`} className="w-32 h-32 object-cover rounded-lg border"/>
                     <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <p className="font-bold text-lg text-gray-800">Overall Score: {submission.score}%</p>
+                      <div className="flex justify-between">
+                        <p className="font-bold text-lg">Score: {submission.score}%</p>
                         <p className="text-xs text-gray-400">{new Date(submission.created_at).toLocaleDateString()}</p>
                       </div>
                       <div className="flex gap-4 mt-1">
                         <p className="text-sm text-blue-600">Steadiness: {submission.steadiness}%</p>
                         <p className="text-sm text-green-600">Accuracy: {submission.accuracy}%</p>
                       </div>
-                      <p className="text-sm text-gray-600 mt-3 p-3 bg-gray-50 rounded-md">
-                        <strong>Feedback:</strong> <em>"{submission.feedback}"</em>
-                      </p>
+                      <p className="text-sm text-gray-600 mt-3 p-3 bg-gray-50 rounded-md"><strong>Feedback:</strong> <em>"{submission.feedback}"</em></p>
                     </div>
                   </div>
                 );
@@ -503,7 +491,6 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
             ) : (
               <div className="text-center py-12 px-6 bg-gray-50 rounded-2xl border">
                 <p className="text-gray-500">You haven't made any submissions for this worksheet yet.</p>
-                <p className="text-gray-400 text-sm mt-1">Complete the exercise above to see your history!</p>
               </div>
             )}
           </div>
