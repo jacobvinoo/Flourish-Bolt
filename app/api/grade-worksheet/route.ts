@@ -82,7 +82,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing file or worksheet ID' }, { status: 400 });
     }
     // 1. Upload Image to Storage
-    cost imagePath = `${user.id}/${worksheetId}/${Date.now()}.jpg`;
+    const imagePath = `${user.id}/${worksheetId}/${Date.now()}.jpg`;
     const { error: uploadError } = await supabase.storage.from('submissions').upload(imagePath, file);
     if (uploadError) throw new Error(`Storage Error: ${uploadError.message}`);
 
