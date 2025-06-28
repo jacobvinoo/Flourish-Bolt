@@ -30,6 +30,14 @@ export default async function UppercasePracticePage() {
     .eq('id', user.id)
     .maybeSingle();
 
+  // Fetch the user's submissions for uppercase letters
+  const { data: submissions } = await supabase
+    .from('submissions')
+    .select('*')
+    .eq('user_id', user.id)
+    .like('worksheet_id', 'letter-%')
+    .order('created_at', { ascending: false });
+
   // Render the client component with the user and profile data.
-  return <UppercasePracticeClient user={user} profile={profile} />;
+  return <UppercasePracticeClient user={user} profile={profile} initialSubmissions={submissions || []} />;
 }
