@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { PenTool, ArrowLeft, Settings, User, Flame, Star } from 'lucide-react';
 
@@ -28,6 +28,10 @@ const AppHeader: React.FC<AppHeaderProps> = ({
 }) => {
   const supabase = createClientComponentClient();
   const router = useRouter();
+  const pathname = usePathname();
+  
+  // Check if current page is dashboard to hide the back link
+  const isDashboard = pathname === '/dashboard';
 
   const handleSignOut = async () => {
     try {
@@ -48,7 +52,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
         <div className="flex items-center justify-between h-16">
           {/* Left side - Logo and Back Button */}
           <div className="flex items-center gap-3">
-            {backLink ? (
+            {backLink && !isDashboard ? (
               <div className="flex items-center gap-3">
                 <Link href={backLink}>
                   <Button 
