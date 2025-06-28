@@ -46,6 +46,20 @@ interface WorksheetStep {
   completed?: boolean;
 }
 
+// NOTE: This is a temporary fix. For a permanent solution, you should
+// update your `database.types.ts` by running the Supabase CLI.
+type Submission = {
+  id: string;
+  user_id: string;
+  worksheet_id: string;
+  score: number;
+  steadiness: number;
+  accuracy: number;
+  feedback: string | null;
+  image_path: string;
+  created_at: string;
+};
+
 // --- NEW DATA FOR LOWERCASE LETTERS ---
 // This array defines the practice steps for the lowercase letters workbook.
 const lowercaseWorkbookSteps: WorksheetStep[] = [
@@ -492,6 +506,7 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [showGrading, setShowGrading] = useState(false);
   const [localProfile, setLocalProfile] = useState(profile);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
 
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
@@ -500,6 +515,33 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
   useEffect(() => {
     setLocalProfile(profile);
   }, [profile]);
+
+  // Fetch submissions when the current step changes
+  useEffect(() => {
+    fetchSubmissions();
+  }, [currentStep]);
+
+  const fetchSubmissions = async () => {
+    if (!user) return;
+    
+    try {
+      const currentWorksheet = lowercaseWorkbookSteps[currentStep];
+      const { data, error } = await supabase
+        .from('submissions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('worksheet_id', currentWorksheet.id)
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        console.error('Error fetching submissions:', error);
+      } else {
+        setSubmissions(data || []);
+      }
+    } catch (err) {
+      console.error('Error fetching submissions:', err);
+    }
+  };
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
@@ -521,8 +563,12 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
 
   const simulateAIAnalysis = (file: File) => {
     const averageScore = Math.floor(Math.random() * 41) + 60; // Random score between 60-100
+    const steadiness = Math.floor(Math.random() * 41) + 60;
+    const accuracy = Math.floor(Math.random() * 41) + 60;
     return {
       overallScore: averageScore,
+      steadiness: steadiness,
+      accuracy: accuracy,
       feedbackTip: 'Great work on your letters! Keep practicing for even straighter lines.',
       imageUrl: URL.createObjectURL(file)
     };
@@ -558,30 +604,61 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
   };
 
   const handleGradingComplete = async () => {
-    const newXp = (localProfile?.xp ?? 0) + 25; // Award 25 XP for a lowercase letter
-    const { error } = await supabase
-      .from('profiles')
-      .update({ xp: newXp })
-      .eq('id', user.id);
-
-    if (error) {
-      console.error("DATABASE UPDATE FAILED:", error);
-    } else {
-      router.refresh(); // Refresh server data
-      setLocalProfile(p => p ? { ...p, xp: newXp } : null);
-    }
-
-    setShowGrading(false);
-    setUploadSuccess(true);
-    setCompletedSteps(prev => new Set(prev).add(lowercaseWorkbookSteps[currentStep].id));
+    if (!analysisResult) return;
     
-    setTimeout(() => {
-      setUploadSuccess(false);
-      setSelectedFile(null);
-      if (currentStep < lowercaseWorkbookSteps.length - 1) {
-        setCurrentStep(currentStep + 1);
+    const newXp = (localProfile?.xp ?? 0) + 25; // Award 25 XP for a lowercase letter
+    const currentWorksheet = lowercaseWorkbookSteps[currentStep];
+    
+    try {
+      // Save the submission to the database
+      const submissionData = {
+        user_id: user.id,
+        worksheet_id: currentWorksheet.id,
+        score: analysisResult.overallScore,
+        steadiness: analysisResult.steadiness,
+        accuracy: analysisResult.accuracy,
+        feedback: analysisResult.feedbackTip,
+        image_path: `${user.id}/${currentWorksheet.id}/${Date.now()}.jpg`
+      };
+      
+      const { error: submissionError } = await supabase
+        .from('submissions')
+        .insert(submissionData);
+        
+      if (submissionError) {
+        console.error("SUBMISSION SAVE FAILED:", submissionError);
       }
-    }, 2000);
+      
+      // Update user XP
+      const { error } = await supabase
+        .from('profiles')
+        .update({ xp: newXp })
+        .eq('id', user.id);
+
+      if (error) {
+        console.error("DATABASE UPDATE FAILED:", error);
+      } else {
+        router.refresh(); // Refresh server data
+        setLocalProfile(p => p ? { ...p, xp: newXp } : null);
+      }
+
+      // Refresh submissions
+      await fetchSubmissions();
+
+      setShowGrading(false);
+      setUploadSuccess(true);
+      setCompletedSteps(prev => new Set(prev).add(lowercaseWorkbookSteps[currentStep].id));
+      
+      setTimeout(() => {
+        setUploadSuccess(false);
+        setSelectedFile(null);
+        if (currentStep < lowercaseWorkbookSteps.length - 1) {
+          setCurrentStep(currentStep + 1);
+        }
+      }, 2000);
+    } catch (err) {
+      console.error("Error completing grading:", err);
+    }
   };
 
   const openWorksheet = (worksheetUrl: string) => window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
@@ -683,6 +760,16 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
                       <p className="text-lg text-gray-600">Overall Score</p>
                       <p className={`text-5xl font-bold ${analysisResult.overallScore >= 90 ? 'text-green-500' : analysisResult.overallScore >= 70 ? 'text-yellow-500' : 'text-red-500'}`}>{analysisResult.overallScore}%</p>
                     </div>
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-blue-50 p-3 rounded-lg text-center">
+                        <p className="text-sm text-blue-600 font-medium">Steadiness</p>
+                        <p className="text-2xl font-bold text-blue-700">{analysisResult.steadiness}%</p>
+                      </div>
+                      <div className="bg-green-50 p-3 rounded-lg text-center">
+                        <p className="text-sm text-green-600 font-medium">Accuracy</p>
+                        <p className="text-2xl font-bold text-green-700">{analysisResult.accuracy}%</p>
+                      </div>
+                    </div>
                     <div className="border-l-4 p-4 rounded-r-lg mb-6 bg-blue-50 border-blue-500">
                       <h4 className="font-bold text-blue-800">Actionable Tip</h4>
                       <p className="text-sm text-blue-700">{analysisResult.feedbackTip}</p>
@@ -736,6 +823,41 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Submission History Section */}
+        <div className="mt-16">
+          <div className="flex items-center gap-3 mb-6">
+            <BookOpen className="h-7 w-7 text-gray-400" />
+            <h2 className="text-3xl font-bold text-gray-800">Submission History</h2>
+          </div>
+          <div className="space-y-4">
+            {submissions.length > 0 ? (
+              submissions.map((submission) => {
+                const { data: { publicUrl } } = supabase.storage.from('submissions').getPublicUrl(submission.image_path);
+                return (
+                  <div key={submission.id} className="p-6 bg-white rounded-2xl border flex items-center gap-6">
+                    <img src={publicUrl} alt={`Submission for ${submission.worksheet_id}`} className="w-32 h-32 object-cover rounded-lg border"/>
+                    <div className="flex-1">
+                      <div className="flex justify-between">
+                        <p className="font-bold text-lg">Score: {submission.score}%</p>
+                        <p className="text-xs text-gray-400">{new Date(submission.created_at).toLocaleDateString()}</p>
+                      </div>
+                      <div className="flex gap-4 mt-1">
+                        <p className="text-sm text-blue-600">Steadiness: {submission.steadiness}%</p>
+                        <p className="text-sm text-green-600">Accuracy: {submission.accuracy}%</p>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-3 p-3 bg-gray-50 rounded-md"><strong>Feedback:</strong> <em>"{submission.feedback}"</em></p>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-12 px-6 bg-gray-50 rounded-2xl border">
+                <p className="text-gray-500">You haven't made any submissions for this letter yet.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
