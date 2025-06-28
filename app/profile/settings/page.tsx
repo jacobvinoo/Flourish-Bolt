@@ -21,7 +21,9 @@ import {
   Sparkles,
   Check,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Star,
+  Users
 } from 'lucide-react';
 import { Database, Profile } from '@/lib/database.types';
 
