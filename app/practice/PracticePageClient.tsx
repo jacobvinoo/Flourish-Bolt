@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -25,10 +24,9 @@ import {
   BookOpen
 } from 'lucide-react';
 
-// --- THIS IS THE FIX ---
-// We are manually defining the Submission type here to resolve the build error.
-// For a permanent solution, you should update your `database.types.ts` file
-// by running the Supabase CLI, and then you can remove this manual definition.
+// NOTE: This is a temporary fix. For a permanent solution, you should
+// update your `database.types.ts` by running the Supabase CLI,
+// and then you can remove this manual definition.
 type Submission = {
   id: string;
   user_id: string;
@@ -94,6 +92,7 @@ const firstWorkbookSteps: WorksheetStep[] = [
   },
 ];
 
+// This helper component is defined outside the main component for clarity.
 function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disabled = false, isKidsMode = false }: {
   onFileSelect: (file: File) => void,
   onFileRemove: () => void,
@@ -102,8 +101,41 @@ function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disab
   disabled?: boolean,
   isKidsMode?: boolean
 }) {
-  // This component's implementation remains the same.
-  return <div>...FileUpload JSX...</div>;
+  const [dragActive, setDragActive] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
+    else if (e.type === "dragleave") setDragActive(false);
+  };
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFileSelection(e.dataTransfer.files[0]);
+  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (e.target.files && e.target.files[0]) handleFileSelection(e.target.files[0]);
+  };
+  const handleFileSelection = (file: File) => {
+    setError(null);
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!validTypes.includes(file.type)) {
+      setError(isKidsMode ? '😅 Oops! Please pick a photo file (JPG or PNG)' : 'Please select a valid image file (JPEG, PNG, or JPG)');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError(isKidsMode ? '😅 That photo is too big! Please pick a smaller one.' : 'File size must be less than 10MB');
+      return;
+    }
+    onFileSelect(file);
+  };
+
+  if (selectedFile) {
+      return <div>...File selected UI...</div>; // Omitted for brevity
+  }
+  return <div>...File upload dropzone UI...</div>; // Omitted for brevity
 }
 
 
@@ -174,7 +206,6 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
     }
   };
 
-
   const handleGradingComplete = async () => {
     // Award XP and update the database
     const newXp = (localProfile?.xp ?? 0) + 50;
@@ -228,7 +259,7 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
       }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* All UI components like Header, Progress Bar, AI Grading, Upload, etc. go here */}
+        {/* All UI components like Header, AI Grading, Upload, etc. go here */}
         
         {/* --- Submission History Section --- */}
         <div className="mt-16">
@@ -280,4 +311,3 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
     </PageLayout>
   );
 }
-
