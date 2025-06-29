@@ -165,6 +165,13 @@ export default function ProfileSettingsPage() {
       
       // Refresh profile data
       await fetchProfile(user.id);
+      
+      // Reload the page to apply the display mode change
+      if (profile?.display_mode !== formData.display_mode) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
     } catch (error: any) {
       console.error('Error updating profile:', error);
       setMessage({ type: 'error', text: error.message || 'Failed to update profile' });
