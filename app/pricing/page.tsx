@@ -405,32 +405,6 @@ export default function PricingPage() {
           </div>
         )}
 
-        {/* RevenueCat Setup Instructions */}
-        {!revenueCatReady && (
-          <Card className="border-0 shadow-lg mb-12 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-blue-800 dark:text-blue-200">
-                <BarChart3 className="h-5 w-5" />
-                RevenueCat Setup Required
-              </CardTitle>
-              <CardDescription className="text-blue-700 dark:text-blue-300">
-                To enable live subscription processing, configure RevenueCat integration
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-blue-800 dark:text-blue-200">
-              <div className="space-y-3 text-sm">
-                <p><strong>1. Create RevenueCat Account:</strong> Sign up at revenuecat.com</p>
-                <p><strong>2. Set up your app and products</strong> in the RevenueCat dashboard</p>
-                <p><strong>3. Add your API key</strong> to environment variables:</p>
-                <code className="block bg-blue-100 dark:bg-blue-900/40 p-2 rounded text-xs">
-                  NEXT_PUBLIC_REVENUECAT_API_KEY=your_api_key_here
-                </code>
-                <p><strong>4. Create offerings</strong> with packages named: basic, pro, therapist</p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Features Comparison */}
         <Card className="border-0 shadow-lg">
           <CardHeader className="text-center">
