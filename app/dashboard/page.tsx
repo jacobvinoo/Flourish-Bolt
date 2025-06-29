@@ -41,57 +41,17 @@ function Progress({ value, className = '' }: { value: number; className?: string
   );
 }
 
-const mockLearningPaths = [
-  {
-    id: 'basic-strokes',
-    title: 'Basic Strokes',
-    description: 'Master fundamental writing movements',
-    icon: '📏',
-    progress: 85,
-    totalLessons: 7,
-    unlockedLessons: 6,
-    nextLesson: 'Continuous Curves',
-    difficulty: 'beginner',
-    href: '/practice'
-  },
-  {
-    id: 'lowercase-letters',
-    title: 'Lowercase Letters',
-    description: 'Learn proper lowercase formation',
-    icon: 'abc',
-    progress: 45,
-    totalLessons: 26,
-    unlockedLessons: 12,
-    nextLesson: 'Letter m',
-    difficulty: 'beginner',
-    href: '/practice/lowercase'
-  },
-  {
-    id: 'uppercase-letters',
-    title: 'Uppercase Letters',
-    description: 'Perfect your capital letters',
-    icon: 'ABC',
-    progress: 0,
-    totalLessons: 26,
-    unlockedLessons: 0,
-    nextLesson: 'Letter A',
-    difficulty: 'intermediate',
-    href: '/practice/uppercase'
-  }
-];
-
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
-  //const [currentStreak] = useState(12);
   const [totalPracticeTime] = useState(145);
   const [weeklyGoal] = useState(150);
   const [weeklyProgress] = useState(90);
   const [level] = useState(8);
-  //const [xp] = useState(2350);
   const [xpToNextLevel] = useState(650);
+  const [completedWorksheets, setCompletedWorksheets] = useState<Set<string>>(new Set());
 
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
@@ -103,6 +63,7 @@ export default function Dashboard() {
         // User is signed in
         setUser(session.user);
         await fetchProfile(session.user.id);
+        await fetchCompletedWorksheets(session.user.id);
         setLoading(false);
       } else {
         // User is not signed in, redirect to login
@@ -139,6 +100,28 @@ export default function Dashboard() {
     }
   };
 
+  const fetchCompletedWorksheets = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('submissions')
+        .select('worksheet_id')
+        .eq('user_id', userId);
+
+      if (error) {
+        console.error('Error fetching completed worksheets:', error);
+        return;
+      }
+
+      if (data) {
+        // Create a Set of unique worksheet IDs that the user has completed
+        const completedIds = new Set(data.map(sub => sub.worksheet_id));
+        setCompletedWorksheets(completedIds);
+      }
+    } catch (error) {
+      console.error('Error fetching completed worksheets:', error);
+    }
+  };
+
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
@@ -156,6 +139,56 @@ export default function Dashboard() {
       default: return 'bg-gray-50 text-gray-700 border-gray-200';
     }
   };
+
+  // Calculate completed lessons for each learning path
+  const mockLearningPaths = [
+    {
+      id: 'basic-strokes',
+      title: 'Basic Strokes',
+      description: 'Master fundamental writing movements',
+      icon: '📏',
+      totalLessons: 7,
+      unlockedLessons: 6,
+      nextLesson: 'Continuous Curves',
+      difficulty: 'beginner',
+      href: '/practice',
+      worksheetIds: ['vertical-lines', 'horizontal-lines', 'circles', 'diagonal-lines', 'intersecting-lines', 'basic-shapes', 'continuous-curves']
+    },
+    {
+      id: 'lowercase-letters',
+      title: 'Lowercase Letters',
+      description: 'Learn proper lowercase formation',
+      icon: 'abc',
+      totalLessons: 26,
+      unlockedLessons: 12,
+      nextLesson: 'Letter m',
+      difficulty: 'beginner',
+      href: '/practice/lowercase',
+      worksheetIds: ['letter-a', 'letter-b', 'letter-c', 'letter-d', 'letter-e', 'letter-f', 'letter-g', 'letter-h', 'letter-i', 'letter-j', 'letter-k', 'letter-l', 'letter-m', 'letter-n', 'letter-o', 'letter-p', 'letter-q', 'letter-r', 'letter-s', 'letter-t', 'letter-u', 'letter-v', 'letter-w', 'letter-x', 'letter-y', 'letter-z']
+    },
+    {
+      id: 'uppercase-letters',
+      title: 'Uppercase Letters',
+      description: 'Perfect your capital letters',
+      icon: 'ABC',
+      totalLessons: 26,
+      unlockedLessons: 0,
+      nextLesson: 'Letter A',
+      difficulty: 'intermediate',
+      href: '/practice/uppercase',
+      worksheetIds: ['letter-A', 'letter-B', 'letter-C', 'letter-D', 'letter-E', 'letter-F', 'letter-G', 'letter-H', 'letter-I', 'letter-J', 'letter-K', 'letter-L', 'letter-M', 'letter-N', 'letter-O', 'letter-P', 'letter-Q', 'letter-R', 'letter-S', 'letter-T', 'letter-U', 'letter-V', 'letter-W', 'letter-X', 'letter-Y', 'letter-Z']
+    }
+  ].map(path => {
+    // Calculate completed lessons based on user's submissions
+    const completedCount = path.worksheetIds ? 
+      path.worksheetIds.filter(id => completedWorksheets.has(id)).length : 0;
+    
+    return {
+      ...path,
+      completedLessons: completedCount,
+      progress: path.totalLessons > 0 ? (completedCount / path.totalLessons) * 100 : 0
+    };
+  });
 
   const levelProgress = (profile?.xp ?? 0 / (profile?.xp ?? 0 + xpToNextLevel)) * 100;
   const weeklyGoalProgress = (weeklyProgress / weeklyGoal) * 100;
@@ -377,7 +410,7 @@ export default function Dashboard() {
                   <span className={`text-sm ${
                     isKidsMode ? 'text-purple-600' : 'text-gray-600'
                   }`}>
-                    {path.progress}%
+                    {path.completedLessons}%
                   </span>
                 </div>
                 <Progress value={path.progress} />
@@ -394,7 +427,7 @@ export default function Dashboard() {
                   <p className={`text-xs ${
                     isKidsMode ? 'text-purple-500' : 'text-gray-400'
                   }`}>
-                    {path.unlockedLessons}/{path.totalLessons} unlocked
+                    {path.completedLessons}/{path.totalLessons} completed
                   </p>
                 </div>
                 <ChevronRight className={`h-4 w-4 ${

@@ -230,7 +230,7 @@ function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disab
   return (
     <div className="space-y-3">
       <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer ${dragActive ? isKidsMode ? 'border-purple-400 bg-gradient-to-br from-purple-100 to-pink-100 scale-105' : 'border-blue-400 bg-blue-50' : isKidsMode ? 'border-purple-300 hover:border-purple-400 hover:bg-gradient-to-br hover:from-purple-50 hover:to-pink-50 hover:scale-102' : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-        onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrop} onDrop={handleDrop}
+        onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
         onClick={() => { if (!disabled && !uploading) document.getElementById('file-upload')?.click(); }}>
         <div className={`mx-auto mb-4 p-4 rounded-full ${isKidsMode ? 'bg-gradient-to-br from-purple-200 to-pink-200' : 'bg-gray-100'}`}>
           <Upload className={`h-12 w-12 mx-auto ${isKidsMode ? 'text-purple-600' : 'text-gray-400'}`} />
@@ -262,6 +262,7 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
   const [showGrading, setShowGrading] = useState(false);
   const [localProfile, setLocalProfile] = useState(profile);
   const [submissions, setSubmissions] = useState(initialSubmissions);
+  const [completedWorksheets, setCompletedWorksheets] = useState<Set<string>>(new Set());
 
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
@@ -269,6 +270,10 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
   useEffect(() => {
     setLocalProfile(profile);
     setSubmissions(initialSubmissions);
+    
+    // Initialize completedWorksheets based on submissions
+    const completedIds = new Set(initialSubmissions.map(sub => sub.worksheet_id));
+    setCompletedWorksheets(completedIds);
   }, [profile, initialSubmissions]);
 
   const handleFileSelect = (file: File) => {
@@ -330,6 +335,13 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
     setAnalysisResult(null);
     setUploadSuccess(true);
     
+    // Add current worksheet to completed set
+    setCompletedWorksheets(prev => {
+      const newSet = new Set(prev);
+      newSet.add(firstWorkbookSteps[currentStep].id);
+      return newSet;
+    });
+    
     setTimeout(() => {
       setUploadSuccess(false);
       setSelectedFile(null);
@@ -350,7 +362,7 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
   const goToPreviousStep = () => { if (currentStep > 0) setCurrentStep(currentStep - 1); };
   const goToNextStep = () => { if (currentStep < firstWorkbookSteps.length - 1) setCurrentStep(currentStep + 1); };
 
-  const completedStepsCount = new Set(submissions.map(s => s.worksheet_id)).size;
+  const completedStepsCount = completedWorksheets.size;
   const progressPercentage = (completedStepsCount / firstWorkbookSteps.length) * 100;
 
   return (
@@ -482,9 +494,22 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
               <h3 className="font-bold text-lg mb-4">Quick Navigation</h3>
               <div className="space-y-2">
                 {firstWorkbookSteps.map((step, index) => (
-                  <button key={step.id} onClick={() => setCurrentStep(index)} className={`w-full p-3 rounded-lg border-2 text-left transition-all duration-200 flex items-center gap-3 ${index === currentStep ? 'border-blue-500 bg-blue-50' : 'bg-white hover:border-gray-300'}`}>
+                  <button 
+                    key={step.id} 
+                    onClick={() => setCurrentStep(index)} 
+                    className={`w-full p-3 rounded-lg border-2 text-left transition-all duration-200 flex items-center gap-3 ${
+                      index === currentStep 
+                        ? 'border-blue-500 bg-blue-50' 
+                        : completedWorksheets.has(step.id)
+                        ? 'border-green-200 bg-green-50 text-green-700'
+                        : 'bg-white hover:border-gray-300'
+                    }`}
+                  >
                     <span className="font-mono text-xl">{step.emoji}</span>
                     <span className="font-semibold">{step.title}</span>
+                    {completedWorksheets.has(step.id) && (
+                      <CheckCircle className="h-5 w-5 text-green-500 ml-auto" />
+                    )}
                   </button>
                 ))}
               </div>

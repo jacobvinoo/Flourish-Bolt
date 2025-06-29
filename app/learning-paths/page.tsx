@@ -25,7 +25,21 @@ interface LearningPath {
   href: string;
   category: string;
   tags: string[];
+  worksheetIds?: string[]; // IDs of worksheets in this path
 }
+
+// Type for submissions from database
+type Submission = {
+  id: string;
+  user_id: string;
+  worksheet_id: string;
+  score: number;
+  steadiness: number;
+  accuracy: number;
+  feedback: string | null;
+  image_path: string;
+  created_at: string;
+};
 
 export default function LearningPathsPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -33,6 +47,7 @@ export default function LearningPathsPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [completedWorksheets, setCompletedWorksheets] = useState<Set<string>>(new Set());
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
@@ -52,6 +67,18 @@ export default function LearningPathsPage() {
           .single();
           
         setProfile(profileData);
+
+        // Fetch user's completed worksheets
+        const { data: submissions } = await supabase
+          .from('submissions')
+          .select('worksheet_id')
+          .eq('user_id', user.id);
+
+        if (submissions) {
+          // Create a Set of unique worksheet IDs that the user has completed
+          const completedIds = new Set(submissions.map(sub => sub.worksheet_id));
+          setCompletedWorksheets(completedIds);
+        }
       }
       setLoading(false);
     };
@@ -68,12 +95,13 @@ export default function LearningPathsPage() {
       description: 'Master fundamental writing movements',
       level: 1,
       totalLessons: 7,
-      completedLessons: 5,
+      completedLessons: 0, // Will be calculated based on submissions
       icon: <PenTool className="h-5 w-5" />,
       color: 'from-blue-400 to-blue-600',
       href: '/practice',
       category: 'Fundamentals',
-      tags: ['beginner', 'strokes', 'basics']
+      tags: ['beginner', 'strokes', 'basics'],
+      worksheetIds: ['vertical-lines', 'horizontal-lines', 'circles', 'diagonal-lines', 'intersecting-lines', 'basic-shapes', 'continuous-curves']
     },
     {
       id: 'vertical-lines',
@@ -81,12 +109,13 @@ export default function LearningPathsPage() {
       description: 'Practice drawing straight lines from top to bottom',
       level: 1,
       totalLessons: 4,
-      completedLessons: 4,
+      completedLessons: 0,
       icon: <AlignLeft className="h-5 w-5" />,
       color: 'from-blue-400 to-blue-600',
       href: '/practice',
       category: 'Fundamentals',
-      tags: ['beginner', 'lines', 'vertical']
+      tags: ['beginner', 'lines', 'vertical'],
+      worksheetIds: ['vertical-lines']
     },
     {
       id: 'horizontal-lines',
@@ -94,12 +123,13 @@ export default function LearningPathsPage() {
       description: 'Master drawing straight lines from left to right',
       level: 1,
       totalLessons: 4,
-      completedLessons: 3,
+      completedLessons: 0,
       icon: <AlignLeft className="h-5 w-5 rotate-90" />,
       color: 'from-blue-400 to-blue-600',
       href: '/worksheet/horizontal-lines',
       category: 'Fundamentals',
-      tags: ['beginner', 'lines', 'horizontal']
+      tags: ['beginner', 'lines', 'horizontal'],
+      worksheetIds: ['horizontal-lines']
     },
     {
       id: 'circles',
@@ -107,12 +137,13 @@ export default function LearningPathsPage() {
       description: 'Learn to draw perfect circles and smooth curves',
       level: 1,
       totalLessons: 5,
-      completedLessons: 2,
+      completedLessons: 0,
       icon: <Circle className="h-5 w-5" />,
       color: 'from-blue-400 to-blue-600',
       href: '/worksheet/circles',
       category: 'Fundamentals',
-      tags: ['beginner', 'circles', 'curves']
+      tags: ['beginner', 'circles', 'curves'],
+      worksheetIds: ['circles']
     },
     {
       id: 'diagonal-lines',
@@ -120,12 +151,13 @@ export default function LearningPathsPage() {
       description: 'Practice drawing lines at various angles',
       level: 1,
       totalLessons: 4,
-      completedLessons: 1,
+      completedLessons: 0,
       icon: <ArrowUpRight className="h-5 w-5" />,
       color: 'from-blue-400 to-blue-600',
       href: '/worksheet/diagonal-lines',
       category: 'Fundamentals',
-      tags: ['beginner', 'lines', 'diagonal']
+      tags: ['beginner', 'lines', 'diagonal'],
+      worksheetIds: ['diagonal-lines']
     },
     {
       id: 'basic-shapes',
@@ -138,7 +170,8 @@ export default function LearningPathsPage() {
       color: 'from-blue-400 to-blue-600',
       href: '/worksheet/basic-shapes',
       category: 'Fundamentals',
-      tags: ['beginner', 'shapes', 'geometry']
+      tags: ['beginner', 'shapes', 'geometry'],
+      worksheetIds: ['basic-shapes']
     },
 
     // Lowercase Letters Category
@@ -148,12 +181,13 @@ export default function LearningPathsPage() {
       description: 'Learn proper lowercase letter formation',
       level: 3,
       totalLessons: 26,
-      completedLessons: 8,
+      completedLessons: 0,
       icon: <LetterCase className="h-5 w-5" />,
       color: 'from-green-400 to-green-600',
       href: '/practice/lowercase',
       category: 'Letters',
-      tags: ['intermediate', 'lowercase', 'alphabet']
+      tags: ['intermediate', 'lowercase', 'alphabet'],
+      worksheetIds: ['letter-a', 'letter-b', 'letter-c', 'letter-d', 'letter-e', 'letter-f', 'letter-g', 'letter-h', 'letter-i', 'letter-j', 'letter-k', 'letter-l', 'letter-m', 'letter-n', 'letter-o', 'letter-p', 'letter-q', 'letter-r', 'letter-s', 'letter-t', 'letter-u', 'letter-v', 'letter-w', 'letter-x', 'letter-y', 'letter-z']
     },
     {
       id: 'magic-c-letters',
@@ -161,12 +195,13 @@ export default function LearningPathsPage() {
       description: 'Master the c, a, d, g, o, and q letters',
       level: 3,
       totalLessons: 6,
-      completedLessons: 3,
+      completedLessons: 0,
       icon: <LetterCase className="h-5 w-5" />,
       color: 'from-green-400 to-green-600',
       href: '/practice/lowercase-magic-c',
       category: 'Letters',
-      tags: ['intermediate', 'lowercase', 'c-family']
+      tags: ['intermediate', 'lowercase', 'c-family'],
+      worksheetIds: ['letter-c', 'letter-a', 'letter-d', 'letter-g', 'letter-o', 'letter-q']
     },
     {
       id: 'down-up-letters',
@@ -174,12 +209,13 @@ export default function LearningPathsPage() {
       description: 'Practice h, m, n, r, b, and p letters',
       level: 3,
       totalLessons: 6,
-      completedLessons: 2,
+      completedLessons: 0,
       icon: <LetterCase className="h-5 w-5" />,
       color: 'from-green-400 to-green-600',
       href: '/practice/lowercase-down-up',
       category: 'Letters',
-      tags: ['intermediate', 'lowercase', 'strokes']
+      tags: ['intermediate', 'lowercase', 'strokes'],
+      worksheetIds: ['letter-h', 'letter-m', 'letter-n', 'letter-r', 'letter-b', 'letter-p']
     },
 
     // Uppercase Letters Category
@@ -189,12 +225,13 @@ export default function LearningPathsPage() {
       description: 'Perfect your capital letter formation',
       level: 4,
       totalLessons: 26,
-      completedLessons: 5,
+      completedLessons: 0,
       icon: <LetterCase className="h-5 w-5 font-bold" />,
       color: 'from-purple-400 to-purple-600',
       href: '/practice/uppercase',
       category: 'Letters',
-      tags: ['intermediate', 'uppercase', 'alphabet']
+      tags: ['intermediate', 'uppercase', 'alphabet'],
+      worksheetIds: ['letter-A', 'letter-B', 'letter-C', 'letter-D', 'letter-E', 'letter-F', 'letter-G', 'letter-H', 'letter-I', 'letter-J', 'letter-K', 'letter-L', 'letter-M', 'letter-N', 'letter-O', 'letter-P', 'letter-Q', 'letter-R', 'letter-S', 'letter-T', 'letter-U', 'letter-V', 'letter-W', 'letter-X', 'letter-Y', 'letter-Z']
     },
     {
       id: 'uppercase-straight-lines',
@@ -202,12 +239,13 @@ export default function LearningPathsPage() {
       description: 'Master E, F, H, I, L, and T letters',
       level: 4,
       totalLessons: 6,
-      completedLessons: 4,
+      completedLessons: 0,
       icon: <LetterCase className="h-5 w-5 font-bold" />,
       color: 'from-purple-400 to-purple-600',
       href: '/practice/uppercase-straight-lines',
       category: 'Letters',
-      tags: ['intermediate', 'uppercase', 'straight']
+      tags: ['intermediate', 'uppercase', 'straight'],
+      worksheetIds: ['letter-E', 'letter-F', 'letter-H', 'letter-I', 'letter-L', 'letter-T']
     },
     {
       id: 'uppercase-curve-line',
@@ -215,12 +253,13 @@ export default function LearningPathsPage() {
       description: 'Practice B, D, P, and R letters',
       level: 4,
       totalLessons: 4,
-      completedLessons: 2,
+      completedLessons: 0,
       icon: <LetterCase className="h-5 w-5 font-bold" />,
       color: 'from-purple-400 to-purple-600',
       href: '/practice/uppercase-curve-line',
       category: 'Letters',
-      tags: ['intermediate', 'uppercase', 'curves']
+      tags: ['intermediate', 'uppercase', 'curves'],
+      worksheetIds: ['letter-B', 'letter-D', 'letter-P', 'letter-R']
     },
     {
       id: 'uppercase-full-curves',
@@ -228,12 +267,13 @@ export default function LearningPathsPage() {
       description: 'Learn C, G, O, Q, and S letters',
       level: 4,
       totalLessons: 5,
-      completedLessons: 1,
+      completedLessons: 0,
       icon: <LetterCase className="h-5 w-5 font-bold" />,
       color: 'from-purple-400 to-purple-600',
       href: '/practice/uppercase-full-curves',
       category: 'Letters',
-      tags: ['intermediate', 'uppercase', 'curves']
+      tags: ['intermediate', 'uppercase', 'curves'],
+      worksheetIds: ['letter-C', 'letter-G', 'letter-O', 'letter-Q', 'letter-S']
     },
     {
       id: 'uppercase-diagonal-lines',
@@ -246,7 +286,8 @@ export default function LearningPathsPage() {
       color: 'from-purple-400 to-purple-600',
       href: '/practice/uppercase-diagonal-lines',
       category: 'Letters',
-      tags: ['intermediate', 'uppercase', 'diagonal']
+      tags: ['intermediate', 'uppercase', 'diagonal'],
+      worksheetIds: ['letter-A', 'letter-K', 'letter-M', 'letter-N', 'letter-V', 'letter-W', 'letter-X', 'letter-Y', 'letter-Z']
     },
     {
       id: 'uppercase-mixed-formation',
@@ -259,7 +300,8 @@ export default function LearningPathsPage() {
       color: 'from-purple-400 to-purple-600',
       href: '/practice/uppercase-mixed-formation',
       category: 'Letters',
-      tags: ['intermediate', 'uppercase', 'mixed']
+      tags: ['intermediate', 'uppercase', 'mixed'],
+      worksheetIds: ['letter-J', 'letter-U']
     },
 
     // Numbers Category
@@ -269,12 +311,13 @@ export default function LearningPathsPage() {
       description: 'Learn to write numbers 0 through 5',
       level: 3,
       totalLessons: 6,
-      completedLessons: 3,
+      completedLessons: 0,
       icon: <Hash className="h-5 w-5" />,
       color: 'from-amber-400 to-amber-600',
       href: '/practice/numbers-0-5',
       category: 'Numbers',
-      tags: ['intermediate', 'numbers', 'basic']
+      tags: ['intermediate', 'numbers', 'basic'],
+      worksheetIds: ['numbers-0', 'numbers-1', 'numbers-2', 'numbers-3', 'numbers-4', 'numbers-5']
     },
     {
       id: 'numbers-6-9',
@@ -282,20 +325,33 @@ export default function LearningPathsPage() {
       description: 'Master writing numbers 6 through 9',
       level: 3,
       totalLessons: 4,
-      completedLessons: 1,
+      completedLessons: 0,
       icon: <Hash className="h-5 w-5" />,
       color: 'from-amber-400 to-amber-600',
       href: '/practice/numbers-6-9',
       category: 'Numbers',
-      tags: ['intermediate', 'numbers', 'advanced']
+      tags: ['intermediate', 'numbers', 'advanced'],
+      worksheetIds: ['numbers-6', 'numbers-7', 'numbers-8', 'numbers-9']
     }
   ];
 
+  // Calculate completed lessons for each learning path based on user's submissions
+  const learningPathsWithProgress = learningPaths.map(path => {
+    if (path.worksheetIds) {
+      const completedCount = path.worksheetIds.filter(id => completedWorksheets.has(id)).length;
+      return {
+        ...path,
+        completedLessons: completedCount
+      };
+    }
+    return path;
+  });
+
   // Get unique categories
-  const categories = Array.from(new Set(learningPaths.map(path => path.category)));
+  const categories = Array.from(new Set(learningPathsWithProgress.map(path => path.category)));
 
   // Filter learning paths based on search and category
-  const filteredPaths = learningPaths.filter(path => {
+  const filteredPaths = learningPathsWithProgress.filter(path => {
     const matchesSearch = searchQuery === '' || 
       path.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       path.description.toLowerCase().includes(searchQuery.toLowerCase()) ||

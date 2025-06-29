@@ -516,10 +516,38 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
     setLocalProfile(profile);
   }, [profile]);
 
+  // Fetch submissions when the component mounts
+  useEffect(() => {
+    fetchAllSubmissions();
+  }, []);
+
   // Fetch submissions when the current step changes
   useEffect(() => {
     fetchSubmissions();
   }, [currentStep]);
+
+  const fetchAllSubmissions = async () => {
+    if (!user) return;
+    
+    try {
+      // Get all lowercase letter submissions
+      const { data, error } = await supabase
+        .from('submissions')
+        .select('*')
+        .eq('user_id', user.id)
+        .in('worksheet_id', lowercaseWorkbookSteps.map(step => step.id));
+      
+      if (error) {
+        console.error('Error fetching all submissions:', error);
+      } else {
+        // Create a Set of completed worksheet IDs
+        const completedIds = new Set(data?.map(sub => sub.worksheet_id) || []);
+        setCompletedSteps(completedIds);
+      }
+    } catch (err) {
+      console.error('Error fetching all submissions:', err);
+    }
+  };
 
   const fetchSubmissions = async () => {
     if (!user) return;
