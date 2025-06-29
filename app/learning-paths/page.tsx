@@ -97,7 +97,7 @@ export default function LearningPathsPage() {
       completedLessons: 3,
       icon: <AlignLeft className="h-5 w-5 rotate-90" />,
       color: 'from-blue-400 to-blue-600',
-      href: '/practice',
+      href: '/worksheet/horizontal-lines',
       category: 'Fundamentals',
       tags: ['beginner', 'lines', 'horizontal']
     },
@@ -110,7 +110,7 @@ export default function LearningPathsPage() {
       completedLessons: 2,
       icon: <Circle className="h-5 w-5" />,
       color: 'from-blue-400 to-blue-600',
-      href: '/practice',
+      href: '/worksheet/circles',
       category: 'Fundamentals',
       tags: ['beginner', 'circles', 'curves']
     },
@@ -123,7 +123,7 @@ export default function LearningPathsPage() {
       completedLessons: 1,
       icon: <ArrowUpRight className="h-5 w-5" />,
       color: 'from-blue-400 to-blue-600',
-      href: '/practice',
+      href: '/worksheet/diagonal-lines',
       category: 'Fundamentals',
       tags: ['beginner', 'lines', 'diagonal']
     },
@@ -136,7 +136,7 @@ export default function LearningPathsPage() {
       completedLessons: 0,
       icon: <Shapes className="h-5 w-5" />,
       color: 'from-blue-400 to-blue-600',
-      href: '/practice',
+      href: '/worksheet/basic-shapes',
       category: 'Fundamentals',
       tags: ['beginner', 'shapes', 'geometry']
     },
