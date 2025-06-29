@@ -9,22 +9,7 @@ import { Database, Profile } from '@/lib/database.types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  BookOpen,
-  ChevronRight,
-  CheckCircle,
-  Star,
-  Filter,
-  Search,
-  Zap,
-  PenTool,
-  AlignLeft,
-  Circle,
-  ArrowUpRight,
-  Shapes,
-  LetterCase,
-  Hash
-} from 'lucide-react';
+import { BookOpen, ChevronRight, CheckCircle, Star, Filter, Search, Zap, PenTool, AlignLeft, Circle, ArrowUpRight, Shapes, CassetteTape as LetterCase, Hash } from 'lucide-react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 
