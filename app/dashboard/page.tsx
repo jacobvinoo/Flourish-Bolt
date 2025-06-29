@@ -324,7 +324,7 @@ export default function Dashboard() {
         }`}>
           {isKidsMode ? '🎯 Your Learning Adventure' : 'Learning Paths'}
         </h3>
-        <Link href="/practice">
+        <Link href="/learning-paths">
           <button className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 ${
             isKidsMode
               ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600'
