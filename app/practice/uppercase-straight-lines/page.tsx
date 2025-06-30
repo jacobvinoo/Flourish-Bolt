@@ -30,6 +30,14 @@ export default async function UpperspaceStraightLinesPage() {
     .eq('id', user.id)
     .maybeSingle();
 
+  // Fetch the user's submissions for these specific letters
+  const { data: submissions } = await supabase
+    .from('submissions')
+    .select('*')
+    .eq('user_id', user.id)
+    .in('worksheet_id', ['letter-E', 'letter-F', 'letter-H', 'letter-I', 'letter-L', 'letter-T'])
+    .order('created_at', { ascending: false });
+
   // Render the client component with the user and profile data.
-  return <UpperspaceStraightLinesClient user={user} profile={profile} />;
+  return <UpperspaceStraightLinesClient user={user} profile={profile} initialSubmissions={submissions || []} />;
 }
