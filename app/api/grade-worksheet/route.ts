@@ -63,11 +63,19 @@ async function callAIGradingModel(
     messages: [
       {
         role: "user",
-        content: [ { type: "text", text: prompt }, 
-                  { type: "image_url", // Correct: no extra braces around the 'url' property 
-                    image_url: { url: `data:image/png;base64,${blankWorksheetBase64}` }, }, 
-                  { type: "image_url", // Correct: no extra braces around the 'url' property
-                   image_url: { url: `data:image/jpeg;base64,${studentSubmissionBase64}` }, },         ],
+        content: [ 
+          { type: "text", text: prompt }, 
+          { 
+            type: "image_url", // Correct: no extra braces around the 'url' property 
+            image_url: { url: `data:image/png;base64,${blankWorksheetBase64}` }, 
+          }, 
+          { 
+            type: "image_url", // Correct: no extra braces around the 'url' property
+            image_url: { url: `data:image/jpeg;base64,${studentSubmissionBase64}` }
+          }        
+        ],
+      },
+      ],
     response_format: { type: "json_object" },
     max_tokens: 300,
   });
