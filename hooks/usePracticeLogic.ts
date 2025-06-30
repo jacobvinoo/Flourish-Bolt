@@ -115,9 +115,11 @@ export function usePracticeLogic({
         const errorText = await response.text();
         throw new Error(errorText || 'Failed to grade worksheet.');
       }
-
+      
       const result = await response.json();
-      setAnalysisResult({ ...result, imageUrl: URL.createObjectURL(selectedFile) });
+      setAnalysisResult({ ...result, 
+                         imageUrl: URL.createObjectURL(selectedFile) 
+                        });
       setShowGrading(true);
 
     } catch (error: any) {
@@ -129,8 +131,15 @@ export function usePracticeLogic({
 
   const handleGradingComplete = () => {
     // Refresh server data to get the new submission and updated XP
-    router.refresh();
+    // router.refresh();
+    if (analysisResult) {
+      const newSubmission = { ...analysisResult };
+      delete newSubmission.imageUrl;
+      setSubmissions(currentSubmissions => [newSubmission, ...currentSubmissions]);
+    }
 
+    setLocalProfile(p => p ? { ...p, xp: (p.xp ?? 0) + 50} : null);
+    
     setShowGrading(false);
     setAnalysisResult(null);
     setUploadSuccess(true);
