@@ -227,7 +227,7 @@ const lowercaseWorkbookSteps: WorksheetStep[] = [
     kidsDescription: 'Draw a line with two little mountains next to it!',
     level: 2,
     worksheetUrl: '/worksheets/letter-m.html',
-    skills: ['Multiple diagonals', 'Consistent width'],
+    skills: ['Multiple curves', 'Consistent height'],
     estimatedTime: '10-15 minutes',
     color: 'from-orange-400 to-orange-600',
     emoji: 'm'
@@ -458,7 +458,7 @@ function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disab
             </div>
           </div>
           {!uploading && (
-            <Button onClick={onFileRemove} variant="outline" size="sm" className={isKidsMode ? 'hover:bg-red-100' : ''}>
+            <Button onClick={onFileRemove} variant="outline" size="sm" className={isKidsMode ? 'hover:bg-red-100 flex items-center' : 'flex items-center'}>
               <X className="h-4 w-4" />
               {isKidsMode && <span className="ml-1">Remove</span>}
             </Button>
@@ -764,8 +764,13 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
               </div>
               <div className="p-6 pt-0 space-y-4">
                 <div className="flex items-center gap-4">
-                    <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="flex-1 h-12 text-lg font-bold bg-green-600 hover:bg-green-700 text-white"><Eye className="h-5 w-5 mr-2" />Open Worksheet</Button>
-                    <Button onClick={() => window.print()} variant="outline" size="icon" className="h-12 w-12 flex items-center justify-center"><Printer className="h-5 w-5" /></Button>
+                    <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="flex-1 h-12 text-lg font-bold bg-green-600 hover:bg-green-700 text-white flex items-center">
+                      <Eye className="h-5 w-5 mr-2" />
+                      <span>Open Worksheet</span>
+                    </Button>
+                    <Button onClick={() => window.print()} variant="outline" size="icon" className="h-12 w-12 flex items-center justify-center">
+                      <Printer className="h-5 w-5" />
+                    </Button>
                 </div>
                 <div className="flex items-center justify-between">
                   <Button onClick={goToPreviousStep} disabled={currentStep === 0} variant="outline" className="flex items-center">
@@ -808,7 +813,9 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
                       <h4 className="font-bold text-blue-800">Actionable Tip</h4>
                       <p className="text-sm text-blue-700">{analysisResult.feedbackTip}</p>
                     </div>
-                    <Button onClick={handleGradingComplete} className="w-full h-12 text-lg font-bold bg-green-600 text-white hover:bg-green-700">Continue to Next Step</Button>
+                    <Button onClick={handleGradingComplete} className="w-full h-12 text-lg font-bold bg-green-600 text-white hover:bg-green-700 flex items-center justify-center">
+                      <span>Continue to Next Step</span>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -826,8 +833,8 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
                   isKidsMode={isKidsMode}
                 />
                 {selectedFile && !uploading && !showGrading && (
-                  <Button onClick={handleUpload} size="lg" className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white">
-                    Grade My Letter!
+                  <Button onClick={handleUpload} size="lg" className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center">
+                    <span>Grade My Letter!</span>
                   </Button>
                 )}
               </div>

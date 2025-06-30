@@ -49,21 +49,19 @@ interface WorksheetStep {
   title: string;
   description: string;
   level: number;
-  type: string;
-  category: string;
-  estimatedTime: string;
-  skills: string[];
   worksheetUrl: string;
-  icon: React.ReactNode;
+  skills: string[];
+  estimatedTime: string;
+  icon: string;
+  color: string;
+  emoji: string;
 }
 
 const firstWorkbookSteps: WorksheetStep[] = [
   {
     id: 'vertical-lines',
     title: 'Worksheet 1.1: Vertical Lines',
-    friendlyTitle: 'Straight Up Lines!',
     description: 'Start with basic vertical lines from top to bottom. Master downward stroke control.',
-    kidsDescription: 'Draw straight lines going up and down, like tall trees or birthday candles!',
     level: 1,
     worksheetUrl: '/worksheets/vertical-lines.html',
     skills: ['Drawing straight', 'Top to bottom', 'Holding pencil'],
@@ -75,9 +73,7 @@ const firstWorkbookSteps: WorksheetStep[] = [
   {
     id: 'horizontal-lines',
     title: 'Worksheet 1.2: Horizontal Lines',
-    friendlyTitle: 'Side to Side Lines!',
     description: 'Practice horizontal lines from left to right. Build reading and writing flow.',
-    kidsDescription: 'Draw lines that go sideways, like a sleeping snake or a calm ocean!',
     level: 1,
     worksheetUrl: '/worksheets/horizontal-lines.html',
     skills: ['Left to right', 'Reading direction', 'Smooth lines'],
@@ -89,9 +85,7 @@ const firstWorkbookSteps: WorksheetStep[] = [
     {
     id: 'circles',
     title: 'Worksheet 1.3: Circles',
-    friendlyTitle: 'Round and Round!',
     description: 'Learn circular motions essential for letters like o, a, and d.',
-    kidsDescription: 'Make perfect circles like bubbles, donuts, or the sun! Practice going round and round!',
     level: 1,
     worksheetUrl: '/worksheets/circles.html',
     skills: ['Circular motions', 'Smooth curves', 'Hand control'],
@@ -103,9 +97,7 @@ const firstWorkbookSteps: WorksheetStep[] = [
   {
     id: 'diagonal-lines',
     title: 'Worksheet 1.4: Diagonal Lines',
-    friendlyTitle: 'Slanted Lines!',
     description: 'Master diagonal strokes for letters like A, V, X, and k.',
-    kidsDescription: 'Draw slanted lines like slides at the playground or roof tops!',
     level: 1,
     worksheetUrl: '/worksheets/diagonal-lines.html',
     skills: ['Diagonal drawing', 'Angles', 'Letter shapes'],
@@ -117,9 +109,7 @@ const firstWorkbookSteps: WorksheetStep[] = [
   {
     id: 'intersecting-lines',
     title: 'Worksheet 1.5: Intersecting Lines',
-    friendlyTitle: 'Crossing Lines!',
     description: 'Practice crosses and plus signs with precision.',
-    kidsDescription: 'Make crossing lines like a tic-tac-toe game or a treasure map X!',
     level: 1,
     worksheetUrl: '/worksheets/intersecting-lines.html',
     skills: ['Crossing lines', 'Precision', 'Plus signs'],
@@ -131,9 +121,7 @@ const firstWorkbookSteps: WorksheetStep[] = [
   {
     id: 'basic-shapes',
     title: 'Worksheet 1.6: Basic Shapes',
-    friendlyTitle: 'Fun Shapes!',
     description: 'Combine strokes to create squares, triangles, and rectangles.',
-    kidsDescription: 'Draw squares like windows, triangles like pizza slices, and rectangles like doors!',
     level: 1,
     worksheetUrl: '/worksheets/basic-shapes.html',
     skills: ['Shape drawing', 'Combining lines', 'Geometric fun'],
@@ -145,9 +133,7 @@ const firstWorkbookSteps: WorksheetStep[] = [
   {
     id: 'continuous-curves',
     title: 'Worksheet 1.7: Continuous Curves',
-    friendlyTitle: 'Wavy Lines!',
     description: 'Develop fluidity with wavy lines and loops for cursive preparation.',
-    kidsDescription: 'Draw wavy lines like ocean waves, roller coasters, or a snake dancing!',
     level: 1,
     worksheetUrl: '/worksheets/continuous-curves.html',
     skills: ['Wavy lines', 'Smooth flow', 'Cursive prep'],
@@ -210,7 +196,7 @@ function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disab
             </div>
           </div>
           {!uploading && (
-            <Button onClick={onFileRemove} variant="outline" size="sm" className={isKidsMode ? 'hover:bg-red-100' : ''}>
+            <Button onClick={onFileRemove} variant="outline" size="sm" className={isKidsMode ? 'hover:bg-red-100 flex items-center' : 'flex items-center'}>
               <X className="h-4 w-4" />
               {isKidsMode && <span className="ml-1">Remove</span>}
             </Button>
@@ -424,15 +410,15 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
                   <div className="flex items-center gap-4">
                     <div className="text-6xl">{currentWorksheet.emoji}</div>
                     <div>
-                      <h3 className={`text-2xl font-bold ${isKidsMode ? 'text-white' : 'text-gray-900'}`}>{isKidsMode ? currentWorksheet.friendlyTitle : currentWorksheet.title}</h3>
-                      <p className={`mt-2 text-lg ${isKidsMode ? 'text-white/90' : 'text-gray-600'}`}>{isKidsMode ? currentWorksheet.kidsDescription : currentWorksheet.description}</p>
+                      <h3 className={`text-2xl font-bold ${isKidsMode ? 'text-white' : 'text-gray-900'}`}>{currentWorksheet.title}</h3>
+                      <p className={`mt-2 text-lg ${isKidsMode ? 'text-white/90' : 'text-gray-600'}`}>{currentWorksheet.description}</p>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="p-6 pt-0 space-y-4">
                 <div className="flex items-center gap-4">
-                    <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="flex-1 h-12 text-lg font-bold bg-green-600 hover:bg-green-700 text-white">
+                    <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="flex-1 h-12 text-lg font-bold bg-green-600 hover:bg-green-700 text-white flex items-center">
                       <Eye className="h-5 w-5 mr-2" />
                       <span>Open Worksheet</span>
                     </Button>
@@ -492,8 +478,15 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
                 <h3 className="text-xl font-bold mb-4">Upload Your Completed Worksheet</h3>
                 <FileUpload onFileSelect={handleFileSelect} onFileRemove={handleFileRemove} selectedFile={selectedFile} uploading={uploading} disabled={uploadSuccess} isKidsMode={isKidsMode}/>
                 {selectedFile && !uploading && (
-                  <Button onClick={handleUpload} size="lg" disabled={uploading} className="w-full mt-4 bg-green-600 hover:bg-green-700">
-                    {uploading ? "Analyzing..." : "Grade My Worksheet!"}
+                  <Button onClick={handleUpload} size="lg" disabled={uploading} className="w-full mt-4 bg-green-600 hover:bg-green-700 flex items-center justify-center">
+                    {uploading ? (
+                      <>
+                        <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                        <span>Analyzing...</span>
+                      </>
+                    ) : (
+                      <span>Grade My Worksheet!</span>
+                    )}
                   </Button>
                 )}
               </div>
@@ -510,7 +503,7 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
                     onClick={() => setCurrentStep(index)} 
                     className={`w-full p-3 rounded-lg border-2 text-left transition-all duration-200 flex items-center gap-3 ${
                       index === currentStep 
-                        ? 'border-blue-500 bg-blue-50' 
+                        ? 'border-blue-500 bg-blue-50 text-blue-700' 
                         : completedWorksheets.has(step.id)
                         ? 'border-green-200 bg-green-50 text-green-700'
                         : 'bg-white hover:border-gray-300'
