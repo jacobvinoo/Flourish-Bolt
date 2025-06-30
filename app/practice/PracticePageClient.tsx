@@ -21,7 +21,8 @@ import {
   Heart,
   Sparkles,
   Award,
-  BookOpen
+  BookOpen,
+  Loader2
 } from 'lucide-react';
 
 // NOTE: This is a temporary fix. For a permanent solution, you should
@@ -467,7 +468,9 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
                       <h4 className="font-bold text-blue-800">Actionable Tip</h4>
                       <p className="text-sm text-blue-700">{analysisResult.feedback}</p>
                     </div>
-                    <Button onClick={handleGradingComplete} className="w-full h-12 text-lg font-bold bg-green-600 text-white hover:bg-green-700">Continue to Next Step</Button>
+                    <Button onClick={handleGradingComplete} className="w-full h-12 text-lg font-bold bg-green-600 text-white hover:bg-green-700 flex items-center justify-center">
+                      <span>Continue to Next Step</span>
+                    </Button>
                   </div>
                 </div>
               </div>
