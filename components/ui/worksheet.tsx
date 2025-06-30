@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Printer } from 'lucide-react';
+import { Printer, Download } from 'lucide-react';
 
-export interface WorksheetProps {
+interface WorksheetProps {
   title: string;
   instructions: string;
   level: number;
@@ -10,53 +10,56 @@ export interface WorksheetProps {
 }
 
 export function Worksheet({ title, instructions, level, exerciseType }: WorksheetProps) {
-  const getWorksheetSrc = (type: string) => {
-    switch (type) {
-      case 'vertical-lines':
-        return '/worksheets/vertical-lines.html';
-      case 'horizontal-lines':
-        return '/worksheets/horizontal-lines.html';
-      case 'circles':
-        return '/worksheets/circles.html';
-      case 'diagonal-lines':
-        return '/worksheets/diagonal-lines.html';
-      case 'intersecting-lines':
-        return '/worksheets/intersecting-lines.html';
-      case 'continuous-curves':
-        return '/worksheets/continuous-curves.html';
-      case 'basic-shapes':
-        return '/worksheets/basic-shapes.html';
-      default:
-        return '/worksheets/vertical-lines.html';
-    }
+  const handlePrint = () => {
+    window.print();
   };
 
-  const handlePrint = () => {
-    const iframe = document.getElementById('worksheet-iframe') as HTMLIFrameElement;
-    if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.print();
-    }
+  const getWorksheetUrl = () => {
+    return `/worksheets/${exerciseType}.html`;
+  };
+
+  const openWorksheet = () => {
+    window.open(getWorksheetUrl(), '_blank', 'noopener,noreferrer');
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
-            <p className="text-gray-600 mt-1">{instructions}</p>
-          </div>
-          <Button onClick={handlePrint} className="no-print">
-            <Printer className="h-4 w-4 mr-2" />
-            Print Worksheet
+    <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+      <div className="flex justify-between items-center mb-6 no-print">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+          <p className="text-gray-600 mt-1">{instructions}</p>
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={openWorksheet} className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            <span>Open Worksheet</span>
+          </Button>
+          <Button onClick={handlePrint} variant="outline" className="flex items-center gap-2">
+            <Printer className="h-4 w-4" />
+            <span>Print</span>
           </Button>
         </div>
-        <div className="border rounded-lg overflow-hidden h-[800px]">
-          <iframe
-            id="worksheet-iframe"
-            src={getWorksheetSrc(exerciseType)}
-            className="w-full h-full"
-            title={title}
+      </div>
+
+      <div className="border rounded-lg p-4 bg-gray-50 mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
+            {level}
+          </div>
+          <span className="font-medium">Difficulty Level: {level}</span>
+        </div>
+        <p className="text-gray-700">
+          This worksheet focuses on {exerciseType.replace('-', ' ')}. Follow the instructions and practice carefully.
+        </p>
+      </div>
+
+      <div className="border-t pt-6">
+        <h3 className="text-lg font-semibold mb-4">Preview</h3>
+        <div className="aspect-[1.414/1] bg-gray-100 rounded-lg flex items-center justify-center">
+          <iframe 
+            src={getWorksheetUrl()} 
+            className="w-full h-full rounded-lg border"
+            title={`${title} Preview`}
           />
         </div>
       </div>

@@ -227,7 +227,7 @@ const lowercaseWorkbookSteps: WorksheetStep[] = [
     kidsDescription: 'Draw a line with two little mountains next to it!',
     level: 2,
     worksheetUrl: '/worksheets/letter-m.html',
-    skills: ['Multiple curves', 'Consistent height'],
+    skills: ['Multiple diagonals', 'Consistent width'],
     estimatedTime: '10-15 minutes',
     color: 'from-orange-400 to-orange-600',
     emoji: 'm'
@@ -765,12 +765,18 @@ export default function LowercasePracticeClient({ user, profile }: PracticePageC
               <div className="p-6 pt-0 space-y-4">
                 <div className="flex items-center gap-4">
                     <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="flex-1 h-12 text-lg font-bold bg-green-600 hover:bg-green-700 text-white"><Eye className="h-5 w-5 mr-2" />Open Worksheet</Button>
-                    <Button onClick={() => window.print()} variant="outline" size="icon" className="h-12 w-12"><Printer className="h-5 w-5" /></Button>
+                    <Button onClick={() => window.print()} variant="outline" size="icon" className="h-12 w-12 flex items-center justify-center"><Printer className="h-5 w-5" /></Button>
                 </div>
                 <div className="flex items-center justify-between">
-                  <Button onClick={goToPreviousStep} disabled={currentStep === 0} variant="outline"><ChevronLeft className="h-5 w-5 mr-2" />Previous</Button>
+                  <Button onClick={goToPreviousStep} disabled={currentStep === 0} variant="outline" className="flex items-center">
+                    <ChevronLeft className="h-5 w-5 mr-2" />
+                    <span>Previous</span>
+                  </Button>
                   <span className="font-bold">{currentStep + 1} of {lowercaseWorkbookSteps.length}</span>
-                  <Button onClick={goToNextStep} disabled={currentStep === lowercaseWorkbookSteps.length - 1} variant="outline">Next<ChevronRight className="h-5 w-5 ml-2" /></Button>
+                  <Button onClick={goToNextStep} disabled={currentStep === lowercaseWorkbookSteps.length - 1} variant="outline" className="flex items-center">
+                    <span>Next</span>
+                    <ChevronRight className="h-5 w-5 ml-2" />
+                  </Button>
                 </div>
               </div>
             </div>
