@@ -31,6 +31,7 @@ async function callAIGradingModel(
     3. Evaluate their work on accuracy(how well they follow the guides), steadiness (how smooth their lines are, and adherence to the guides.
     4. Provide a single overall score between 50 and 100.
     5. Provide separate scores for 'steadiness' and 'accuracy', each between 0 and 100
+    6. If the uploaded image differs from the worksheet in structure, mark the score as 0 and provide the feedback tip to upload the correct worksheet.
     6. Provide a short, constructive, and encouraging feedback tip (1-2 sentences).
     Respond with ONLY a valid JSON object in the following format:
     {"score": <number>, "steadiness": <number>, "accuracy": <number>, "feedback": "<string>"}
