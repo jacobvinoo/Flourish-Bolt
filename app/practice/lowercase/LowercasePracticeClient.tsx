@@ -3,6 +3,7 @@
 
 'use client';
 
+import { lowercaseWorkbookSteps } from './worksheetData';
 import { User } from '@supabase/supabase-js';
 import { usePracticeLogic, Profile, Submission, WorksheetStep } from '@/hooks/usePracticeLogic';
 
