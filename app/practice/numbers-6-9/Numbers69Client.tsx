@@ -19,7 +19,8 @@ import {
   ChevronLeft,
   ChevronRight,
   BookOpen,
-  ImageOff
+  ImageOff,
+  Loader2
 } from 'lucide-react';
 
 // Define the structure for the props passed to this component
@@ -522,7 +523,14 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
                 />
                 {selectedFile && !uploading && !showGrading && (
                   <Button onClick={handleUpload} size="lg" className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center">
-                    <span>Grade My Number!</span>
+                    {uploading ? (
+                      <>
+                        <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                        <span>Analyzing...</span>
+                      </>
+                    ) : (
+                      <span>Grade My Number!</span>
+                    )}
                   </Button>
                 )}
               </div>
@@ -570,7 +578,7 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
                 return (
                   <div key={submission.id} className="p-6 bg-white rounded-2xl border flex items-center gap-6">
                     {/* Display the image with proper error handling */}
-                    <div className="w-32 h-32 rounded-lg border overflow-hidden flex items-center justify-center bg-gray-100">
+                    <div className="w-32 h-32 rounded-lg border overflow-hidden flex items-center justify-center bg-gray-100 relative">
                       <img 
                         src={publicUrl} 
                         alt={`Submission for ${submission.worksheet_id}`} 
@@ -581,17 +589,6 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
                           const target = e.target as HTMLImageElement;
                           target.onerror = null; // Prevent infinite error loop
                           target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgZmlsbD0iI2YzZjRmNiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBhbGlnbm1lbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmaWxsPSIjOWNhM2FmIj5JbWFnZSBub3QgYXZhaWxhYmxlPC90ZXh0Pjwvc3ZnPg==';
-                          
-                          // Show image icon overlay
-                          const parent = target.parentElement;
-                          if (parent) {
-                            const overlay = document.createElement('div');
-                            overlay.className = 'absolute inset-0 flex items-center justify-center';
-                            const icon = document.createElement('div');
-                            icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle><path d="m3 3 18 18"></path></svg>';
-                            overlay.appendChild(icon);
-                            parent.appendChild(overlay);
-                          }
                         }}
                       />
                     </div>
