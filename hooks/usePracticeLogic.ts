@@ -38,6 +38,7 @@ export interface WorksheetStep {
   estimatedTime: string;
   color: string;
   emoji: string;
+  icon?: string;
 }
 
 
