@@ -18,7 +18,8 @@ import {
   Printer,
   ChevronLeft,
   ChevronRight,
-  BookOpen
+  BookOpen,
+  ImageOff
 } from 'lucide-react';
 
 // Define the structure for the props passed to this component
@@ -169,7 +170,7 @@ function FileUpload({ onFileSelect, onFileRemove, selectedFile, uploading, disab
             </div>
           </div>
           {!uploading && (
-            <Button onClick={onFileRemove} variant="outline" size="sm" className={isKidsMode ? 'hover:bg-red-100' : ''}>
+            <Button onClick={onFileRemove} variant="outline" size="sm" className={`${isKidsMode ? 'hover:bg-red-100' : ''} flex items-center`}>
               <X className="h-4 w-4" />
               {isKidsMode && <span className="ml-1">Remove</span>}
             </Button>
@@ -451,13 +452,24 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
               </div>
               <div className="p-6 pt-0 space-y-4">
                 <div className="flex items-center gap-4">
-                    <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="flex-1 h-12 text-lg font-bold bg-green-600 hover:bg-green-700 text-white"><Eye className="h-5 w-5 mr-2" />Open Worksheet</Button>
-                    <Button onClick={() => window.print()} variant="outline" size="icon" className="h-12 w-12"><Printer className="h-5 w-5" /></Button>
+                    <Button onClick={() => openWorksheet(currentWorksheet.worksheetUrl)} className="flex-1 h-12 text-lg font-bold bg-green-600 hover:bg-green-700 text-white flex items-center justify-center">
+                      <Eye className="h-5 w-5 mr-2" />
+                      <span>Open Worksheet</span>
+                    </Button>
+                    <Button onClick={() => window.print()} variant="outline" size="icon" className="h-12 w-12 flex items-center justify-center">
+                      <Printer className="h-5 w-5" />
+                    </Button>
                 </div>
                 <div className="flex items-center justify-between">
-                  <Button onClick={goToPreviousStep} disabled={currentStep === 0} variant="outline"><ChevronLeft className="h-5 w-5 mr-2" />Previous</Button>
+                  <Button onClick={goToPreviousStep} disabled={currentStep === 0} variant="outline" className="flex items-center">
+                    <ChevronLeft className="h-5 w-5 mr-2" />
+                    <span>Previous</span>
+                  </Button>
                   <span className="font-bold">{currentStep + 1} of {numbers69WorkbookSteps.length}</span>
-                  <Button onClick={goToNextStep} disabled={currentStep === numbers69WorkbookSteps.length - 1} variant="outline">Next<ChevronRight className="h-5 w-5 ml-2" /></Button>
+                  <Button onClick={goToNextStep} disabled={currentStep === numbers69WorkbookSteps.length - 1} variant="outline" className="flex items-center">
+                    <span>Next</span>
+                    <ChevronRight className="h-5 w-5 ml-2" />
+                  </Button>
                 </div>
               </div>
             </div>
@@ -489,7 +501,9 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
                       <h4 className="font-bold text-blue-800">Actionable Tip</h4>
                       <p className="text-sm text-blue-700">{analysisResult.feedbackTip}</p>
                     </div>
-                    <Button onClick={handleGradingComplete} className="w-full h-12 text-lg font-bold bg-green-600 text-white hover:bg-green-700">Continue to Next Step</Button>
+                    <Button onClick={handleGradingComplete} className="w-full h-12 text-lg font-bold bg-green-600 text-white hover:bg-green-700 flex items-center justify-center">
+                      <span>Continue to Next Step</span>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -507,8 +521,8 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
                   isKidsMode={isKidsMode}
                 />
                 {selectedFile && !uploading && !showGrading && (
-                  <Button onClick={handleUpload} size="lg" className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white">
-                    Grade My Number!
+                  <Button onClick={handleUpload} size="lg" className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center">
+                    <span>Grade My Number!</span>
                   </Button>
                 )}
               </div>
@@ -550,10 +564,37 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
           <div className="space-y-4">
             {submissions.length > 0 ? (
               submissions.map((submission) => {
+                // Get the public URL for the image
                 const { data: { publicUrl } } = supabase.storage.from('submissions').getPublicUrl(submission.image_path);
+                
                 return (
                   <div key={submission.id} className="p-6 bg-white rounded-2xl border flex items-center gap-6">
-                    <img src={publicUrl} alt={`Submission for ${submission.worksheet_id}`} className="w-32 h-32 object-cover rounded-lg border"/>
+                    {/* Display the image with proper error handling */}
+                    <div className="w-32 h-32 rounded-lg border overflow-hidden flex items-center justify-center bg-gray-100">
+                      <img 
+                        src={publicUrl} 
+                        alt={`Submission for ${submission.worksheet_id}`} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          console.error('Failed to load image:', publicUrl);
+                          // Replace with a placeholder when image fails to load
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null; // Prevent infinite error loop
+                          target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgZmlsbD0iI2YzZjRmNiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBhbGlnbm1lbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmaWxsPSIjOWNhM2FmIj5JbWFnZSBub3QgYXZhaWxhYmxlPC90ZXh0Pjwvc3ZnPg==';
+                          
+                          // Show image icon overlay
+                          const parent = target.parentElement;
+                          if (parent) {
+                            const overlay = document.createElement('div');
+                            overlay.className = 'absolute inset-0 flex items-center justify-center';
+                            const icon = document.createElement('div');
+                            icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle><path d="m3 3 18 18"></path></svg>';
+                            overlay.appendChild(icon);
+                            parent.appendChild(overlay);
+                          }
+                        }}
+                      />
+                    </div>
                     <div className="flex-1">
                       <div className="flex justify-between">
                         <p className="font-bold text-lg">Score: {submission.score}%</p>
