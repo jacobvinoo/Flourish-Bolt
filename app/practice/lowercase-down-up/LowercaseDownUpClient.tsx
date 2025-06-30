@@ -1,5 +1,5 @@
 //app/practice/lowercase-down-up/LowercaseDownUpClient.tsx
-use client';
+'use client';
 
 import { User } from '@supabase/supabase-js';
 import { usePracticeLogic, Profile, Submission, WorksheetStep } from '@/hooks/usePracticeLogic';
