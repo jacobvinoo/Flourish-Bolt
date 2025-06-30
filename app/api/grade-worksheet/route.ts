@@ -68,8 +68,12 @@ async function callAIGradingModel(
 
 export async function POST(request: Request) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
+  let user;
+  
   try {
-    const { data: { user }} = await supabase.auth.getUser();
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+    
     if (!user) {
       return NextResponse.json({ error: 'You must be logged in.' }, { status: 401 });
     }
@@ -83,17 +87,24 @@ export async function POST(request: Request) {
     if (!file || !worksheetId) {
       return NextResponse.json({ error: 'Missing file or worksheet ID' }, { status: 400 });
     }
+
+    /*
     // 1. Upload Image to Storage
     const imagePath = `${user.id}/${worksheetId}/${Date.now()}.jpg`;
     const { error: uploadError } = await supabase.storage.from('submissions').upload(imagePath, file);
     if (uploadError) throw new Error(`Storage Error: ${uploadError.message}`);
+    */
 
     // 2. Get AI Grade
     const buffer = await file.arrayBuffer();
     const base64Image = Buffer.from(buffer).toString('base64');
-    const aiResult = await callAIGradingModel(base64Image, formData.get('worksheetTitle') as string, formData.get('worksheetInstructions') as string);
-
+    const aiResult = await callAIGradingModel(base64Image, worksheetTitle, worksheetInstructions);
+    if (typeof aiResult.score !== 'number' || typeof aiResult.steadiness !== 'number' || typeof aiResult.accuracy !== 'number'){
+      throw new Error('AI returned an invalid data structure.');
+    }
     // 3. Save submission to the database
+
+    const imagepath = `${user.id}/${worksheetId}/${Date.now()}.${file.name.split('.').pop() || 'jpg'}`;
     const submissionData = {
       user_id: user.id,
       worksheet_id: worksheetId,
@@ -106,6 +117,13 @@ export async function POST(request: Request) {
 
     //Check both error and the returned data
     // If RLS prevents the insert, 'data' will be null and throw an error
+
+    const [uploadResult, insertResult] = await Promise.all([
+      supabase.storage.from('submissions').upload(imagepath, file),
+      supabase.from('submissions').insert(submissionData).select().single()
+    ]);
+
+    /*
     const { data: insertData, error: dbError } = await supabase
       .from('submissions')
       .insert(submissionData)
@@ -115,11 +133,14 @@ export async function POST(request: Request) {
     if (dbError || !insertData) {
       console.error("Database Insert Failed.", dbError);
       throw new Error("Failed to save submission record to the database.");
-    }
+    } 
+    */
+    if (uploadResult.error) throw new Error(`Storage Error: ${uploadResult.error.message}`);
+    if (insertResult.error || !insertResult.data) throw new Error(`Database Error: ${insertResult.error?.message || 'Insert failed'}`);
 
-    console.log("Successfully saved submission:", insertData.id);
-    const newSubmission = insertData.data;
-    return NextResponse.json(newSubmission);
+    console.log("Successfully saved submission:", insertResult.data.id);
+    
+    return NextResponse.json(insertResult.data);
 
   } catch (error: any) {
     console.error("[AI GRADING API ERROR]:", error);
