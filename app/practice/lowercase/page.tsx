@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Database } from '@/lib/database.types';
 import LowercasePracticeClient from './LowercasePracticeClient';
+import { lowercaseWorkbookSteps } from './worksheetData';
 
 /**
  * Server component for the lowercase practice page.
@@ -23,14 +24,28 @@ export default async function LowercasePracticePage() {
     redirect('/login');
   }
 
+  // Create an array of all worksheetIDs for the query
+  const worsheetIds = lowercaseWorkbookSteps.map(step => step.id);
+  
   // Fetch the user's profile from the database.
-  const { data: profile } = await supabase
+  const [{ data: profile }, {data: submissions }] = await Promise.all([supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
-    .maybeSingle();
+    .maybeSingle(),
+    supabase.from('submissions')
+    .select('*')
+    .eq('user_id', user.id)
+    .in('worksheet_id', worsheetIds)
+    ]);
 
   // Render the client component with the user and profile data.
-  return <LowercasePracticeClient user={user} profile={profile} />;
+  return (
+    <LowercasePracticeClient 
+      user={user} 
+      profile={profile}
+      initialSubmissions={submissions || []}
+      />
+    );
 }
 
