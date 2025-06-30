@@ -137,7 +137,7 @@ const firstWorkbookSteps: WorksheetStep[] = [
     description: 'Develop fluidity with wavy lines and loops for cursive preparation.',
     level: 1,
     worksheetUrl: '/worksheets/continuous-curves.html',
-    skills: ['Wavy lines', 'Smooth flow', 'Cursive prep'],
+    skills: ['Fluid motion', 'Rhythm', 'Hand control'],
     estimatedTime: '20-25 minutes',
     icon: 'Waves',
     color: 'from-teal-400 to-cyan-500',
@@ -532,10 +532,24 @@ export default function PracticePageClient({ user, profile, initialSubmissions }
           <div className="space-y-4">
             {currentSubmissions.length > 0 ? (
               currentSubmissions.map((submission) => {
+                // Get the public URL for the image
                 const { data: { publicUrl } } = supabase.storage.from('submissions').getPublicUrl(submission.image_path);
+                
                 return (
                   <div key={submission.id} className="p-6 bg-white rounded-2xl border flex items-center gap-6">
-                    <img src={publicUrl} alt={`Submission for ${submission.worksheet_id}`} className="w-32 h-32 object-cover rounded-lg border"/>
+                    {/* Display the image with proper error handling */}
+                    <div className="w-32 h-32 rounded-lg border overflow-hidden flex items-center justify-center bg-gray-100">
+                      <img 
+                        src={publicUrl} 
+                        alt={`Submission for ${submission.worksheet_id}`} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // If image fails to load, show a placeholder
+                          e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgZmlsbD0iI2YzZjRmNiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBhbGlnbm1lbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmaWxsPSIjOWNhM2FmIj5JbWFnZSBub3QgYXZhaWxhYmxlPC90ZXh0Pjwvc3ZnPg==';
+                          console.error('Failed to load image:', publicUrl);
+                        }}
+                      />
+                    </div>
                     <div className="flex-1">
                       <div className="flex justify-between">
                         <p className="font-bold text-lg">Score: {submission.score}%</p>
