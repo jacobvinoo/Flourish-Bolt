@@ -219,6 +219,7 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
   const [showGrading, setShowGrading] = useState(false);
   const [localProfile, setLocalProfile] = useState(profile);
   const [submissions, setSubmissions] = useState<Submission[]>(initialSubmissions);
+  const [imageLoadErrors, setImageLoadErrors] = useState<Record<string, boolean>>({});
 
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
@@ -254,6 +255,8 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
         console.error('Error fetching submissions:', error);
       } else {
         setSubmissions(data || []);
+        // Reset image load errors when submissions change
+        setImageLoadErrors({});
       }
     } catch (err) {
       console.error('Error fetching submissions:', err);
@@ -376,6 +379,14 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
     } catch (err) {
       console.error("Error completing grading:", err);
     }
+  };
+
+  const handleImageError = (submissionId: string) => {
+    console.error(`Failed to load image for submission: ${submissionId}`);
+    setImageLoadErrors(prev => ({
+      ...prev,
+      [submissionId]: true
+    }));
   };
 
   const openWorksheet = (worksheetUrl: string) => window.open(worksheetUrl, '_blank', 'noopener,noreferrer');
@@ -522,7 +533,12 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
                   isKidsMode={isKidsMode}
                 />
                 {selectedFile && !uploading && !showGrading && (
-                  <Button onClick={handleUpload} size="lg" className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center">
+                  <Button 
+                    onClick={handleUpload} 
+                    size="lg" 
+                    className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center"
+                    disabled={uploading}
+                  >
                     {uploading ? (
                       <>
                         <Loader2 className="h-5 w-5 mr-2 animate-spin" />
@@ -578,19 +594,20 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
                 return (
                   <div key={submission.id} className="p-6 bg-white rounded-2xl border flex items-center gap-6">
                     {/* Display the image with proper error handling */}
-                    <div className="w-32 h-32 rounded-lg border overflow-hidden flex items-center justify-center bg-gray-100 relative">
-                      <img 
-                        src={publicUrl} 
-                        alt={`Submission for ${submission.worksheet_id}`} 
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          console.error('Failed to load image:', publicUrl);
-                          // Replace with a placeholder when image fails to load
-                          const target = e.target as HTMLImageElement;
-                          target.onerror = null; // Prevent infinite error loop
-                          target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgZmlsbD0iI2YzZjRmNiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBhbGlnbm1lbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmaWxsPSIjOWNhM2FmIj5JbWFnZSBub3QgYXZhaWxhYmxlPC90ZXh0Pjwvc3ZnPg==';
-                        }}
-                      />
+                    <div className="relative w-32 h-32 rounded-lg border overflow-hidden flex items-center justify-center bg-gray-100">
+                      {imageLoadErrors[submission.id] ? (
+                        <div className="flex flex-col items-center justify-center h-full w-full p-2">
+                          <ImageOff className="h-8 w-8 text-gray-400 mb-1" />
+                          <span className="text-xs text-gray-500 text-center">Image not available</span>
+                        </div>
+                      ) : (
+                        <img 
+                          src={publicUrl} 
+                          alt={`Submission for ${submission.worksheet_id}`} 
+                          className="w-full h-full object-cover"
+                          onError={() => handleImageError(submission.id)}
+                        />
+                      )}
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between">
