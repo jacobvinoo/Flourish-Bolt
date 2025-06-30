@@ -142,18 +142,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                     <Settings className="h-4 w-4" />
                   </button>
                 </Link>
-
-                {/* Profile */}
-                <Link href="/profile">
-                  <button className={`p-2 rounded-lg transition-colors ${
-                    isKidsMode 
-                      ? 'text-white/80 hover:text-white hover:bg-white/10' 
-                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
-                  }`}>
-                    <User className="h-4 w-4" />
-                  </button>
-                </Link>
-
+                
                 {/* Sign Out */}
                 <button 
                   onClick={handleSignOut}
