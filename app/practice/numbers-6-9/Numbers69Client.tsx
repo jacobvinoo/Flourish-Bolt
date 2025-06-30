@@ -220,7 +220,7 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
   const [localProfile, setLocalProfile] = useState(profile);
   const [submissions, setSubmissions] = useState<Submission[]>(initialSubmissions);
   const [imageLoadErrors, setImageLoadErrors] = useState<Record<string, boolean>>({});
-
+  const [uploadFilePath, setUploadFilepath] = useState<string | null>(null);
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
@@ -313,6 +313,9 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
       const fileExt = selectedFile.name.split('.').pop();
       const currentWorksheet = numbers69WorkbookSteps[currentStep];
       const fileName = `${user.id}/${currentWorksheet.id}/${timestamp}.${fileExt}`;
+
+      // Store the generated path
+      setUploadFilepath(fileName);
       
       const { error: uploadError } = await supabase.storage.from('submissions').upload(fileName, selectedFile);
       if (uploadError) throw new Error(uploadError.message);
@@ -324,7 +327,7 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
   };
 
   const handleGradingComplete = async () => {
-    if (!analysisResult) return;
+    if (!analysisResult || !uploadFilePath) return;
     
     const newXp = (localProfile?.xp ?? 0) + 20; // Award 20 XP for a number
     const currentWorksheet = numbers69WorkbookSteps[currentStep];
@@ -338,7 +341,7 @@ export default function Numbers69Client({ user, profile, initialSubmissions }: P
         steadiness: analysisResult.steadiness,
         accuracy: analysisResult.accuracy,
         feedback: analysisResult.feedbackTip,
-        image_path: `${user.id}/${currentWorksheet.id}/${Date.now()}.jpg`
+        image_path: uploadFilePath
       };
       
       const { error: submissionError } = await supabase
