@@ -29,7 +29,9 @@ export interface Submission {
 export interface WorksheetStep {
   id: string;
   title: string;
+  friendlyTitle?: string;
   description: string;
+  kidsDescription?: string;
   level: number;
   worksheetUrl: string;
   skills: string[];
