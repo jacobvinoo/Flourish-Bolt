@@ -507,7 +507,7 @@ export default function UppercasePracticeClient({ user, profile, initialSubmissi
   const [showGrading, setShowGrading] = useState(false);
   const [localProfile, setLocalProfile] = useState(profile);
   const [submissions, setSubmissions] = useState<Submission[]>(initialSubmissions);
-
+  const [uploadFilePath, setUploadFilePath] = useState<string | null>(null);
   const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
@@ -594,6 +594,8 @@ export default function UppercasePracticeClient({ user, profile, initialSubmissi
       const fileExt = selectedFile.name.split('.').pop();
       const currentWorksheet = uppercaseWorkbookSteps[currentStep];
       const fileName = `${user.id}/${currentWorksheet.id}/${timestamp}.${fileExt}`;
+
+      setUploadFilePath(fileName);
       
       const { error: uploadError } = await supabase.storage.from('submissions').upload(fileName, selectedFile);
       if (uploadError) throw new Error(uploadError.message);
@@ -605,7 +607,7 @@ export default function UppercasePracticeClient({ user, profile, initialSubmissi
   };
 
   const handleGradingComplete = async () => {
-    if (!analysisResult) return;
+    if (!analysisResult || !uploadFilePath) return;
     
     const newXp = (localProfile?.xp ?? 0) + 30; // Award 30 XP for an uppercase letter
     const currentWorksheet = uppercaseWorkbookSteps[currentStep];
@@ -619,7 +621,7 @@ export default function UppercasePracticeClient({ user, profile, initialSubmissi
         steadiness: analysisResult.steadiness,
         accuracy: analysisResult.accuracy,
         feedback: analysisResult.feedbackTip,
-        image_path: `${user.id}/${currentWorksheet.id}/${Date.now()}.jpg`
+        image_path: uploadFilePath
       };
       
       const { error: submissionError } = await supabase
