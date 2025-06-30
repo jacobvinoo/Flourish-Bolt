@@ -118,7 +118,8 @@ export async function POST(request: Request) {
     }
 
     console.log("Successfully saved submission:", insertData.id);
-    return NextResponse.json(aiResult);
+    const newSubmission = insertData.data;
+    return NextResponse.json(newSubmission);
 
   } catch (error: any) {
     console.error("[AI GRADING API ERROR]:", error);
