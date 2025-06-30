@@ -1,4 +1,4 @@
-/components/practice/SubmissionHistory.tsx
+//components/practice/SubmissionHistory.tsx
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { BookOpen, ImageOff, Trash2, Loader2 } from 'lucide-react';
