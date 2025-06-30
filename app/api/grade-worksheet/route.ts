@@ -5,6 +5,8 @@ import OpenAI from 'openai';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { Database } from '@/lib/database.types';
+import fs from 'fs/promises'; // import the node filesystem module
+import path from 'path'; // import the node path module
 
 // This line forces the function to run in a Node.js environment on Vercel,
 // which is more robust for complex operations like AI API calls.
@@ -15,24 +17,42 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+//Helper function to get the blank worksheet image as base 64
+async function getBlankWorksheetAsBase64(worksheetId: string): Promise<string> {
+  //construct the path to the image in the public directory
+  const imagePath = path.join(process.cwd(), 'public', 'worksheet-blanks', `${worksheetId}.png`);
+  try {
+    const imageBuffer = await fs.readFile(imagePath);
+    return imageBuffer.toString('base64');
+  } catch (error) {
+    console.error(`Failed to read blank worksheet image for id: ${worksheetId}`, error);
+    throw new Error(`Reference worksheet image not found for id: ${worksheetId}.`);
+  }
+}
+
 async function callAIGradingModel(
-  base64Image: string,
+  blankWorksheetBase64: string,
+  studentSubmissionBase64: string,
   worksheetTitle: string,
   worksheetInstructions: string
 ) {
   const prompt = `
     You are a friendly and encouraging handwriting teacher.
-    A student has completed a worksheet and uploaded their work as an image.
+    you will be provided with TWO images.
+    1. The 'BLANK WORKSHEET': This is the reference image showing the intended task and guides.
+    2. The 'STUDENT SUBMISSION': This is the image of the student's completed work.
+    
     Worksheet Task: "${worksheetTitle}"
     Instructions: "${worksheetInstructions}"
     Your tasks are:
-    1. Analyze the provided image of the student's handwriting.
-    2. Compare their work against the worksheet's instructions.
-    3. Evaluate their work on accuracy(how well they follow the guides), steadiness (how smooth their lines are, and adherence to the guides.
-    4. Provide a single overall score between 50 and 100.
-    5. Provide separate scores for 'steadiness' and 'accuracy', each between 0 and 100
-    6. If the uploaded image differs from the worksheet in structure, mark the score as 0 and provide the feedback tip to upload the correct worksheet.
-    7. Provide a short, constructive, and encouraging feedback tip (1-2 sentences).
+    1. Compare the 'STUDENT SUBMISSION' against the 'BLANK WORKSHEET'.
+    2. Based on this comparison, do the following:
+    2a. ** First, verify the submission.** Does the 'STUDENT SUBMISSION' look like a completed version of the 'BLANK WORKSHEET'? If it is clearly a different worksheet or a random image, you MUST give a score of 0 and provide feedback telling the user to upload the correct worksheet.
+    2b. **Evaluate the handwriting** Assess the student's work on 'accuracy' (how well they followed the lines/guides from the blank sheet) and 'steadiness' (how smooth and controlled their strokes are).
+    2c. **Provide scores.** Give separate score between 0 and 100 for 'accuracy' and 'steadiness'
+    2d. **Provide an overall score** Give a single overall 'score' between 50 and 100 (unless it is the wrong sheet, then 0) 
+    2e. **Provide feedback ** Write a short, constructive, and encouraging feedback tip (1-2 sentences).
+    
     Respond with ONLY a valid JSON object in the following format:
     {"score": <number>, "steadiness": <number>, "accuracy": <number>, "feedback": "<string>"}
   `;
@@ -48,8 +68,12 @@ async function callAIGradingModel(
           {
             type: "image_url",
             image_url: {
-              url: `data:image/jpeg;base64,${base64Image}`,
+              { url: `data:image/jpeg;base64,${blankWorksheetBase64}` },
             },
+          {
+            type: "image_url",
+            image_url: {
+              { url: `data:image/jpeg;base64,${studentSubmissionBase64}` },
           },
         ],
       },
@@ -96,9 +120,12 @@ export async function POST(request: Request) {
     */
 
     // 2. Get AI Grade
-    const buffer = await file.arrayBuffer();
-    const base64Image = Buffer.from(buffer).toString('base64');
-    const aiResult = await callAIGradingModel(base64Image, worksheetTitle, worksheetInstructions);
+    const blankWorksheetBase64 = await getBlankWorksheetAsBase64(worksheetId);
+    const studentSubmissionBuffer = await file.arrayBuffer();
+    const studentSubmissionBase64 = Buffer.from(studentSubmissionBuffer).toString('base64');
+    
+    const aiResult = await callAIGradingModel(blankWorksheetBase64, studentSubmissionBase64, worksheetTitle, worksheetInstructions);
+    
     if (typeof aiResult.score !== 'number' || typeof aiResult.steadiness !== 'number' || typeof aiResult.accuracy !== 'number'){
       throw new Error('AI returned an invalid data structure.');
     }
