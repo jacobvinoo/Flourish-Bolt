@@ -112,7 +112,7 @@ export async function POST(request: Request) {
       steadiness: aiResult.steadiness,
       accuracy: aiResult.accuracy,
       feedback: aiResult.feedback,
-      image_path: imagePath,
+      image_path: imagepath,
     };
 
     //Check both error and the returned data
