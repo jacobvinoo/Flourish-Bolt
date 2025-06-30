@@ -25,7 +25,7 @@ export default async function LowercasePracticePage() {
   }
 
   // Create an array of all worksheetIDs for the query
-  const worsheetIds = lowercaseWorkbookSteps.map(step => step.id);
+  const worksheetIds = lowercaseWorkbookSteps.map(step => step.id);
   
   // Fetch the user's profile from the database.
   const [{ data: profile }, {data: submissions }] = await Promise.all([supabase
@@ -36,7 +36,7 @@ export default async function LowercasePracticePage() {
     supabase.from('submissions')
     .select('*')
     .eq('user_id', user.id)
-    .in('worksheet_id', worsheetIds)
+    .in('worksheet_id', worksheetIds)
     ]);
 
   // Render the client component with the user and profile data.
